@@ -11,8 +11,7 @@ public class ImageDissector {
   private static final int DEFAULT_TILE_SIZE = 48;
   private final File file;
 
-  public static void main(String[] args) throws IOException {
-
+  public static void main(String[] args) {
     Set<String> tilesets = Set.of("nature/nature.png", "interior/interior.png", "rubytown/rubytown.png");
 
     tilesets.stream()
