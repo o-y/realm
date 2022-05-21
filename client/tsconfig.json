@@ -12,8 +12,12 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "typeRoots": [
+      "./src/types/phaser"
+    ],
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "Phaser"
     ],
     "paths": {
       "@/*": [
@@ -35,6 +39,8 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "node_modules/phaser/types",
+    "node_modules/phaser/types/phaser.d.ts"
   ]
 }
