@@ -1,12 +1,17 @@
+import TileObjectStore from '@/base/tile/store/TileObjectStore';
+import Util from '@/util/Util';
+
 export default class TileObject<T> {
   private readonly enumType: T;
   private readonly baseDirectory: string
+  private readonly tileObjectStore: TileObjectStore
 
   private positionalOverride: number | null = null
 
   constructor(enumType: T, baseDirectory: string) {
     this.enumType = enumType;
     this.baseDirectory = baseDirectory;
+    this.tileObjectStore = TileObjectStore.getInstance();
   }
 
   public withPositionalOverride(positionalOverride: number): TileObject<T> {
@@ -18,19 +23,29 @@ export default class TileObject<T> {
     return this.enumType;
   }
 
-  public getAbsoluteFileName(): string {
-    return require(`@/base/tile/assets/${this.assetsDirectoryName}/${this.getRawFileName()}.png`);
+  public getBase64EncodedFile(): string {
+    if (this.tileObjectStore.isCached(this.fileHash)){
+      return this.tileObjectStore.retrieveFromCache(this.fileHash);
+    }
+
+    return this.tileObjectStore.retain(
+        require(`@/base/tile/assets/${this.assetsDirectoryName}/${this.rawFileName}.png`),
+        this.fileHash
+    )
   }
 
   private get assetsDirectoryName(): string {
     return this.baseDirectory.substring(this.baseDirectory.lastIndexOf("/") + 1);
   }
 
-  private getRawFileName(): string {
+  private get rawFileName(): string {
     return this.assetsDirectoryName + "_" +
         String(this.positionalOverride != null
             ? this.positionalOverride
-            : this.enumType as unknown as number)
+            : <unknown>this.enumType as number)
+  }
 
+  private get fileHash(): number {
+    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}/${this.enumType}`)
   }
 }

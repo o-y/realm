@@ -35,7 +35,7 @@ export default class CompleteSpriteView extends Vue {
           .withPositionalOverride(positionalEnumEntry);
 
       tiles.push({
-        img: tileEntry.getAbsoluteFileName(),
+        img: tileEntry.getBase64EncodedFile(),
         name: String(tileEntry.getEnumType())
       })
     }
