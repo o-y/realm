@@ -23,7 +23,7 @@ export default class TileObject<T> {
     return this.enumType;
   }
 
-  public getBase64EncodedFile(): string {
+  public getAndCacheBase64EncodedFile(): string {
     if (this.tileObjectStore.isCached(this.fileHash)){
       return this.tileObjectStore.retrieveFromCache(this.fileHash);
     }
@@ -34,6 +34,11 @@ export default class TileObject<T> {
     )
   }
 
+  public get fileHash(): number {
+    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}/${this.enumType}`)
+  }
+
+  /// Theses are getters because substring operations are not O(1)
   private get assetsDirectoryName(): string {
     return this.baseDirectory.substring(this.baseDirectory.lastIndexOf("/") + 1);
   }
@@ -43,9 +48,5 @@ export default class TileObject<T> {
         String(this.positionalOverride != null
             ? this.positionalOverride
             : <unknown>this.enumType as number)
-  }
-
-  private get fileHash(): number {
-    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}/${this.enumType}`)
   }
 }

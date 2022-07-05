@@ -1,14 +1,17 @@
 <template>
   <div class = "grid">
     <div class = "tileViewContainer">
-      <div class = "tileView" v-for = "tile in tilesEnumAnnotatedList">
-        <div class = "imageContainer">
-          <img :src = "tile.img" alt="sprite"/>
-        </div>
-        <div class = "textContainer">
-          <h1>{{ tile.name }}</h1>
+      <div class = "tilesView" v-for = "tileArray in tilesEnumAnnotatedList">
+        <div class = "tileView" v-for = "tile in tileArray">
+          <div class = "imageContainer">
+            <img :src = "tile.img" alt="sprite"/>
+          </div>
+          <div class = "textContainer">
+            <h1>{{ tile.name }}</h1>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -19,10 +22,11 @@ import DistinctTileProvider from '../../../base/tile/DistinctTileProvider';
 import {NatureTile} from '../../../base/tile/providers/NatureTileProvider';
 import GenericProvider from '../../../base/tile/providers/GenericProvider';
 import TileObject from '../../../base/tile/TileObject';
+import {NatureSupportTile} from '../../../base/tile/providers/NatureSupportTileProvider';
 
 @Component
 export default class CompleteSpriteView extends Vue {
-  public tilesEnumAnnotatedList: Array<Tiles> = []
+  public tilesEnumAnnotatedList: Array<Array<Tiles>> = []
 
   public provideEnumList<T>(entries: [string, string | T][], tileProvider: DistinctTileProvider<T>): Array<Tiles> {
     let tiles = new Array<Tiles>();
@@ -35,7 +39,7 @@ export default class CompleteSpriteView extends Vue {
           .withPositionalOverride(positionalEnumEntry);
 
       tiles.push({
-        img: tileEntry.getBase64EncodedFile(),
+        img: tileEntry.getAndCacheBase64EncodedFile(),
         name: String(tileEntry.getEnumType())
       })
     }
@@ -44,10 +48,16 @@ export default class CompleteSpriteView extends Vue {
   }
 
   public mounted() {
-    this.tilesEnumAnnotatedList = this.provideEnumList<NatureTile>(
+    this.tilesEnumAnnotatedList = [
+      this.provideEnumList<NatureTile>(
         Object.entries(NatureTile),
         DistinctTileProvider.with(GenericProvider.provideNatureProvider())
-    )
+      ),
+      this.provideEnumList<NatureSupportTile>(
+          Object.entries(NatureSupportTile),
+          DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
+      )
+    ]
   }
 }
 
@@ -65,37 +75,48 @@ interface Tiles {
     height: auto
 
     .tileViewContainer
-      display: grid
-      grid-template-rows: repeat(auto-fill, 100px)
-      grid-template-columns: auto
-      grid-gap: 15px
+      margin-top: 15px;
+      display: flex
 
-      &:not(:first-child)
-        margin-left: 50px
-
-      .tileView
+      .tilesView
         display: grid
-        grid-template-rows: auto
-        grid-template-columns 100px 1fr
-        background: #E7E6F7
-        border-radius: 20px
+        grid-template-rows: repeat(auto-fill, 100px)
+        grid-template-columns: auto
+        grid-gap: 15px
 
-        .imageContainer
-          display: flex
-          align-items: center
-          justify-content: center
-          width: 100%
+        h1
+          margin: 0
+          text-align: center
+          display: grid
+          align-self: center
 
-          img
-            height: 80px
+        &:not(:first-child)
+          margin-left: 50px
 
-        .textContainer
-          display: flex
-          align-items: center
+        .tileView
+          display: grid
+          grid-template-rows: auto
+          grid-template-columns 100px 1fr
+          background: #E7E6F7
+          border-radius: 20px
 
-          h1
-            color: #733DB5
-            font-size: 25px
-            font-family: 'Noto Sans Mono', monospace
-            margin-left: 20px
+          .imageContainer
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 100%
+
+            img
+              height: 80px
+
+          .textContainer
+            display: flex
+            align-items: center
+
+            h1
+              color: #733DB5
+              font-size: 25px
+              font-family: 'Noto Sans Mono', monospace
+              margin-left: 20px
+              padding-right: 20px
 </style>
