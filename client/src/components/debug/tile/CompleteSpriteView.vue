@@ -21,49 +21,22 @@ import {Component, Vue} from 'vue-property-decorator';
 import DistinctTileProvider from '../../../base/tile/DistinctTileProvider';
 import {NatureTile} from '../../../base/tile/providers/NatureTileProvider';
 import GenericProvider from '../../../base/tile/providers/GenericProvider';
-import TileObject from '../../../base/tile/TileObject';
 import {NatureSupportTile} from '../../../base/tile/providers/NatureSupportTileProvider';
+import TileUtil, {TileWrapper} from '../../../base/tile/internal/TileUtil';
+import {TileUnion} from '../../../base/tile/providers/TileEnumUnion';
 
 @Component
 export default class CompleteSpriteView extends Vue {
-  public tilesEnumAnnotatedList: Array<Array<Tiles>> = []
-
-  public provideEnumList<T>(entries: [string, string | T][], tileProvider: DistinctTileProvider<T>): Array<Tiles> {
-    let tiles = new Array<Tiles>();
-
-    for (let i = 0; i < Math.floor(Object.keys(entries).length / 2); i++) {
-      let enumEntry: T = entries[i][1] as T;
-      let positionalEnumEntry: number = Number(entries[i][0]);
-      let tileEntry: TileObject<T> = tileProvider
-          .getTile(enumEntry)
-          .withPositionalOverride(positionalEnumEntry);
-
-      tiles.push({
-        img: tileEntry.getAndCacheBase64EncodedFile(),
-        name: String(tileEntry.getEnumType())
-      })
-    }
-
-    return tiles
-  }
-
-  public mounted() {
-    this.tilesEnumAnnotatedList = [
-      this.provideEnumList<NatureTile>(
+  public tilesEnumAnnotatedList: Array<Array<TileWrapper<TileUnion>>> = [
+    TileUtil.provideEnumList<NatureTile>(
         Object.entries(NatureTile),
         DistinctTileProvider.with(GenericProvider.provideNatureProvider())
-      ),
-      this.provideEnumList<NatureSupportTile>(
-          Object.entries(NatureSupportTile),
-          DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
-      )
-    ]
-  }
-}
-
-interface Tiles {
-  img: string,
-  name: string
+    ),
+    TileUtil.provideEnumList<NatureSupportTile>(
+        Object.entries(NatureSupportTile),
+        DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
+    )
+  ]
 }
 </script>
 

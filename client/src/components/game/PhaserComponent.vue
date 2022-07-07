@@ -1,28 +1,39 @@
 <template>
   <div class = "phaserContainer">
     <div class = "phaserRoot" ref="root"></div>
-    <img ref = "img" width="100px" height="100px">
-<!--    <canvas ref = "canvas" width="48" height="48"></canvas>-->
-    <canvas ref = "canvas_out" width="150" height="150"></canvas>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import Phaser from 'phaser';
-import Jimp from 'jimp';
-
-const wfc = require('wavefunctioncollapse');
+import PhaserScene from '../../base/render/PhaserScene';
 
 @Component
 export default class PhaserComponent extends Vue {
   @Ref('root') readonly phaserRoot!: HTMLDivElement
-  @Ref('canvas') readonly canvas!: HTMLCanvasElement
-  @Ref('canvas_out') readonly canvasOut!: HTMLCanvasElement
-  @Ref('img') readonly img!: HTMLImageElement
 
   public mounted() {
+    const phaserScene = new PhaserScene()
+    phaserScene.addPreloadHook(phaserScene.preloadPhaser)
+    phaserScene.addCreateHook(phaserScene.createPhaser)
 
+    const phaserGame: Phaser.Game = new Phaser.Game({
+      type: Phaser.AUTO,
+      backgroundColor: 'white',
+      width: window.innerWidth,
+      height: window.innerHeight,
+      parent: this.phaserRoot,
+      pixelArt: true,
+      scene: {
+        preload: function() {
+          phaserScene.awaitPreloadHook(this, phaserGame)
+        },
+        create: function() {
+          phaserScene.awaitCreateHook(this, phaserGame)
+        }
+      }
+    });
   }
 }
 </script>

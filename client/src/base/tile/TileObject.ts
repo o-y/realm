@@ -34,8 +34,16 @@ export default class TileObject<T> {
     )
   }
 
+  public get imageHash(): string {
+    return this.fileHash.toString()
+  }
+
   public get fileHash(): number {
-    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}/${this.enumType}`)
+    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}`)
+  }
+
+  private get completeFilePath(): string {
+    return `src/base/tile/assets/${this.assetsDirectoryName}/${this.rawFileName}.png`
   }
 
   /// Theses are getters because substring operations are not O(1)
