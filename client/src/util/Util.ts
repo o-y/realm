@@ -7,7 +7,7 @@ export default class Util {
    * @author bryc - https://stackoverflow.com/a/52171480
    * @license Public Domain
    */
-  public static hashCode = function (str: string, seed: number = 0): number {
+  public static hashCode(str: string, seed: number = 0): number {
     let h1: number = 0xdeadbeef ^ seed, h2: number = 0x41c6ce57 ^ seed;
     for (let i = 0, ch; i < str.length; i++) {
       let ch: number = str.charCodeAt(i);
@@ -18,4 +18,8 @@ export default class Util {
     h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
     return 4294967296 * (2097151 & h2) + (h1>>>0);
   };
+
+  public static randomFromArray<T> (array: Array<T>): T {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 }
