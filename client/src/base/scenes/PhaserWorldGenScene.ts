@@ -13,19 +13,18 @@ export default class PhaserWorldGenScene extends AsyncPhaserScene {
   }
 
   async preloadPhaser() {
-    const tileMatrix: Array<Array<TileWrapper<TileUnion>>> = [
-      TileUtil.provideEnumList<NatureTile>(
+    const preloadTerrainAssets: Array<TileWrapper<TileUnion>> = [
+      ...TileUtil.provideEnumList<NatureTile>(
           Object.entries(NatureTile),
           DistinctTileProvider.with(GenericProvider.provideNatureProvider())
       ),
-      TileUtil.provideEnumList<NatureSupportTile>(
+      ...TileUtil.provideEnumList<NatureSupportTile>(
           Object.entries(NatureSupportTile),
           DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
       )
     ]
 
-    const tileArray1D: Array<TileWrapper<TileUnion>> = tileMatrix.flat();
-    const requests: Array<Promise<void>> = tileArray1D.map((tile: TileWrapper<TileUnion>) => this.loadBase64Image(
+    const requests: Array<Promise<void>> = preloadTerrainAssets.map((tile: TileWrapper<TileUnion>) => this.loadBase64Image(
         tile.tileObject.imageHash,
         tile.tileObject.getAndCacheBase64EncodedFile()
     ));
