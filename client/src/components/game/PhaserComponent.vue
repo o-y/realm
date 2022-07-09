@@ -10,15 +10,13 @@
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import Phaser from 'phaser';
 import PhaserScene from '../../base/render/PhaserScene';
+import PhaserWorldGenScene from '../../base/scenes/PhaserWorldGenScene';
 
 @Component
 export default class PhaserComponent extends Vue {
   @Ref('root') readonly phaserRoot!: HTMLDivElement
 
   public mounted() {
-    const phaserScene = new PhaserScene()
-    phaserScene.addPreloadHook(phaserScene.preloadPhaser)
-    phaserScene.addCreateHook(phaserScene.createPhaser)
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -33,21 +31,9 @@ export default class PhaserComponent extends Vue {
       },
       parent: this.phaserRoot,
       pixelArt: true,
-      scene: {
-        preload: function() {
-          phaserScene.awaitPreloadHook(this, phaserGame)
-        },
-        create: function() {
-          // this.scale.parent.width = Math.round(width);
-          // this.scale.parent.height = Math.round(height);
-          //
-          // this.scale.canvas.style.width = Math.round(width) + 'px';
-          // this.scale.canvas.style.height = Math.round(height) + 'px';
-          // phaserGame.canvas.style.width = width + 'px';
-          // phaserGame.canvas.style.height = height + 'px';
-          phaserScene.awaitCreateHook(this, phaserGame)
-        }
-      }
+      scene: [
+        PhaserWorldGenScene
+      ]
     });
   }
 }

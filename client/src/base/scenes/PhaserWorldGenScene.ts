@@ -1,21 +1,18 @@
+import PhaserWorldGen from '@/base/gen/PhaserWorldGen';
+import AsyncPhaserScene from '@/base/scenes/internal/AsyncPhaserScene';
 import TileUtil, {TileWrapper} from '@/base/tile/internal/TileUtil';
+import {TileUnion} from '@/base/tile/providers/TileEnumUnion';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
 import DistinctTileProvider from '@/base/tile/DistinctTileProvider';
 import GenericProvider from '@/base/tile/providers/GenericProvider';
 import {NatureSupportTile} from '@/base/tile/providers/NatureSupportTileProvider';
-import {TileUnion} from '@/base/tile/providers/TileEnumUnion';
-import {PhaserBootstrap} from '@/base/render/internal/PhaserBootstrap';
 
-export default class PhaserPreloadModule implements PhaserBootstrap {
-  private scene: Phaser.Scene;
-  private game: Phaser.Game;
-
-  constructor(scene: Phaser.Scene, game: Phaser.Game) {
-    this.scene = scene;
-    this.game = game;
+export default class PhaserWorldGenScene extends AsyncPhaserScene {
+  async createPhaser() {
+    return await new PhaserWorldGen(this, this.game).generateMap(Math.random());
   }
 
-  public async execute() {
+  async preloadPhaser() {
     const tileMatrix: Array<Array<TileWrapper<TileUnion>>> = [
       TileUtil.provideEnumList<NatureTile>(
           Object.entries(NatureTile),
@@ -38,10 +35,10 @@ export default class PhaserPreloadModule implements PhaserBootstrap {
 
   private loadBase64Image(key: string, data: string): Promise<void> {
     return new Promise<void>((resolve) => {
-      this.scene.textures.once(Phaser.Textures.Events.ADD, () => {
+      this.textures.once(Phaser.Textures.Events.ADD, () => {
         resolve();
       });
-      this.scene.textures.addBase64(key, data);
+      this.textures.addBase64(key, data);
     });
   }
 }

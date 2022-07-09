@@ -1,7 +1,7 @@
 import TileObject from '@/base/tile/TileObject';
 import {TileUnion} from '@/base/tile/providers/TileEnumUnion';
 import TileConstants from '@/base/tile/util/TileConstants';
-import WorldConstants from '@/base/gen/WorldConstants';
+import PhaserWorldGenConstants from '@/base/gen/internal/PhaserWorldGenConstants';
 import {PerlinNoise} from '@/base/gen/perlin/PerlinNoise';
 import RealmTileGen from '@/base/gen/tilegen/RealmTileGen';
 
@@ -25,9 +25,9 @@ export default class PhaserWorldGen {
         .create()
         .withSeed(seed)
 
-    for (let i = 0; i < WorldConstants.WORLD_VIEWPORT_HEIGHT; i++){
+    for (let i = 0; i < PhaserWorldGenConstants.WORLD_VIEWPORT_HEIGHT; i++){
       worldmap[i] = []
-      for (let k = 0; k < WorldConstants.WORLD_VIEWPORT_WIDTH; k++){
+      for (let k = 0; k < PhaserWorldGenConstants.WORLD_VIEWPORT_WIDTH; k++){
 
         const noise: number = Math.min(
             Math.max(
