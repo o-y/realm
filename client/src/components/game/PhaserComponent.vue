@@ -9,7 +9,6 @@
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import Phaser from 'phaser';
-import PhaserScene from '../../base/render/PhaserScene';
 import PhaserWorldGenScene from '../../base/scenes/PhaserWorldGenScene';
 
 @Component

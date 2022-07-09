@@ -1,13 +1,13 @@
 import PhaserWorldGen from '@/base/gen/PhaserWorldGen';
-import AsyncPhaserScene from '@/base/scenes/internal/AsyncPhaserScene';
 import TileUtil, {TileWrapper} from '@/base/tile/internal/TileUtil';
-import {TileUnion} from '@/base/tile/providers/TileEnumUnion';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
-import DistinctTileProvider from '@/base/tile/DistinctTileProvider';
-import GenericProvider from '@/base/tile/providers/GenericProvider';
 import {NatureSupportTile} from '@/base/tile/providers/NatureSupportTileProvider';
+import NyxScene from '@/framework/nyx/NyxScene';
+import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
+import DistinctTileProvider from '@/base/tile/providers/helpers/DistinctTileProvider';
+import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 
-export default class PhaserWorldGenScene extends AsyncPhaserScene {
+export default class PhaserWorldGenScene extends NyxScene {
   async createPhaser() {
     return await new PhaserWorldGen(this, this.game).generateMap(Math.random());
   }
@@ -16,11 +16,11 @@ export default class PhaserWorldGenScene extends AsyncPhaserScene {
     const preloadTerrainAssets: Array<TileWrapper<TileUnion>> = [
       ...TileUtil.provideEnumList<NatureTile>(
           Object.entries(NatureTile),
-          DistinctTileProvider.with(GenericProvider.provideNatureProvider())
+          DistinctTileProvider.with(CommonTileProvider.provideNatureProvider())
       ),
       ...TileUtil.provideEnumList<NatureSupportTile>(
           Object.entries(NatureSupportTile),
-          DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
+          DistinctTileProvider.with(CommonTileProvider.provideNatureSupportProvider())
       )
     ]
 

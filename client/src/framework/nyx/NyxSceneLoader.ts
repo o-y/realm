@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 
-export default class PhaserScene {
+export default class NyxSceneLoader {
+  private readonly scene: Phaser.Scene;
+
   private preloadHook: () => void = () => {}
   private createHook: () => void = () => {}
-
-  private scene: Phaser.Scene;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -28,12 +28,12 @@ export default class PhaserScene {
     this.requestedPhaserCreation = true;
   }
 
-  public addPreloadHook(hook: () => void): PhaserScene {
+  public addPreloadHook(hook: () => void): NyxSceneLoader {
     this.preloadHook = hook;
     return this;
   }
 
-  public addCreateHook(hook: () => void): PhaserScene {
+  public addCreateHook(hook: () => void): NyxSceneLoader {
     this.createHook = hook;
     return this;
   }

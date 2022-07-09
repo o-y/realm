@@ -18,23 +18,23 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import DistinctTileProvider from '../../../base/tile/DistinctTileProvider';
 import {NatureTile} from '../../../base/tile/providers/NatureTileProvider';
-import GenericProvider from '../../../base/tile/providers/GenericProvider';
 import {NatureSupportTile} from '../../../base/tile/providers/NatureSupportTileProvider';
 import TileUtil, {TileWrapper} from '../../../base/tile/internal/TileUtil';
-import {TileUnion} from '../../../base/tile/providers/TileEnumUnion';
+import {TileUnion} from '../../../base/tile/providers/helpers/TileEnumUnion';
+import CommonTileProvider from '../../../base/tile/providers/helpers/CommonTileProvider';
+import DistinctTileProvider from '../../../base/tile/providers/helpers/DistinctTileProvider';
 
 @Component
 export default class CompleteSpriteView extends Vue {
   public tilesEnumAnnotatedList: Array<Array<TileWrapper<TileUnion>>> = [
     TileUtil.provideEnumList<NatureTile>(
         Object.entries(NatureTile),
-        DistinctTileProvider.with(GenericProvider.provideNatureProvider())
+        DistinctTileProvider.with(CommonTileProvider.provideNatureProvider())
     ),
     TileUtil.provideEnumList<NatureSupportTile>(
         Object.entries(NatureSupportTile),
-        DistinctTileProvider.with(GenericProvider.provideNatureSupportProvider())
+        DistinctTileProvider.with(CommonTileProvider.provideNatureSupportProvider())
     )
   ]
 }

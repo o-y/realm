@@ -1,10 +1,10 @@
 import TileObject from '@/base/tile/TileObject';
-import {TileUnion} from '@/base/tile/providers/TileEnumUnion';
-import CommonTileProvider from '@/base/tile/providers/CommonTileProvider';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
 import {NatureSupportTile} from '@/base/tile/providers/NatureSupportTileProvider';
+import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
+import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 
-export default class TerrainGenConstants {
+export default class RealmTileGenConstants {
   public static JUST_GRASS_ARRAY: Array<TileObject<TileUnion>> = [
     CommonTileProvider.getNatureTile(NatureTile.GRASS_VARIANT_1),
     CommonTileProvider.getNatureTile(NatureTile.GRASS_PLAIN),

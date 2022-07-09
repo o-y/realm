@@ -1,5 +1,5 @@
-import DistinctTileProvider from '@/base/tile/DistinctTileProvider';
 import TileObject from '@/base/tile/TileObject';
+import DistinctTileProvider from '@/base/tile/providers/helpers/DistinctTileProvider';
 
 export default class TileUtil {
   public static provideEnumList<T>(entries: [string, string | T][], tileProvider: DistinctTileProvider<T>): Array<TileWrapper<T>> {

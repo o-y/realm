@@ -1,7 +1,7 @@
-import PhaserScene from '@/base/render/PhaserScene';
+import NyxSceneLoader from '@/framework/nyx/NyxSceneLoader';
 
-export default abstract class AsyncPhaserScene extends Phaser.Scene {
-  private phaserScene: PhaserScene = new PhaserScene(this)
+export default abstract class NyxScene extends Phaser.Scene {
+  private phaserScene: NyxSceneLoader = new NyxSceneLoader(this)
       .addPreloadHook(this.preloadPhaser)
       .addCreateHook(this.createPhaser)
 

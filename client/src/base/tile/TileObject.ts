@@ -2,6 +2,9 @@ import TileObjectStore from '@/base/tile/store/TileObjectStore';
 import Util from '@/util/Util';
 
 export default class TileObject<T> {
+  public static TILE_WIDTH: number = 48;
+  public static TILE_HEIGHT: number = 48;
+
   private readonly enumType: T;
   private readonly baseDirectory: string
   private readonly tileObjectStore: TileObjectStore
