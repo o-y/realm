@@ -1,6 +1,8 @@
 <template>
   <div class = "phaserContainer">
-    <div class = "phaserRoot" ref="root"></div>
+    <div class = "phaserRoot" ref="root">
+      <div class = "prefab"></div>
+    </div>
   </div>
 </template>
 
@@ -18,11 +20,17 @@ export default class PhaserComponent extends Vue {
     phaserScene.addPreloadHook(phaserScene.preloadPhaser)
     phaserScene.addCreateHook(phaserScene.createPhaser)
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
     const phaserGame: Phaser.Game = new Phaser.Game({
       type: Phaser.AUTO,
-      backgroundColor: 'white',
-      width: window.innerWidth,
-      height: window.innerHeight,
+      backgroundColor: '#fff',
+      width: width,
+      height: height,
+      scale: {
+        mode: Phaser.Scale.ENVELOP
+      },
       parent: this.phaserRoot,
       pixelArt: true,
       scene: {
@@ -30,6 +38,13 @@ export default class PhaserComponent extends Vue {
           phaserScene.awaitPreloadHook(this, phaserGame)
         },
         create: function() {
+          // this.scale.parent.width = Math.round(width);
+          // this.scale.parent.height = Math.round(height);
+          //
+          // this.scale.canvas.style.width = Math.round(width) + 'px';
+          // this.scale.canvas.style.height = Math.round(height) + 'px';
+          // phaserGame.canvas.style.width = width + 'px';
+          // phaserGame.canvas.style.height = height + 'px';
           phaserScene.awaitCreateHook(this, phaserGame)
         }
       }
@@ -42,4 +57,12 @@ export default class PhaserComponent extends Vue {
   .phaserRoot
     width: 100%
     height: 100%
+
+    .prefab
+      width: 48px
+      height: 48px;
+      background: black;
+      top: 0;
+      position: absolute
+      opacity: 0.5
 </style>

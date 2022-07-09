@@ -22,4 +22,18 @@ export default class Util {
   public static randomFromArray<T> (array: Array<T>): T {
     return array[Math.floor(Math.random() * array.length)];
   }
+
+  public static selectFromArray<T> (array: Array<T>, count: number): Array<T> {
+    if (count > array.length){
+      throw new Error(`#selectFromArray value: ${count} greater than array length (${array.length})`);
+    }
+
+    return Util.shuffleArray(array).slice(0, count);
+  }
+
+  public static shuffleArray<T> (array: Array<T>): Array<T> {
+    return array.map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value)
+  }
 }
