@@ -5,7 +5,7 @@ export default abstract class NyxScene extends Phaser.Scene {
       .addPreloadHook(this.preloadPhaser)
       .addCreateHook(this.createPhaser)
 
-  protected constructor(config: string | Phaser.Types.Scenes.SettingsConfig) {
+  protected constructor(config: Phaser.Types.Scenes.SettingsConfig) {
     super(config);
   }
 
@@ -13,11 +13,17 @@ export default abstract class NyxScene extends Phaser.Scene {
 
   abstract createPhaser(): void;
 
-  async preload() {
+  sceneInit(): void {}
+
+  private async preload() {
     await this.phaserScene.awaitPreloadHook()
   }
 
-  async create() {
+  private async create() {
     await this.phaserScene.awaitCreateHook()
+  }
+
+  private async init() {
+    await this.sceneInit()
   }
 }

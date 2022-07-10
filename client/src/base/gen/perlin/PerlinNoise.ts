@@ -1,3 +1,12 @@
+/**
+ * @description: This a fork of josephg/noisejs which enables generating noise
+ * values from several seeds at the same time, by providing an instance-based
+ * API (instead of the original functional one).
+ *
+ * @url: https://github.com/xixixao/noisejs
+ * @author: xixixao
+ * @licence: MIT
+ */
 export class PerlinNoise {
   private readonly grad3: Grad[];
   private readonly p: number[];

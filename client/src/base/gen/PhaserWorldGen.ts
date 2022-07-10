@@ -3,6 +3,8 @@ import PhaserWorldGenConstants from '@/base/gen/internal/PhaserWorldGenConstants
 import {PerlinNoise} from '@/base/gen/perlin/PerlinNoise';
 import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
+import "@/framework/nyx/framework/NyxGameObjectsExtensions"
+import {FONT_SANS_10_BLACK} from 'jimp';
 
 export default class PhaserWorldGen {
   private scene: Phaser.Scene;
@@ -48,9 +50,9 @@ export default class PhaserWorldGen {
     for (let i: number = 0; i < worldmap.length; i++){
       for (let k: number = 0; k < worldmap[i].length; k++){
         const tileObject: TileObject<TileUnion> = worldmap[i][k];
-        const image: Phaser.GameObjects.Image = this.scene.add.image(
+        this.scene.add.image(
             offsetWidth + (k * TileObject.TILE_WIDTH),
-            offsetHeight + (i * TileObject.TILE_WIDTH),
+            offsetHeight + (i * TileObject.TILE_HEIGHT),
             tileObject.imageHash);
       }
     }

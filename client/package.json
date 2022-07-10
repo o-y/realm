@@ -8,6 +8,7 @@
   },
   "types": "./src/types/phaser/Phaser.d.ts",
   "dependencies": {
+    "animejs": "^3.2.1",
     "core-js": "^3.6.5",
     "jimp": "^0.16.1",
     "phaser": "^3.55.2",
@@ -20,6 +21,7 @@
     "wavefunctioncollapse": "^2.1.0"
   },
   "devDependencies": {
+    "@types/animejs": "^3.1.4",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.13",
     "@vue/cli-plugin-router": "~4.5.13",
