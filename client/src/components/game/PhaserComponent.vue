@@ -124,6 +124,8 @@ export default class PhaserComponent extends Vue {
   $realmLogoWidth = 850px;
 
   .phaserContainer
+    margin: 0
+
     .splashScreen
       position: absolute
       top: 0
@@ -135,6 +137,7 @@ export default class PhaserComponent extends Vue {
       justify-content: center
       z-index: 5
       flex-direction: column
+      overflow: hidden
 
       .realmLogoContainer
         img

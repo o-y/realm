@@ -1,4 +1,4 @@
-export default class Util {
+export class Util {
   /**
    * Generates a hashcode for a given string.
    *
@@ -35,5 +35,11 @@ export default class Util {
     return array.map(value => ({ value, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(({ value }) => value)
+  }
+
+  public static assert(condition: boolean, error?: string): void {
+    if (!condition){
+      throw new Error(error || "Failed to satisfy assertion condition.")
+    }
   }
 }

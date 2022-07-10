@@ -5,6 +5,7 @@ import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import "@/framework/nyx/extensions/NyxGameObjectsExtensions"
 
+/** TODO: this should live in realms/gaia one day */
 export default class PhaserWorldGen {
   private scene: Phaser.Scene;
   private game: Phaser.Game;
@@ -25,13 +26,18 @@ export default class PhaserWorldGen {
         .create()
         .withSeed(seed)
 
+    const generationOffsetForDebugging = 0;
+
     for (let i = 0; i < PhaserWorldGenConstants.WORLD_VIEWPORT_HEIGHT; i++){
       worldmap[i] = []
       for (let k = 0; k < PhaserWorldGenConstants.WORLD_VIEWPORT_WIDTH; k++){
 
+        let x = (i + generationOffsetForDebugging) / 100;
+        let y = (k + generationOffsetForDebugging) / 100;
+
         const noise: number = Math.min(
             Math.max(
-                Math.abs(perlinNoise.generatePerlin2(i / 100, k / 100)) * 256,
+                Math.abs(perlinNoise.generatePerlin2(x, y)) * 256,
                 RealmTileGenUtil.MIN_PERLIN_NOISE),
             RealmTileGenUtil.MAX_PERLIN_NOISE)
 

@@ -1,6 +1,6 @@
 import TileObject from '@/base/tile/TileObject';
 import RealmTileGenConstants from '@/base/gen/tilegen/RealmTileGenConstants';
-import Util from '@/util/Util';
+import {Util} from '@/util/Util';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 
 export default class RealmTileGenUtil {
