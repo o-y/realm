@@ -1,7 +1,7 @@
 export default class TileObjectStore {
   private static tileObjectStoreInstance: TileObjectStore;
 
-  private instanceStore: Map<number, NodeRequire> = new Map<number, NodeRequire>()
+  private instanceStore: Map<string, NodeRequire> = new Map<string, NodeRequire>()
 
   private constructor() {}
 
@@ -11,11 +11,11 @@ export default class TileObjectStore {
         : TileObjectStore.tileObjectStoreInstance = new TileObjectStore();
   }
 
-  public isCached(hashcode: number): boolean {
+  public isCached(hashcode: string): boolean {
     return this.instanceStore.has(hashcode);
   }
 
-  public retain(requireRef: NodeRequire, hashcode: number): string {
+  public retain(requireRef: NodeRequire, hashcode: string): string {
     if (this.isCached(hashcode)){
       throw `FATAL - InstanceStore[${hashcode}] is already cached - guard #retain calls with #isCached`;
     }
@@ -24,7 +24,7 @@ export default class TileObjectStore {
     return String(requireRef);
   }
 
-  public retrieveFromCache(hashcode: number): string {
+  public retrieveFromCache(hashcode: string): string {
     if (!this.isCached(hashcode)){
       throw `FATAL - InstanceStore[${hashcode}] is null - guard #retrieveFromCache calls with #isCached`;
     }

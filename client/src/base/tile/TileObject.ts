@@ -27,22 +27,18 @@ export default class TileObject<T> {
   }
 
   public getAndCacheBase64EncodedFile(): string {
-    if (this.tileObjectStore.isCached(this.fileHash)){
-      return this.tileObjectStore.retrieveFromCache(this.fileHash);
+    if (this.tileObjectStore.isCached(this.imageHash)){
+      return this.tileObjectStore.retrieveFromCache(this.imageHash);
     }
 
     return this.tileObjectStore.retain(
         require(`@/base/tile/assets/${this.assetsDirectoryName}/${this.rawFileName}.png`),
-        this.fileHash
+        this.imageHash
     )
   }
 
   public get imageHash(): string {
-    return this.fileHash.toString()
-  }
-
-  public get fileHash(): number {
-    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}`)
+    return Util.hashCode(`${this.assetsDirectoryName}/${this.rawFileName}`).toString()
   }
 
   private get completeFilePath(): string {
