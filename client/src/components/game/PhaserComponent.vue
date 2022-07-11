@@ -32,7 +32,7 @@ export default class PhaserComponent extends Vue {
   @Ref('realmLogo') readonly realmLogo!: HTMLImageElement
   @Ref('realmSpinnerContainer') readonly realmSpinnerContainer!: HTMLDivElement
 
-  private IS_SPLASH_SCREEN_ENABLED: boolean = false;
+  private IS_SPLASH_SCREEN_ENABLED: boolean = true;
   private shouldShowSplashScreen: boolean = true;
 
   public mounted() {
