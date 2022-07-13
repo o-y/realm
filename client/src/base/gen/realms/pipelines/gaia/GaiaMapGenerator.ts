@@ -6,9 +6,12 @@ import "@/framework/nyx/extensions/NyxGameObjectsExtensions"
 import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {Avatar, Client} from '@/base/prometheus/Avatar';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
+import Desmos from 'desmos';
+import {DesmosVisualiser} from '@/framework/desmos/DesmosVisualiser';
 
 export class GaiaMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
+  private visualiser: DesmosVisualiser = DesmosVisualiser.getInstance();
 
   constructor(scene: Phaser.Scene) {
     super()
@@ -19,50 +22,40 @@ export class GaiaMapGenerator extends RealmGenerator {
   public async generateMap(seed: number, avatar: Avatar) {
 
     const avatarCartesianBound: CartesianBound = avatar.computeViewPortBoundary();
-    console.log("cartesianBound: ", avatarCartesianBound)
-    console.log("Width: ", avatarCartesianBound.getWidth())
-    console.log("Height: ", avatarCartesianBound.getHeight())
-    console.log("Midpoint: ", avatarCartesianBound.getMidPoint())
-
+    // console.log("cartesianBound: ", avatarCartesianBound)
+    // console.log("Width: ", avatarCartesianBound.getWidth())
+    // console.log("Height: ", avatarCartesianBound.getHeight())
+    // console.log("Midpoint: ", avatarCartesianBound.getMidPoint())
     avatarCartesianBound.toDesmosDebugView()
-
-    for (let i = avatarCartesianBound.getTopLeft().getY(); i >= avatarCartesianBound.getBottomLeft().getY(); i--){
-      for (let k = avatarCartesianBound.getTopLeft().getX(); k < avatarCartesianBound.getTopLeft().getX() + avatarCartesianBound.getWidth(); k++) {
-        console.log(i, k)
-      }
-    }
-
 
     //-> 48 tiles = screen width
     //-> 96 * 96 = 2d matrix
     //-> JavaScript Number = 64 bits
     //-> 64 * 96 * 96 = 548kb of memory for a single grid
     const worldmap: Array<Array<TileObject<TileUnion>>> = []
-
     const perlinNoise: PerlinNoise = PerlinNoise
         .create()
         .withSeed(seed)
 
-    const generationOffsetForDebugging = 0;
-
-    for (let i = 0; i < Client.WORLD_VIEWPORT_HEIGHT; i++){
-      worldmap[i] = []
-      for (let k = 0; k < Client.WORLD_VIEWPORT_WIDTH; k++){
-
-        let x = (i + generationOffsetForDebugging) / 100;
-        let y = (k + generationOffsetForDebugging) / 100;
+    for (let x = avatarCartesianBound.getTopLeft().getY(); x >= avatarCartesianBound.getBottomLeft().getY(); x--){
+      let xOffset = avatarCartesianBound.getTopLeft().getY() - x;
+      worldmap[xOffset] = []
+      for (let y = avatarCartesianBound.getTopLeft().getX(); y < avatarCartesianBound.getTopLeft().getX() + avatarCartesianBound.getWidth(); y++) {
+        let yOffset = Math.abs((avatarCartesianBound.getTopLeft().getX() - y));
 
         const noise: number = Math.min(
             Math.max(
-                Math.abs(perlinNoise.generatePerlin2(x, y)) * 256,
+                Math.abs(perlinNoise.generatePerlin2(x / 100, y / 100)) * 256,
                 RealmTileGenUtil.MIN_PERLIN_NOISE),
             RealmTileGenUtil.MAX_PERLIN_NOISE)
 
-        worldmap[i].push(
+        worldmap[xOffset].push(
             RealmTileGenUtil
                 .selectTileArrayWithNoise(noise)
                 .selectRandomTile()
         )
+
+        this.visualiser.setPoint(y, x)
       }
     }
 

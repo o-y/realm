@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class = "debugComponent">
-      <div :id = "phaserComponentId" class = "row"></div>
+      <div :id = "desmosVisualiserId" class = "row"></div>
     </div>
     <router-view/>
   </div>
@@ -9,12 +9,12 @@
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
-import {GlobalDebug} from './framework/vue/GlobalDebug';
+import {DesmosVisualiser} from './framework/desmos/DesmosVisualiser';
 
 @Component
 export default class App extends Vue {
-  get phaserComponentId() {
-    return GlobalDebug.GLOBAL_DESMOS_DEBUG_ID
+  get desmosVisualiserId() {
+    return DesmosVisualiser.GLOBAL_DESMOS_DEBUG_ID
   }
 }
 </script>

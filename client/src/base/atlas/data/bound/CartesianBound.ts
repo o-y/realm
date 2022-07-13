@@ -3,7 +3,7 @@ import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
 import Desmos, {Calculator} from 'desmos'
-import {GlobalDebug} from '@/framework/vue/GlobalDebug';
+import {DesmosVisualiser} from '@/framework/desmos/DesmosVisualiser';
 
 /**
  * Represents an n×k bound on a two-dimensional coordinate plane.
@@ -44,7 +44,7 @@ export class CartesianBound {
   private readonly bl: Coordinate;
 
   constructor(tr: Coordinate, br: Coordinate, tl: Coordinate, bl: Coordinate) {
-    Util.assert(tr.getY() == br.getX()) // Each assertion is distinct
+    Util.assert(tr.getX() == br.getX()) // Each assertion is distinct
     Util.assert(tr.getY() == tl.getY()) // to provide easier debugging
     Util.assert(bl.getX() == tl.getX()) // from stacktraces.
     Util.assert(bl.getY() == br.getY())
@@ -136,10 +136,8 @@ export class CartesianBound {
   }
 
   public toDesmosDebugView() {
-    const parent = document.getElementById(GlobalDebug.GLOBAL_DESMOS_DEBUG_ID)!
-    const calculator: Desmos.Calculator = Desmos.GraphingCalculator(parent)
-
-    const midpoint: DecimalCoordinate = this.getMidPoint()
+    const calculator: Desmos.Calculator = DesmosVisualiser.getInstance().getCalculator();
+    const midpoint: DecimalCoordinate = this.getMidPoint();
 
     calculator.setExpression({ latex: `\\left(${this.tl.getX()},\\ ${this.tl.getY()}\\right)`, label: 'TL', showLabel: true })
     calculator.setExpression({ latex: `\\left(${this.tr.getX()},\\ ${this.tr.getY()}\\right)`, label: 'TR', showLabel: true })
@@ -151,8 +149,8 @@ export class CartesianBound {
 
   private getMidPointDecimal(): [number, number] {
     return [
-        this.getTopRight().getY() - (this.getWidth() / 2),
         this.getTopRight().getX() - (this.getWidth() / 2),
+        this.getTopRight().getY() - (this.getHeight() / 2),
     ]
   }
 }

@@ -19,7 +19,7 @@ export default class PhaserWorldGenScene extends NyxScene {
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
         .setAvatar(mockAvatar)
-        .generateMapWithAvatar(Math.random())
+        .generateMapWithAvatar(1337)
   }
 
   async preloadPhaser() {
