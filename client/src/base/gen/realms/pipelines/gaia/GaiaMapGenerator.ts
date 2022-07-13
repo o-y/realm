@@ -1,21 +1,38 @@
 import TileObject from '@/base/tile/TileObject';
-import PhaserWorldGenConstants from '@/base/gen/internal/PhaserWorldGenConstants';
 import {PerlinNoise} from '@/base/gen/perlin/PerlinNoise';
 import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import "@/framework/nyx/extensions/NyxGameObjectsExtensions"
+import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
+import {Avatar, Client} from '@/base/prometheus/Avatar';
+import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
 
-/** TODO: this should live in realms/gaia one day */
-export default class PhaserWorldGen {
+export class GaiaMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
-  private game: Phaser.Game;
 
-  constructor(scene: Phaser.Scene, game: Phaser.Game) {
+  constructor(scene: Phaser.Scene) {
+    super()
+
     this.scene = scene;
-    this.game = game;
   }
 
-  public async generateMap(seed: number) {
+  public async generateMap(seed: number, avatar: Avatar) {
+
+    const avatarCartesianBound: CartesianBound = avatar.computeViewPortBoundary();
+    console.log("cartesianBound: ", avatarCartesianBound)
+    console.log("Width: ", avatarCartesianBound.getWidth())
+    console.log("Height: ", avatarCartesianBound.getHeight())
+    console.log("Midpoint: ", avatarCartesianBound.getMidPoint())
+
+    avatarCartesianBound.toDesmosDebugView()
+
+    for (let i = avatarCartesianBound.getTopLeft().getY(); i >= avatarCartesianBound.getBottomLeft().getY(); i--){
+      for (let k = avatarCartesianBound.getTopLeft().getX(); k < avatarCartesianBound.getTopLeft().getX() + avatarCartesianBound.getWidth(); k++) {
+        console.log(i, k)
+      }
+    }
+
+
     //-> 48 tiles = screen width
     //-> 96 * 96 = 2d matrix
     //-> JavaScript Number = 64 bits
@@ -28,9 +45,9 @@ export default class PhaserWorldGen {
 
     const generationOffsetForDebugging = 0;
 
-    for (let i = 0; i < PhaserWorldGenConstants.WORLD_VIEWPORT_HEIGHT; i++){
+    for (let i = 0; i < Client.WORLD_VIEWPORT_HEIGHT; i++){
       worldmap[i] = []
-      for (let k = 0; k < PhaserWorldGenConstants.WORLD_VIEWPORT_WIDTH; k++){
+      for (let k = 0; k < Client.WORLD_VIEWPORT_WIDTH; k++){
 
         let x = (i + generationOffsetForDebugging) / 100;
         let y = (k + generationOffsetForDebugging) / 100;
@@ -49,15 +66,15 @@ export default class PhaserWorldGen {
       }
     }
 
-    const offsetWidth: number = TileObject.TILE_WIDTH / 2;
-    const offsetHeight: number = TileObject.TILE_HEIGHT / 2;
+    const offsetWidth: number = TileObject.TILE_SIZE / 2;
+    const offsetHeight: number = TileObject.TILE_SIZE / 2;
 
     for (let i: number = 0; i < worldmap.length; i++){
       for (let k: number = 0; k < worldmap[i].length; k++){
         const tileObject: TileObject<TileUnion> = worldmap[i][k];
         this.scene.add.nyxTileObjectImage(
-            offsetWidth + (k * TileObject.TILE_WIDTH),
-            offsetHeight + (i * TileObject.TILE_HEIGHT),
+            offsetWidth + (k * TileObject.TILE_SIZE),
+            offsetHeight + (i * TileObject.TILE_SIZE),
             tileObject);
       }
     }

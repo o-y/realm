@@ -15,5 +15,7 @@ terminology
   - realms:
     - Gaia:  land, sea and structures, default Realm entrypoint
     - Minos: the interior plane of above-world structures
+  - services:
+    - Atlas: oversees realm generation
+    - Prometheus: creates avatars
   - Nyx: framework for Phaser
-  - Atlas: oversees realm generation

@@ -1,8 +1,10 @@
-import {CartesianBound} from '@/base/atlas/data/CartesianBound';
-import {Coordinate} from '@/base/atlas/data/Coordinate';
 import {Util} from '@/util/Util';
-import {SquareCartesianBound} from '@/base/atlas/data/SquareCartesianBound';
+import {SquareCartesianBound} from '@/base/atlas/data/bound/SquareCartesianBound';
+import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 
+/**
+ * Represents an n×n bound on a two-dimensional coordinate plane where n is even
+ */
 export class SquareEvenCartesianBound extends SquareCartesianBound {
   constructor(tr: Coordinate, br: Coordinate, tl: Coordinate, bl: Coordinate) {
     super(tr, br, tl, bl)

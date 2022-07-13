@@ -1,4 +1,4 @@
-import {SquareEvenCartesianBound} from '@/base/atlas/data/SquareEvenCartesianBound';
+import {SquareEvenCartesianBound} from '@/base/atlas/data/bound/SquareEvenCartesianBound';
 
 export class CartesianPlane {
   private cartesianBound: SquareEvenCartesianBound;

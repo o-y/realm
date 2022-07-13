@@ -1,10 +1,7 @@
 import TileObject from '@/base/tile/TileObject';
-import {Coordinate} from '@/base/atlas/data/Coordinate';
+import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 
 export class AtlasService {
-  public static QUADRANT_HEIGHT = 64;
-  public static QUADRANT_WIDTH = 64;
-
   private tileCoordinate: Coordinate
 
   private constructor(tileCoordinate: Coordinate) {

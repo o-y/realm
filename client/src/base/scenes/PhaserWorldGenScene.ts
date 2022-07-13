@@ -1,4 +1,3 @@
-import PhaserWorldGen from '@/base/gen/PhaserWorldGen';
 import TileUtil, {TileWrapper} from '@/base/tile/internal/TileUtil';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
 import {NatureSupportTile} from '@/base/tile/providers/NatureSupportTileProvider';
@@ -6,10 +5,21 @@ import NyxScene from '@/framework/nyx/NyxScene';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import DistinctTileProvider from '@/base/tile/providers/helpers/DistinctTileProvider';
 import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
+import {RealmGenerationStrategy, RealmGeneratorProvider} from '@/base/gen/realms/RealmGeneratorProvider';
+import {AvatarManager} from '@/base/prometheus/AvatarManager';
+import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 
 export default class PhaserWorldGenScene extends NyxScene {
   async createPhaser() {
-    return await new PhaserWorldGen(this, this.game).generateMap(Math.random());
+
+    let mockAvatar = new AvatarManager().fetchOrCreateLocalAvatar();
+    mockAvatar.setPreciseCoordinate(DecimalCoordinate.of(0, 0))
+
+    return await RealmGeneratorProvider
+        .withGenerationStrategy(RealmGenerationStrategy.GAIA)
+        .getGenerator(this)
+        .setAvatar(mockAvatar)
+        .generateMapWithAvatar(Math.random())
   }
 
   async preloadPhaser() {
