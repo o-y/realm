@@ -13,7 +13,7 @@ export default class RealmTileGenUtil {
     this.selectedArray = selectedArray;
   }
 
-  public static selectTileArrayWithNoise(noise: number): RealmTileGenUtil {
+  public static selectTileArrayWithNoise(noise: number, random: number): RealmTileGenUtil {
     if (noise < 15){
       return new RealmTileGenUtil(RealmTileGenConstants.WATER_ARRAY)
     } else if (noise < 20){
@@ -23,22 +23,22 @@ export default class RealmTileGenUtil {
     } else if (noise < 37){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.BUSH_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
       ])
     } else if (noise < 52){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.SHRUB_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
       ])
     } else if (noise < 78){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.VINE_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
       ])
     } else if (noise < 104){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.FORREST_ARRAY,
-        ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4)
+        ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
       ])
     } else if (noise < 156){
       return new RealmTileGenUtil(RealmTileGenConstants.SNOWY_ARRAY)
@@ -47,7 +47,7 @@ export default class RealmTileGenUtil {
     }
   }
 
-  public selectRandomTile(): TileObject<TileUnion> {
-    return Util.randomFromArray(this.selectedArray)
+  public selectRandomTile(noise: number): TileObject<TileUnion> {
+    return Util.randomFromArray(this.selectedArray, noise)
   }
 }

@@ -71,20 +71,20 @@ export class CartesianBound {
 
     return new CartesianBound(
         Coordinate.of(
-            coordinate.getX() + verticalRadius,
-            coordinate.getY() + horizontalRadius
+            coordinate.getX() + horizontalRadius,
+            coordinate.getY() + verticalRadius
         ),
         Coordinate.of(
-            coordinate.getX() + verticalRadius,
-            coordinate.getY() - horizontalRadius
+            coordinate.getX() + horizontalRadius,
+            coordinate.getY() - verticalRadius
         ),
         Coordinate.of(
-            coordinate.getX() - verticalRadius,
-            coordinate.getY() + horizontalRadius
+            coordinate.getX() - horizontalRadius,
+            coordinate.getY() + verticalRadius
         ),
         Coordinate.of(
-            coordinate.getX() - verticalRadius,
-            coordinate.getY() - horizontalRadius
+            coordinate.getX() - horizontalRadius,
+            coordinate.getY() - verticalRadius
         )
     )
   }

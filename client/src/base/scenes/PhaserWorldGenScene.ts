@@ -8,18 +8,28 @@ import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider
 import {RealmGenerationStrategy, RealmGeneratorProvider} from '@/base/gen/realms/RealmGeneratorProvider';
 import {AvatarManager} from '@/base/prometheus/AvatarManager';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
+import {Avatar} from '@/base/prometheus/data/Avatar';
+import {LayerManager} from '@/base/layer/LayerManager';
+import {AvatarRender} from '@/base/prometheus/AvatarRender';
 
 export default class PhaserWorldGenScene extends NyxScene {
   async createPhaser() {
+    const layerManager = LayerManager.forScene(this);
+    const localAvatar: Avatar = new AvatarManager()
+        .fetchOrCreateLocalAvatar()
+        .updatePreciseCoordinate(DecimalCoordinate.of(0, 0))
 
-    let mockAvatar = new AvatarManager().fetchOrCreateLocalAvatar();
-    mockAvatar.setPreciseCoordinate(DecimalCoordinate.of(0, 0))
+    AvatarRender
+        .with(localAvatar, this)
+        .startNavigationLoop();
 
-    return await RealmGeneratorProvider
+    await RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
-        .setAvatar(mockAvatar)
-        .generateMapWithAvatar(1337)
+        .setAvatar(localAvatar)
+        .setSeed(1337)
+        .setLayerManager(layerManager)
+        .generateMap()
   }
 
   async preloadPhaser() {

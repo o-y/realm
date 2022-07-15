@@ -19,22 +19,40 @@ export class Util {
     return 4294967296 * (2097151 & h2) + (h1>>>0);
   };
 
-  public static randomFromArray<T> (array: Array<T>): T {
-    return array[Math.floor(Math.random() * array.length)];
+  public static randomFromArray<T> (array: Array<T>, seed = Math.random()): T {
+    return array[Math.floor(seed * array.length)];
   }
 
-  public static selectFromArray<T> (array: Array<T>, count: number): Array<T> {
+  public static selectFromArray<T> (array: Array<T>, count: number, seed = Math.random()): Array<T> {
     if (count > array.length){
       throw new Error(`#selectFromArray value: ${count} greater than array length (${array.length})`);
     }
 
-    return Util.shuffleArray(array).slice(0, count);
+    return Util.shuffleArray(array, seed).slice(0, count);
   }
 
-  public static shuffleArray<T> (array: Array<T>): Array<T> {
-    return array.map(value => ({ value, sort: Math.random() }))
+  public static shuffleArray<T> (array: Array<T>, seed: number = Math.random()): Array<T> {
+    return array.map(value => ({ value, sort: seed }))
         .sort((a, b) => a.sort - b.sort)
         .map(({ value }) => value)
+  }
+
+  public static clamp(value: number, min: number, max: number): number {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  public static normaliseBetween(value: number, min: number, max: number): number {
+    return (value - min) / (max - min);
+  }
+
+  public static getOrSet<T, K>(map: Map<T, K>, key: T, value: K): K {
+    if (map.has(key)){
+      return map.get(key) as K;
+    } else {
+      map.set(key, value);
+    }
+
+    return value;
   }
 
   public static assert(condition: boolean, error?: string): void {

@@ -24,11 +24,20 @@ export class DesmosVisualiser {
 
   public setPoint(x: number, y: number, label: string = ""): DesmosVisualiser {
     this.calculator.setExpression({
-      latex: `\\left(${x},\\ ${y}\\right)`,
+      latex: `\\left(${y},\\ ${x}\\right)`,
       label: label,
       showLabel: label.length > 0
     });
 
+    return this;
+  }
+
+  public clearGraph(): DesmosVisualiser {
+    // Looks like there's no easy way to clear the graph of data, destroy is
+    // as the name suggests destructive, so we must recreate the entire scene.
+    // TODO: validate this is correct, as this operation could be expensive if
+    // called every frame update.
+    this.calculator.setBlank();
     return this;
   }
 }

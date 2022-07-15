@@ -35,4 +35,8 @@ export class Coordinate {
   public roundToNonDecimalCoordinate(): Coordinate {
     return new Coordinate(Math.round(this.x), Math.round(this.y));
   }
+
+  public toString(): string {
+    return `${this.x}_${this.y}`
+  }
 }

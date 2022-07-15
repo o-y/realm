@@ -1,5 +1,4 @@
-import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
-import {Avatar} from '@/base/prometheus/Avatar';
+import {RealmGenerationData, RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 
 export class MinosMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
@@ -10,7 +9,7 @@ export class MinosMapGenerator extends RealmGenerator {
     this.scene = scene;
   }
 
-  public async generateMap(seed: number, avatar: Avatar) {
+  public async generateMapImpl() {
 
   }
 }
