@@ -4,7 +4,6 @@ import PhaserWorldGenScene from '@/base/scenes/PhaserWorldGenScene';
 import TileObject from '@/base/tile/TileObject';
 import {PlayersLayer} from '@/base/layer/layers/PlayersLayer';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
-import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 
 export class AvatarRender {
   private avatar: Avatar;
@@ -51,7 +50,6 @@ export class AvatarRender {
         }
     )
 
-    // TODO: Create a NyxLayer class and provide useful functionality.
     this.playersLayer.add(player);
     this.playersLayer.add(playerIdentifier);
   }
