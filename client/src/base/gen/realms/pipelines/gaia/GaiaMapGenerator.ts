@@ -6,9 +6,10 @@ import "@/framework/nyx/extensions/NyxGameObjectsExtensions"
 import {RealmGenerationData, RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
 import {DesmosVisualiser} from '@/framework/desmos/DesmosVisualiser';
-import {Avatar} from '@/base/prometheus/data/Avatar';
 import {Util} from '@/util/Util';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
+import {Client} from '@/base/prometheus/local/Client';
+import {ChunkManager} from '@/base/gen/realms/internal/ChunkManager';
 
 export class GaiaMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
@@ -21,17 +22,39 @@ export class GaiaMapGenerator extends RealmGenerator {
     this.scene = scene;
   }
 
-  public async generateMapImpl() {
-    const avatar: Avatar = this.getRealmGenerationData().getAvatar()
+  private initialChunkLoad = true;
 
-    this.generateMapGivenCartesianBound(avatar.computeViewPortBoundary())
+  public async generateMapImpl(
+      worldCoordinateLocation: NonDecimalCoordinate,
+      generationCoordinate: NonDecimalCoordinate
+  ) {
+    const chunkManager = this.getRealmGenerationData().getChunkManager();
+    const chunkCoordinate = chunkManager.computeChunkFromGenerationCoordinate(generationCoordinate);
 
-    avatar.registerAvatarCoordinateUpdateCallback(() => {
-      this.generateMapGivenCartesianBound(avatar.computeViewPortBoundary())
-    })
-  }
+    // console.log(
+    //     "Received request to generate terrain: ", worldCoordinateLocation
+    // )
 
-  private generateMapGivenCartesianBound(avatarCartesianBound: CartesianBound) {
+    if (chunkManager.isChunkLoaded(chunkCoordinate)){
+      return;
+    }
+
+    chunkManager.updateWorldCoordinateLocation(chunkCoordinate);
+
+    const chunk = chunkManager.createChunk(chunkCoordinate);
+
+    const generationCartesianBound = CartesianBound.fromMidPointAdvanced(
+        generationCoordinate,
+        Client.WORLD_VIEWPORT_HEIGHT,
+        Client.WORLD_VIEWPORT_WIDTH
+    );
+
+    const worldCartesianBound = CartesianBound.fromMidPointAdvanced(
+        worldCoordinateLocation,
+        Client.WORLD_VIEWPORT_HEIGHT,
+        Client.WORLD_VIEWPORT_WIDTH
+    );
+
     //-> 48 tiles = screen width
     //-> 96 * 96 = 2d matrix
     //-> JavaScript Number = 64 bits
@@ -42,14 +65,11 @@ export class GaiaMapGenerator extends RealmGenerator {
         .create()
         .withSeed(this.getRealmGenerationData().getSeed())
 
-    this.visualiser.clearGraph()
-    avatarCartesianBound.toDesmosDebugView()
-
-    for (let x = avatarCartesianBound.getTopLeft().getY(); x >= avatarCartesianBound.getBottomLeft().getY(); x--){
-      let xOffset = avatarCartesianBound.getTopLeft().getY() - x;
+    for (let x = generationCartesianBound.getTopLeft().getY(); x >= generationCartesianBound.getBottomLeft().getY(); x--){
+      let xOffset = generationCartesianBound.getTopLeft().getY() - x;
       worldmap[xOffset] = []
-      for (let y = avatarCartesianBound.getTopLeft().getX(); y <= avatarCartesianBound.getTopLeft().getX() + avatarCartesianBound.getWidth(); y++) {
-        let yOffset = Math.abs((avatarCartesianBound.getTopLeft().getX() - y));
+      for (let y = generationCartesianBound.getTopLeft().getX(); y <= generationCartesianBound.getTopLeft().getX() + generationCartesianBound.getWidth(); y++) {
+        let yOffset = Math.abs((generationCartesianBound.getTopLeft().getX() - y));
 
         const noise: number = Math.min(
             Math.max(
@@ -72,19 +92,51 @@ export class GaiaMapGenerator extends RealmGenerator {
       }
     }
 
-    const offsetWidth: number = TileObject.TILE_SIZE / 2;
-    const offsetHeight: number = TileObject.TILE_SIZE / 2;
-    const baseLayer = this.getRealmGenerationData().getLayerManager().getBaseLayer();
+    const baseLayer = this
+        .getRealmGenerationData()
+        .getLayerManager()
+        .getBaseLayer();
 
-    for (let i: number = 0; i < worldmap.length; i++){
-      for (let k: number = 0; k < worldmap[i].length; k++){
-        const tileObject: TileObject<TileUnion> = worldmap[i][k];
-        const image = baseLayer.scene.add.nyxTileObjectImage(
-            offsetWidth + (k * TileObject.TILE_SIZE),
-            offsetHeight + (i * TileObject.TILE_SIZE),
-            tileObject
-        );
-        baseLayer.add(image)
+    const randomColour = Util.randomColourCode();
+
+    // this.visualiser.showVisualisationRenderer();
+    // this.visualiser.clearGraph()
+    // worldCartesianBound.toDesmosDebugView()
+
+    for (
+        let y = worldCartesianBound.getBottomLeft().getY(), i = 0;
+        y < worldCartesianBound.getTopLeft().getY(), i < worldmap.length;
+        y++, i++
+    ){
+      await new Promise(r => setTimeout(r, i * 3));
+      for (
+          let x = worldCartesianBound.getBottomLeft().getX(), k = 0;
+          x < worldCartesianBound.getBottomRight().getX(), k < worldmap[i].length;
+          x++, k++
+      ){
+        const existingTile = baseLayer.scene.children.getByName(`${x}_${y}`);
+        if (existingTile == null) {
+          const tileObject: TileObject<TileUnion> = worldmap[i][k];
+          // const image = baseLayer.scene.add.nyxTileObjectImage(
+          //     (x * TileObject.TILE_SIZE),
+          //     (y * TileObject.TILE_SIZE),
+          //     tileObject
+          // );
+
+
+          const image = baseLayer.scene.add.rectangle(
+              (x * TileObject.TILE_SIZE),
+              (y * TileObject.TILE_SIZE),
+              TileObject.TILE_SIZE,
+              TileObject.TILE_SIZE,
+              randomColour
+          );
+
+          image.name = `${x}_${y}`;
+          // image.alpha = 0.5;
+
+          chunk.addObjectToGroup(image)
+        }
       }
     }
   }

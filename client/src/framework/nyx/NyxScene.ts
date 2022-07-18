@@ -3,7 +3,9 @@ import NyxSceneLoader from '@/framework/nyx/NyxSceneLoader';
 export default abstract class NyxScene extends Phaser.Scene {
   private phaserScene: NyxSceneLoader = new NyxSceneLoader(this)
       .addPreloadHook(this.preloadPhaser)
-      .addCreateHook(this.createPhaser)
+      .addCreateHook(this.createPhaserInternal)
+
+  private isSceneCreated: boolean = false;
 
   protected constructor(config: Phaser.Types.Scenes.SettingsConfig) {
     super(config);
@@ -25,5 +27,20 @@ export default abstract class NyxScene extends Phaser.Scene {
 
   private async init() {
     await this.sceneInit()
+  }
+
+  private createPhaserInternal(): void {
+    this.createPhaser();
+    this.isSceneCreated = true;
+  }
+
+  public update(time: number, delta: number): void {
+    if (this.isSceneCreated){
+      this.updateOnCreated(time, delta);
+    }
+  }
+
+  public updateOnCreated(time: number, delta: number): void {
+
   }
 }

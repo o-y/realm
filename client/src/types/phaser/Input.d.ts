@@ -2205,7 +2205,7 @@ namespace Phaser.Input {
      * this.input.keyboard.createCombo([ 38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13 ], { resetOnMatch: true });
      *
      * this.input.keyboard.on('keycombomatch', function (event) {
-     *     console.log('Konami Code entered!');
+     *     console.info('Konami Code entered!');
      * });
      * ```
      *
@@ -2346,7 +2346,7 @@ namespace Phaser.Input {
        * this.input.keyboard.createCombo([ 38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13 ], { resetOnMatch: true });
        *
        * this.input.keyboard.on('keycombomatch', function (event) {
-       *     console.log('Konami Code entered!');
+       *     console.info('Konami Code entered!');
        * });
        * ```
        */
@@ -2860,7 +2860,7 @@ namespace Phaser.Input {
        * this.input.keyboard.createCombo([ 38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13 ], { resetOnMatch: true });
        *
        * this.input.keyboard.on('keycombomatch', function (event) {
-       *     console.log('Konami Code entered!');
+       *     console.info('Konami Code entered!');
        * });
        * ```
        *

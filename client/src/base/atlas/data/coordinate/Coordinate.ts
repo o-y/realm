@@ -1,5 +1,11 @@
+import {MathUtil} from '@/util/MathUtil';
+
 export class Coordinate {
   public static SENTINEL: Coordinate = Coordinate.of(0, 0);
+  public static INFINITY: Coordinate = Coordinate.of(
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY
+  );
 
   private readonly x: number;
   private readonly y: number;
@@ -9,8 +15,8 @@ export class Coordinate {
   }
 
   protected constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.x = x == -0 ? 0 : x;
+    this.y = y == -0 ? 0 : y;
   }
 
   public getX(): number {
@@ -34,6 +40,10 @@ export class Coordinate {
 
   public roundToNonDecimalCoordinate(): Coordinate {
     return new Coordinate(Math.round(this.x), Math.round(this.y));
+  }
+
+  public toCantorsPairing(): number {
+    return MathUtil.cantorPairSigned(this.x, this.y)
   }
 
   public toString(): string {

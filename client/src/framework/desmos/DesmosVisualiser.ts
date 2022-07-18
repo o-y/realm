@@ -2,10 +2,10 @@ import Desmos from 'desmos';
 
 export class DesmosVisualiser {
   public static GLOBAL_DESMOS_DEBUG_ID: string = "GLOBAL_DESMOS_DEBUG_ID";
-
   private static instance: DesmosVisualiser;
 
-  private calculator: Desmos.Calculator;
+  private readonly calculator: Desmos.Calculator;
+  private enabled: boolean = false;
 
   public static getInstance(): DesmosVisualiser {
     return DesmosVisualiser.instance == null
@@ -38,6 +38,15 @@ export class DesmosVisualiser {
     // TODO: validate this is correct, as this operation could be expensive if
     // called every frame update.
     this.calculator.setBlank();
+    return this;
+  }
+
+  public isEnabled(): boolean {
+    return this.enabled;
+  }
+
+  public showVisualisationRenderer(): DesmosVisualiser {
+    this.enabled = true;
     return this;
   }
 }

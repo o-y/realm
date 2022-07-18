@@ -15,9 +15,9 @@ export class LayerManager {
   private constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
-    this.playersLayer = new PlayersLayer(scene).setDepth(3);
-    this.prefabLayer = new PrefabLayer(scene).setDepth(2);
-    this.baseLayer = new BaseLayer(scene).setDepth(1);
+    this.playersLayer = PlayersLayer.forScene(scene).setDepth(3);
+    this.prefabLayer = PrefabLayer.forScene(scene).setDepth(2);
+    this.baseLayer = BaseLayer.forScene(scene).setDepth(1);
   }
 
   public getBaseLayer() {

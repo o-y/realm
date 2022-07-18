@@ -41,8 +41,8 @@ export class Util {
     return Math.min(Math.max(value, min), max);
   }
 
-  public static normaliseBetween(value: number, min: number, max: number): number {
-    return (value - min) / (max - min);
+  public static normaliseBetween(val: number, min: number, max: number): number {
+    return (val - min) / (max - min);
   }
 
   public static getOrSet<T, K>(map: Map<T, K>, key: T, value: K): K {
@@ -59,5 +59,9 @@ export class Util {
     if (!condition){
       throw new Error(error || "Failed to satisfy assertion condition.")
     }
+  }
+
+  public static randomColourCode(): number {
+    return Math.floor(Math.random() * 0xFFFFFF);
   }
 }
