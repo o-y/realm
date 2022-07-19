@@ -18,4 +18,9 @@ terminology
   - services:
     - Atlas: oversees realm generation
     - Prometheus: creates avatars
+      - data/Avatar               /---> stores the positions of local and remote
+      - data/AvatarController  --/      avatars, determines which bounds to
+                                        generate.
+      - render/AvatarRender    -------> renders the local avatar, listens to
+                                        keyboard input events, etc.
   - Nyx: framework for Phaser
