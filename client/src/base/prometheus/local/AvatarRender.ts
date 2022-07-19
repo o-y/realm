@@ -1,16 +1,11 @@
 import {Avatar} from '@/base/prometheus/data/Avatar';
 import {LayerManager} from '@/base/layer/LayerManager';
 import PhaserWorldGenScene from '@/base/scenes/PhaserWorldGenScene';
-import TileObject from '@/base/tile/TileObject';
 import {PlayersLayer} from '@/base/layer/layers/PlayersLayer';
-import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
 import {AvatarPlugin} from '@/base/prometheus/internal/AvatarPlugin';
 import {AvatarCamera} from '@/base/prometheus/theia/AvatarCamera';
-import TileProvider from '@/base/tile/internal/TileProvider';
 import NatureTileProvider, {NatureTile} from '@/base/tile/providers/NatureTileProvider';
 import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
-import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
-import {Client} from '@/base/prometheus/local/Client';
 import {Util} from '@/util/Util';
 
 export class AvatarRender extends AvatarPlugin {
@@ -25,7 +20,7 @@ export class AvatarRender extends AvatarPlugin {
 
   public startRender(): AvatarRender {
     this.avatarObject = this.createAvatar();
-    // this.avatarCamera.initiateCameraView();
+    this.avatarCamera.initiateCameraView();
 
     return this;
   }
@@ -44,7 +39,10 @@ export class AvatarRender extends AvatarPlugin {
     scene.cameras.main.startFollow(playerObject)
 
     setTimeout(() => {
-      playerObject.setVelocityY(120)
+      let velo = 120
+      playerObject.setVelocityY(velo)
+      playerObject.setVelocityX(velo)
+
       // playerObject.setY(TileObject.TILE_SIZE * Client.WORLD_VIEWPORT_GENERATION_OFFSET_WIDTH - TileObject.TILE_SIZE * 3)
     }, 3000)
 

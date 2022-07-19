@@ -2,13 +2,11 @@ import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
 import {Client} from '@/base/prometheus/local/Client';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
-import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
-import TileObject from '@/base/tile/TileObject';
+import {Chunk} from '@/base/gen/realms/internal/legacy/Chunk';
 
 export class ChunkManager {
   private readonly baseLayer: BaseLayer;
-  private readonly chunkSparseArray: Array<boolean> = new Array<boolean>();
-  private readonly chunkMap: Map<number, Chunk> = new Map<number, Chunk>();
+  private readonly chunkSparseArray: Array<Chunk | null> = new Array<Chunk | null>();
 
   private constructor(baseLayer: BaseLayer) {
     this.baseLayer = baseLayer;
@@ -36,55 +34,35 @@ export class ChunkManager {
     const chunk = new Chunk(this.baseLayer.scene.add.group(), chunkCoordinate);
 
     const pairing: number = chunkCoordinate.toCantorsPairing();
-    this.chunkSparseArray[pairing] = true;
-    this.chunkMap.set(pairing, chunk)
+    this.chunkSparseArray[pairing] = chunk;
 
     return chunk;
   }
 
   public isChunkLoaded(chunkCoordinate: NonDecimalCoordinate): boolean {
-    return this.chunkSparseArray[chunkCoordinate.toCantorsPairing()];
+    return this.chunkSparseArray[chunkCoordinate.toCantorsPairing()] !== null;
   }
 
   public updateWorldCoordinateLocation(updateWorldCoordinateLocation: NonDecimalCoordinate) {
+    // Equates to n TileObjects.
+    const renderDistanceOffset = 4;
+
     const x = updateWorldCoordinateLocation.getX();
     const y = updateWorldCoordinateLocation.getY();
 
-    console.log(this.chunkMap.size)
-    this.chunkMap.forEach((chunk, key) => {
+    this.chunkSparseArray.forEach((chunk, key) => {
+      if (chunk === null) return;
+
       const diffY = Phaser.Math.Difference(y, chunk.getCoordinate().getY());
       const diffX = Phaser.Math.Difference(x, chunk.getCoordinate().getX());
 
       if (
-          (diffY > Client.WORLD_VIEWPORT_HEIGHT / 4)
-          || (diffX > Client.WORLD_VIEWPORT_WIDTH / 4)
+          (diffY > Client.WORLD_VIEWPORT_HEIGHT / renderDistanceOffset)
+          || (diffX > Client.WORLD_VIEWPORT_WIDTH / renderDistanceOffset)
       ){
         chunk.unloadChunk();
-        this.chunkMap.delete(key)
+        this.chunkSparseArray[chunk.getCoordinate().toCantorsPairing()] = null
       }
     })
-  }
-}
-
-export class Chunk {
-  private readonly group: Phaser.GameObjects.Group;
-  private readonly chunkCoordinate: NonDecimalCoordinate;
-
-
-  constructor(group: Phaser.GameObjects.Group, chunkCoordinate: NonDecimalCoordinate) {
-    this.group = group;
-    this.chunkCoordinate = chunkCoordinate;
-  }
-
-  public addObjectToGroup(object:  Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image) {
-    this.group.add(object);
-  }
-
-  public unloadChunk() {
-    this.group.clear(true, true);
-  }
-
-  public getCoordinate(): NonDecimalCoordinate {
-    return this.chunkCoordinate;
   }
 }

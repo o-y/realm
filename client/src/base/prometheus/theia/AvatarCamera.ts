@@ -1,12 +1,11 @@
 import {AvatarPlugin} from '@/base/prometheus/internal/AvatarPlugin';
-import {Client} from '@/base/prometheus/local/Client';
-import TileObject from '@/base/tile/TileObject';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
+import {Deprecated} from '@/util/annotations/Deprecated';
 
+@Deprecated
 export class AvatarCamera extends AvatarPlugin {
   public initiateCameraView() {
     const camera = this.getCamera();
-
   }
 
   public setCameraCoordinate(coordinate: DecimalCoordinate): AvatarCamera {

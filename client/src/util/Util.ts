@@ -61,7 +61,11 @@ export class Util {
     }
   }
 
-  public static randomColourCode(): number {
-    return Math.floor(Math.random() * 0xFFFFFF);
+  public static isStringNumeric(n: string) {
+    return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+  }
+
+  public static setToString(set: Set<unknown>) {
+    return `Set(${[...set].toString()})`
   }
 }

@@ -42,34 +42,35 @@ export default class PhaserWorldGenScene extends NyxScene {
         .setSeed(9992131)
         .setLayerManager(layerManager);
 
-    await this.realmGenerator.loadMapAt(Coordinate.SENTINEL)
+    await this.realmGenerator.loadGenerationAt(
+        /* current = */ Coordinate.of(0, 0),
+        /* next = */ Coordinate.of(0, 0)
+    )
   }
 
 
-  // private lastX = 0;
-  // private lastY = 0;
+  private lastX = 0;
+  private lastY = 0;
 
-  // updateOnCreated() {
-  //   const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.avatarRenderer.getAvatarObject();
-  //   const avatar: Avatar = this.avatarRenderer.getAvatar();
-  //
-  //   const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
-  //       avatarObject.x,
-  //       avatarObject.y
-  //   )
-  //
-  //   if (worldToTileConversionCoordinate.getY() != this.lastY || worldToTileConversionCoordinate.getX() != this.lastX){
-  //     this.lastY = worldToTileConversionCoordinate.getY();
-  //     this.lastX = worldToTileConversionCoordinate.getX();
-  //
-  //     this.realmGenerator.loadMapAt(worldToTileConversionCoordinate)
-  //     this.realmGenerator.loadMapAt(NonDecimalCoordinate.of(
-  //         this.lastX,
-  //         this.lastY + 12
-  //     ))
-  //
-  //   }
-  // }
+  updateOnCreated() {
+    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.avatarRenderer.getAvatarObject();
+    const avatar: Avatar = this.avatarRenderer.getAvatar();
+
+    const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
+        avatarObject.x,
+        avatarObject.y
+    )
+
+    if (worldToTileConversionCoordinate.getY() != this.lastY || worldToTileConversionCoordinate.getX() != this.lastX){
+      this.realmGenerator.loadGenerationAt(
+          /* current = */ Coordinate.of(this.lastX, this.lastY),
+          /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
+      )
+
+      this.lastY = worldToTileConversionCoordinate.getY();
+      this.lastX = worldToTileConversionCoordinate.getX();
+    }
+  }
 
   async preloadPhaser() {
     const preloadTerrainAssets: Array<TileWrapper<TileUnion>> = [

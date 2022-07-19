@@ -1,4 +1,5 @@
 import {MathUtil} from '@/util/MathUtil';
+import {Util} from '@/util/Util';
 
 export class Coordinate {
   public static SENTINEL: Coordinate = Coordinate.of(0, 0);
@@ -46,7 +47,31 @@ export class Coordinate {
     return MathUtil.cantorPairSigned(this.x, this.y)
   }
 
+  public toVector2(): Phaser.Math.Vector2 {
+    return new Phaser.Math.Vector2(this.x, this.y);
+  }
+
   public toString(): string {
-    return `${this.x}_${this.y}`
+    return `${this.x}#${this.y}`
+  }
+
+  public static parseCoordinate(coordinateString: string): Coordinate {
+    if (!coordinateString.includes("#")) throw new Error(`Invalid Coordinate, should conform to (x, y). Got: ${coordinateString}`);
+    const segments: Array<string> = coordinateString.split("#");
+
+    if (segments.length != 2) throw new Error(`Invalid coordinate (${coordinateString}), got ${segments.length} segment(s), expected 2.`);
+
+    if (!Util.isStringNumeric(segments[0]) || !Util.isStringNumeric(segments[1])){
+      throw new Error(`CoordinateString: ${coordinateString} is not numeric. segment[0]=(${segments[0]}) - segment[1]=(${segments[1]})`);
+    }
+
+    const x = parseFloat(segments[0]);
+    const y = parseFloat(segments[1]);
+
+    return Coordinate.of(x, y);
+  }
+
+  public equals(coordinate: Coordinate): boolean {
+    return this.x === coordinate.x && this.y === coordinate.y;
   }
 }

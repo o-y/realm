@@ -12,4 +12,8 @@ export class MathUtil {
     const b = (y >= 0.0 ? 2.0 * y : (-2.0 * y) - 1.0);
     return MathUtil.cantorPair(a, b);
   }
+
+  public static randomHex(): number {
+    return Math.floor(Math.random() * 0xFFFFFF);
+  }
 }
