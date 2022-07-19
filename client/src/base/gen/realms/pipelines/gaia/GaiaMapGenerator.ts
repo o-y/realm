@@ -14,14 +14,8 @@ import {CartesianBoundUtil} from '@/base/atlas/data/bound/util/CartesianBoundUti
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {CartesianBoundDifference} from '@/base/atlas/data/bound/util/CartesianBoundDifference';
 
-/**
- * {1, 2, 2, 3, 3}
- * {1, 2, 2, 3, 3}
- */
-
 export class GaiaMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
-  // private noiseMap: Map<string, number> = new Map<string, number>();
   private visualiser: DesmosVisualiser = DesmosVisualiser.getInstance();
 
   constructor(scene: Phaser.Scene) {

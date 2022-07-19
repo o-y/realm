@@ -39,13 +39,15 @@ export class TerrainManager {
           coordinate.toString(),
           Math.random())
 
-      const image = this.layer.scene.add.nyxTileObjectImage(
+      const tile = this.layer.scene.add.nyxTileObjectImage(
           (coordinate.getX() * TileObject.TILE_SIZE),
           (coordinate.getY() * TileObject.TILE_SIZE),
           RealmTileGenUtil
               .selectTileArrayWithNoise(noise, clampedRandom)
               .selectRandomTile(clampedRandom)
       );
+
+      tile.alpha = 0.6
 
       // const image = this.layer.scene.add.rectangle(
       //         (coordinate.getX() * TileObject.TILE_SIZE),
@@ -55,7 +57,7 @@ export class TerrainManager {
       //         randomColour
       // )
 
-      this.tileSparseArray[coordinate.toCantorsPairing()] = image;
+      this.tileSparseArray[coordinate.toCantorsPairing()] = tile;
     })
   }
 
