@@ -1,5 +1,6 @@
 <template>
   <div class = "phaserContainer">
+<!--"></div>-->
     <div class = "phaserRoot" ref = "root"></div>
     <div class = "splashScreen" ref = "splashScreen" v-if = "shouldShowSplashScreen && IS_SPLASH_SCREEN_ENABLED">
       <div class = "realmLogoContainer">
@@ -32,7 +33,7 @@ export default class PhaserComponent extends Vue {
   @Ref('realmLogo') readonly realmLogo!: HTMLImageElement
   @Ref('realmSpinnerContainer') readonly realmSpinnerContainer!: HTMLDivElement
 
-  private IS_SPLASH_SCREEN_ENABLED: boolean = true;
+  private IS_SPLASH_SCREEN_ENABLED: boolean = false;
   private shouldShowSplashScreen: boolean = true;
 
   public mounted() {
@@ -40,7 +41,7 @@ export default class PhaserComponent extends Vue {
       type: Phaser.AUTO,
       title: "Realm",
       disableContextMenu: true,
-      backgroundColor: '#fff',
+      backgroundColor: '#FFFFFF',
       width: window.innerWidth,
       height: window.innerHeight,
       callbacks: {
@@ -51,9 +52,16 @@ export default class PhaserComponent extends Vue {
       },
       parent: this.phaserRoot,
       pixelArt: true,
+      fps: {
+        target: 30,
+        smoothStep: true
+      },
       scene: [
         PhaserWorldGenScene
-      ]
+      ],
+      physics: {
+        default: 'arcade',
+      },
     });
 
     setTimeout(this.runSplashScreenEntrance, 500);

@@ -10,26 +10,66 @@ import {AvatarManager} from '@/base/prometheus/AvatarManager';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 import {Avatar} from '@/base/prometheus/data/Avatar';
 import {LayerManager} from '@/base/layer/LayerManager';
-import {AvatarRender} from '@/base/prometheus/AvatarRender';
+import {AvatarRender} from '@/base/prometheus/local/AvatarRender';
+import {AvatarPlugin} from '@/base/prometheus/internal/AvatarPlugin';
+import TileObject from '@/base/tile/TileObject';
+import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
+import {Client} from '@/base/prometheus/local/Client';
+import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
+import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
+import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
+import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 
 export default class PhaserWorldGenScene extends NyxScene {
+  private avatarRenderer!: AvatarRender;
+  private realmGenerator!: RealmGenerator;
+
   async createPhaser() {
-    const layerManager = LayerManager.forScene(this);
     const localAvatar: Avatar = new AvatarManager()
         .fetchOrCreateLocalAvatar()
-        .updatePreciseCoordinate(DecimalCoordinate.of(0, 0))
+        .updateTileCoordinate(Coordinate.SENTINEL)
 
-    AvatarRender
-        .with(localAvatar, this)
-        .startNavigationLoop();
+    this.avatarRenderer = await AvatarRender
+        .with(localAvatar, this, AvatarRender)
+        .startRender();
 
-    await RealmGeneratorProvider
+    const layerManager = LayerManager.forScene(this);
+
+    this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
         .setAvatar(localAvatar)
-        .setSeed(1337)
-        .setLayerManager(layerManager)
-        .generateMap()
+        .setSeed(9992131)
+        .setLayerManager(layerManager);
+
+    await this.realmGenerator.loadGenerationAt(
+        /* current = */ Coordinate.of(0, 0),
+        /* next = */ Coordinate.of(0, 0)
+    )
+  }
+
+
+  private lastX = 0;
+  private lastY = 0;
+
+  updateOnCreated() {
+    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.avatarRenderer.getAvatarObject();
+    const avatar: Avatar = this.avatarRenderer.getAvatar();
+
+    const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
+        avatarObject.x,
+        avatarObject.y
+    )
+
+    if (worldToTileConversionCoordinate.getY() != this.lastY || worldToTileConversionCoordinate.getX() != this.lastX){
+      this.realmGenerator.loadGenerationAt(
+          /* current = */ Coordinate.of(this.lastX, this.lastY),
+          /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
+      )
+
+      this.lastY = worldToTileConversionCoordinate.getY();
+      this.lastX = worldToTileConversionCoordinate.getX();
+    }
   }
 
   async preloadPhaser() {

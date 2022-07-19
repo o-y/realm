@@ -41,8 +41,8 @@ export class Util {
     return Math.min(Math.max(value, min), max);
   }
 
-  public static normaliseBetween(value: number, min: number, max: number): number {
-    return (value - min) / (max - min);
+  public static normaliseBetween(val: number, min: number, max: number): number {
+    return (val - min) / (max - min);
   }
 
   public static getOrSet<T, K>(map: Map<T, K>, key: T, value: K): K {
@@ -59,5 +59,13 @@ export class Util {
     if (!condition){
       throw new Error(error || "Failed to satisfy assertion condition.")
     }
+  }
+
+  public static isStringNumeric(n: string) {
+    return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+  }
+
+  public static setToString(set: Set<unknown>) {
+    return `Set(${[...set].toString()})`
   }
 }

@@ -6,13 +6,22 @@ import "@/framework/nyx/extensions/NyxGameObjectsExtensions"
 import {RealmGenerationData, RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
 import {DesmosVisualiser} from '@/framework/desmos/DesmosVisualiser';
-import {Avatar} from '@/base/prometheus/data/Avatar';
 import {Util} from '@/util/Util';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
+import {Client} from '@/base/prometheus/local/Client';
+import {TerrainManager} from '@/base/gen/realms/internal/TerrainManager';
+import {CartesianBoundUtil} from '@/base/atlas/data/bound/util/CartesianBoundUtil';
+import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
+import {CartesianBoundDifference} from '@/base/atlas/data/bound/util/CartesianBoundDifference';
+
+/**
+ * {1, 2, 2, 3, 3}
+ * {1, 2, 2, 3, 3}
+ */
 
 export class GaiaMapGenerator extends RealmGenerator {
   private scene: Phaser.Scene;
-  private noiseMap: Map<string, number> = new Map<string, number>();
+  // private noiseMap: Map<string, number> = new Map<string, number>();
   private visualiser: DesmosVisualiser = DesmosVisualiser.getInstance();
 
   constructor(scene: Phaser.Scene) {
@@ -21,71 +30,53 @@ export class GaiaMapGenerator extends RealmGenerator {
     this.scene = scene;
   }
 
-  public async generateMapImpl() {
-    const avatar: Avatar = this.getRealmGenerationData().getAvatar()
+  public async generateMapImpl(
+      currentCoordinate: NonDecimalCoordinate,
+      nextCoordinate: NonDecimalCoordinate
+  ) {
+    const terrainManager = this.getRealmGenerationData().getTerrainManager();
 
-    this.generateMapGivenCartesianBound(avatar.computeViewPortBoundary())
+    const currentCoordinateBound = CartesianBound.fromMidPointAdvanced(
+        currentCoordinate,
+        Client.WORLD_VIEWPORT_HEIGHT,
+        Client.WORLD_VIEWPORT_WIDTH
+    );
 
-    avatar.registerAvatarCoordinateUpdateCallback(() => {
-      this.generateMapGivenCartesianBound(avatar.computeViewPortBoundary())
-    })
-  }
+    const nextCoordinateBound = CartesianBound.fromMidPointAdvanced(
+        nextCoordinate,
+        Client.WORLD_VIEWPORT_HEIGHT,
+        Client.WORLD_VIEWPORT_WIDTH
+    );
 
-  private generateMapGivenCartesianBound(avatarCartesianBound: CartesianBound) {
-    //-> 48 tiles = screen width
-    //-> 96 * 96 = 2d matrix
-    //-> JavaScript Number = 64 bits
-    //-> 64 * 96 * 96 = 548kb of memory for a single grid
-    const worldmap: Array<Array<TileObject<TileUnion>>> = []
-
-    const perlinNoise: PerlinNoise = PerlinNoise
-        .create()
-        .withSeed(this.getRealmGenerationData().getSeed())
-
-    this.visualiser.clearGraph()
-    avatarCartesianBound.toDesmosDebugView()
-
-    for (let x = avatarCartesianBound.getTopLeft().getY(); x >= avatarCartesianBound.getBottomLeft().getY(); x--){
-      let xOffset = avatarCartesianBound.getTopLeft().getY() - x;
-      worldmap[xOffset] = []
-      for (let y = avatarCartesianBound.getTopLeft().getX(); y <= avatarCartesianBound.getTopLeft().getX() + avatarCartesianBound.getWidth(); y++) {
-        let yOffset = Math.abs((avatarCartesianBound.getTopLeft().getX() - y));
-
-        const noise: number = Math.min(
-            Math.max(
-                Math.abs(perlinNoise.generatePerlin2(x / 100, y / 100)) * 256,
-                RealmTileGenUtil.MIN_PERLIN_NOISE),
-            RealmTileGenUtil.MAX_PERLIN_NOISE);
-
-        const clampedRandom: number = Util.getOrSet(
-            this.noiseMap,
-            NonDecimalCoordinate.of(x, y).toString(),
-            Math.random())
-
-        worldmap[xOffset].push(
-            RealmTileGenUtil
-                .selectTileArrayWithNoise(noise, clampedRandom)
-                .selectRandomTile(clampedRandom)
-        )
-
-        // this.visualiser.setPoint(x, y)
-      }
+    // BASE CASE: Avatar has just spawned, this event should occur only once per
+    // user-session.
+    // OPERATION: Either bounds can be generated as they are equal, thus load
+    // the tiles for currentCoordinateBound.
+    if (currentCoordinate.equals(nextCoordinate)){
+      terrainManager.loadTileSet(currentCoordinateBound.getCoordinateSet());
+      return;
     }
 
-    const offsetWidth: number = TileObject.TILE_SIZE / 2;
-    const offsetHeight: number = TileObject.TILE_SIZE / 2;
-    const baseLayer = this.getRealmGenerationData().getLayerManager().getBaseLayer();
+    // Untouched tiles - exist in both the current and next coordinate bounds.
+    const tileIntersection: Set<Coordinate> = CartesianBoundUtil
+        .computeBoundIntersection(/* A = */ currentCoordinateBound, /* B = */ nextCoordinateBound);
 
-    for (let i: number = 0; i < worldmap.length; i++){
-      for (let k: number = 0; k < worldmap[i].length; k++){
-        const tileObject: TileObject<TileUnion> = worldmap[i][k];
-        const image = baseLayer.scene.add.nyxTileObjectImage(
-            offsetWidth + (k * TileObject.TILE_SIZE),
-            offsetHeight + (i * TileObject.TILE_SIZE),
-            tileObject
-        );
-        baseLayer.add(image)
-      }
-    }
+    // The difference between the two coordinateSets, i.e unique tiles from both
+    // coordinate bounds.
+    const tileDifference: CartesianBoundDifference = CartesianBoundUtil
+        .computeBoundDifference(/* A = */ currentCoordinateBound, /* B = */ nextCoordinateBound)
+
+    // Tiles which exist in B but not A should be loaded as they are new.
+    const tilesToLoad: Set<Coordinate> = tileDifference.getBMinusA();
+
+    // Tiles which exist in A but not B should be unloaded as they are now
+    // outside of the client (to-be viewport) bounds.
+    const tilesToUnload: Set<Coordinate> = tileDifference.getAMinusB();
+
+    // CASE: The Avatar has moved n tiles in any direction.
+    // OPERATION: Calculate the difference between the two cartesian planes,
+    // and load/unload according to the set differences.
+    terrainManager.loadTileSet(tilesToLoad);
+    terrainManager.unloadTileSet(tilesToUnload);
   }
 }

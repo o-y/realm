@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class = "debugComponent">
+    <div class = "debugComponent" v-if="isDesmosEnabled">
       <div :id = "desmosVisualiserId" class = "row"></div>
     </div>
     <router-view/>
@@ -13,8 +13,12 @@ import {DesmosVisualiser} from './framework/desmos/DesmosVisualiser';
 
 @Component
 export default class App extends Vue {
-  get desmosVisualiserId() {
+  get desmosVisualiserId(): string {
     return DesmosVisualiser.GLOBAL_DESMOS_DEBUG_ID
+  }
+
+  get isDesmosEnabled(): boolean {
+    return DesmosVisualiser.getInstance().isEnabled();
   }
 }
 </script>
@@ -22,6 +26,7 @@ export default class App extends Vue {
 <style lang="stylus">
   html, body
     margin: 0
+    overflow: hidden
 
   #app
     height: 100vh;

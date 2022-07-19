@@ -144,7 +144,35 @@ export class CartesianBound {
     calculator.setExpression({ latex: `\\left(${this.bl.getX()},\\ ${this.bl.getY()}\\right)`, label: 'BL', showLabel: true })
     calculator.setExpression({ latex: `\\left(${this.br.getX()},\\ ${this.br.getY()}\\right)`, label: 'BR', showLabel: true })
     calculator.setExpression({ latex: `\\left(${midpoint.getX()},\\ ${midpoint.getY()}\\right)`, label: 'MID', showLabel: true })
+  }
 
+  public getCoordinateSet(): Set<Coordinate> {
+    const set = new Set<Coordinate>();
+
+    for (
+        let y = this.getBottomLeft().getY();
+        y <= this.getTopLeft().getY();
+        y++
+    ) {
+      for (
+          let x = this.getBottomLeft().getX();
+          x <= this.getBottomRight().getX();
+          x++
+      ) {
+        set.add(Coordinate.of(x, y));
+      }
+    }
+
+    return set;
+  }
+
+  public equals(cartesianBound: CartesianBound): boolean {
+    return this.getWidth() === cartesianBound.getWidth() &&
+        this.getTopLeft().equals(cartesianBound.getTopLeft()) &&
+        this.getTopRight().equals(cartesianBound.getTopRight()) &&
+        this.getBottomLeft().equals(cartesianBound.getBottomLeft()) &&
+        this.getBottomRight().equals(cartesianBound.getBottomRight()) &&
+        this.getMidPoint().equals(cartesianBound.getMidPoint());
   }
 
   private getMidPointDecimal(): [number, number] {

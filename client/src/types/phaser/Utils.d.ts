@@ -815,7 +815,7 @@ namespace Phaser.Utils {
      *
      * SetValue(data, 'world.position.y', 300);
      *
-     * console.log(data.world.position.y); // 300
+     * console.info(data.world.position.y); // 300
      * ```
      * @param source The object to set the value in.
      * @param key The name of the property in the object. If a property is nested, the names of its preceding properties should be separated by a dot (`.`)
