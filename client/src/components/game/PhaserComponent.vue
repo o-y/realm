@@ -41,7 +41,7 @@ export default class PhaserComponent extends Vue {
       type: Phaser.AUTO,
       title: "Realm",
       disableContextMenu: true,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#e0f1f1',
       width: window.innerWidth,
       height: window.innerHeight,
       callbacks: {

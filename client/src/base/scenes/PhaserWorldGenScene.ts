@@ -19,57 +19,41 @@ import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoord
 import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
+import {SpriteManager} from '@/base/prometheus/sprite/manager/SpriteManager';
+import {LyraSprite} from '@/base/prometheus/sprite/data/LyraSprite';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: AvatarRender;
   private realmGenerator!: RealmGenerator;
 
   async createPhaser() {
+    const sentinelNode = Coordinate.of(0, 0);
+
     const localAvatar: Avatar = new AvatarManager()
         .fetchOrCreateLocalAvatar()
-        .updateTileCoordinate(Coordinate.SENTINEL)
+        .updateTileCoordinate(sentinelNode)
 
     this.avatarRenderer = await AvatarRender
         .with(localAvatar, this, AvatarRender)
         .startRender();
-
-    const layerManager = LayerManager.forScene(this);
 
     this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
         .setAvatar(localAvatar)
         .setSeed(9992131)
-        .setLayerManager(layerManager);
+        .setLayerManager(LayerManager.forScene(this));
 
     await this.realmGenerator.loadGenerationAt(
-        /* current = */ Coordinate.of(0, 0),
-        /* next = */ Coordinate.of(0, 0)
+        /* current = */ sentinelNode,
+        /* next = */ sentinelNode
     )
   }
 
 
-  private lastX = 0;
-  private lastY = 0;
 
   updateOnCreated() {
-    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.avatarRenderer.getAvatarObject();
-    const avatar: Avatar = this.avatarRenderer.getAvatar();
-
-    const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
-        avatarObject.x,
-        avatarObject.y
-    )
-
-    if (worldToTileConversionCoordinate.getY() != this.lastY || worldToTileConversionCoordinate.getX() != this.lastX){
-      this.realmGenerator.loadGenerationAt(
-          /* current = */ Coordinate.of(this.lastX, this.lastY),
-          /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
-      )
-
-      this.lastY = worldToTileConversionCoordinate.getY();
-      this.lastX = worldToTileConversionCoordinate.getX();
-    }
+    this.avatarRenderer.awaitInputAndGenerateTerrain(this.realmGenerator);
   }
 
   async preloadPhaser() {
@@ -88,6 +72,17 @@ export default class PhaserWorldGenScene extends NyxScene {
         tile.tileObject.imageHash,
         tile.tileObject.getAndCacheBase64EncodedFile()
     ));
+
+    SpriteManager.provideSprites().forEach(spriteData => {
+      this.load.spritesheet(
+          spriteData.spriteHash,
+          spriteData.provideAssetPath(),
+          {
+            frameWidth: spriteData.provideFrameWidth(),
+            frameHeight: spriteData.provideFrameHeight(),
+          }
+      )
+    })
 
     await Promise.all(requests);
   }

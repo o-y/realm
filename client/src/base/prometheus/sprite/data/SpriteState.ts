@@ -1,0 +1,11 @@
+export enum SpriteState {
+  UP = "UP",
+  DOWN = "DOWN",
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+
+  UP_STATIC = "UP_STATIC",
+  DOWN_STATIC = "DOWN_STATIC",
+  LEFT_STATIC = "LEFT_STATIC",
+  RIGHT_STATIC = "RIGHT_STATIC"
+}
