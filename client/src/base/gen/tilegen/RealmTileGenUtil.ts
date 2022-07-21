@@ -14,7 +14,12 @@ export default class RealmTileGenUtil {
   }
 
   public static selectTileArrayWithNoise(noise: number, random: number): RealmTileGenUtil {
-    if (noise < 15){
+    if (noise < 8) {
+      return new RealmTileGenUtil([
+        ...RealmTileGenConstants.WATER_ARRAY,
+        ...Util.selectFromArray(RealmTileGenConstants.DEEP_WATER_ARRAY, 2, random)
+      ])
+    } else if (noise < 15){
       return new RealmTileGenUtil(RealmTileGenConstants.WATER_ARRAY)
     } else if (noise < 20){
       return new RealmTileGenUtil(RealmTileGenConstants.BEACH_ARRAY)

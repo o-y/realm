@@ -72,17 +72,6 @@ export class Avatar {
   public computeViewPortBoundary(): CartesianBound {
     return CartesianBound.fromMidPointAdvanced(this.tileCoordinate, Client.WORLD_VIEWPORT_HEIGHT, Client.WORLD_VIEWPORT_WIDTH)
   }
-
-  public computeTileCoordinateSpace(): NonDecimalCoordinate {
-    return CoordinateUtil.preciseToTileCoordinate(this.tileCoordinate);
-  }
-
-  public static convertWorldSpaceToTileCoordinate(x: number, y: number): NonDecimalCoordinate {
-    return DecimalCoordinate.of(
-        Math.floor(x / TileObject.TILE_SIZE),
-        Math.floor(y / TileObject.TILE_SIZE)
-    )
-  }
 }
 
 export type CoordinateUpdateCallback = (decimalCoordinate: DecimalCoordinate) => void

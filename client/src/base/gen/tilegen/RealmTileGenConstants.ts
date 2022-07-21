@@ -68,17 +68,16 @@ export default class RealmTileGenConstants {
 
   public static WATER_ARRAY: Array<TileObject<TileUnion>> = [
     CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_STILL),
+  ]
+
+  public static DEEP_WATER_ARRAY: Array<TileObject<TileUnion>> = [
+    CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_STILL),
     CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_CURRENTS_VARIANT_1),
     CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_CURRENTS_VARIANT_2),
     CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_CURRENTS_VARIANT_3),
-    CommonTileProvider.getNatureSupportTile(NatureSupportTile.WATER_CURRENTS_VARIANT_4),
   ]
 
   public static BEACH_ARRAY: Array<TileObject<TileUnion>> = [
     CommonTileProvider.getNatureSupportTile(NatureSupportTile.SAND_PLAIN),
-    // CommonTileProvider.getNatureSupportTile(NatureSupportTile.SAND_PATCHY_VARIANT_1),
-    // CommonTileProvider.getNatureSupportTile(NatureSupportTile.SAND_PATCHY_VARIANT_2),
-    // CommonTileProvider.getNatureSupportTile(NatureSupportTile.SAND_PATCHY_VARIANT_3),
-    // CommonTileProvider.getNatureSupportTile(NatureSupportTile.SAND_PATCHY_VARIANT_4),
   ]
 }
