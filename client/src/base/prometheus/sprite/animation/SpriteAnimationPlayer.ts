@@ -32,25 +32,33 @@ export class SpriteAnimationPlayer {
     // UP
     this.spriteAnimationPool.registerAnimation(SpriteState.UP, [
       spriteAnimationData.backwardMovement0,
-      spriteAnimationData.backwardMovement1
+      spriteAnimationData.staticBackward,
+      spriteAnimationData.backwardMovement1,
+      spriteAnimationData.staticBackward,
     ])
 
     // DOWN
     this.spriteAnimationPool.registerAnimation(SpriteState.DOWN, [
       spriteAnimationData.forwardMovement0,
-      spriteAnimationData.forwardMovement1
+      spriteAnimationData.staticForward,
+      spriteAnimationData.forwardMovement1,
+      spriteAnimationData.staticForward,
     ])
 
     // LEFT
     this.spriteAnimationPool.registerAnimation(SpriteState.LEFT, [
       spriteAnimationData.leftMovement0,
-      spriteAnimationData.leftMovement1
+      spriteAnimationData.staticLeft,
+      spriteAnimationData.leftMovement1,
+      spriteAnimationData.staticLeft,
     ])
 
     // RIGHT
     this.spriteAnimationPool.registerAnimation(SpriteState.RIGHT, [
       spriteAnimationData.rightMovement0,
-      spriteAnimationData.rightMovement1
+      spriteAnimationData.staticRight,
+      spriteAnimationData.rightMovement1,
+      spriteAnimationData.staticRight,
     ])
 
     //==========--------=========/

@@ -1,6 +1,13 @@
 <template>
   <div class = "phaserContainer">
+
+    <!-- canvas -->
     <div class = "phaserRoot" ref = "root"></div>
+
+    <!-- sidebar -->
+    <realm-sidebar class = "realmSidebar"/>
+
+    <!-- splash screen -->
     <div class = "splashScreen" ref = "splashScreen" v-if = "shouldShowSplashScreen && IS_SPLASH_SCREEN_ENABLED">
       <div class = "realmLogoContainer">
         <img :src="require('@/assets/realm-logo.png')" alt="Realm Logo" ref = "realmLogo"/>
@@ -18,13 +25,14 @@ import Phaser from 'phaser';
 import PhaserWorldGenScene from '../../base/scenes/PhaserWorldGenScene';
 import LoadingSpinner from '../loader/LoadingSpinner.vue';
 import anime from 'animejs';
+import RealmSidebar from '../sidebar/RealmSidebar.vue';
 
 /**
  * This will eventually need to be reconfigured as the entry point for the Realm
  * renderer, but existing within a container, holding other native components.
  */
 @Component({
-  components: { LoadingSpinner }
+  components: { LoadingSpinner, RealmSidebar }
 })
 export default class PhaserComponent extends Vue {
   @Ref('root') readonly phaserRoot!: HTMLDivElement
@@ -32,7 +40,9 @@ export default class PhaserComponent extends Vue {
   @Ref('realmLogo') readonly realmLogo!: HTMLImageElement
   @Ref('realmSpinnerContainer') readonly realmSpinnerContainer!: HTMLDivElement
 
-  private IS_SPLASH_SCREEN_ENABLED: boolean = true;
+  private static readonly SCROLL_OFFSET: number = 13;
+
+  private IS_SPLASH_SCREEN_ENABLED: boolean = false;
   private shouldShowSplashScreen: boolean = true;
 
   public mounted() {
@@ -42,7 +52,7 @@ export default class PhaserComponent extends Vue {
       disableContextMenu: true,
       backgroundColor: '#ffffff',
       width: window.innerWidth,
-      height: window.innerHeight,
+      height: window.innerHeight - PhaserComponent.SCROLL_OFFSET,
       callbacks: {
         postBoot: this.onPostBoot
       },
@@ -51,10 +61,6 @@ export default class PhaserComponent extends Vue {
       },
       parent: this.phaserRoot,
       pixelArt: true,
-      fps: {
-        target: 30,
-        smoothStep: true
-      },
       scene: [
         PhaserWorldGenScene
       ],
@@ -138,6 +144,12 @@ export default class PhaserComponent extends Vue {
 
   .phaserContainer
     margin: 0
+    overflow: hidden
+
+    .realmSidebar
+      position: absolute
+      top: 0
+      right: 0
 
     .splashScreen
       position: absolute
@@ -167,4 +179,5 @@ export default class PhaserComponent extends Vue {
       width: 100%
       height: 100%
       z-index: 10
+      margin: 0
 </style>
