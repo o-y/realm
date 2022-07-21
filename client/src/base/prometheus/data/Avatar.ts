@@ -27,7 +27,7 @@ export class Avatar {
     return this.name;
   }
 
-  public getTileCoordinate(): DecimalCoordinate {
+  public getTileCoordinate(): NonDecimalCoordinate {
     return this.tileCoordinate;
   }
 
@@ -35,7 +35,7 @@ export class Avatar {
     return this.worldCoordinate;
   }
 
-  public updateTileCoordinate(coordinate: DecimalCoordinate): Avatar {
+  public updateTileCoordinate(coordinate: NonDecimalCoordinate): Avatar {
     if (coordinate.getX() == this.tileCoordinate.getX() &&
         coordinate.getY() == this.tileCoordinate.getY()) return this;
 

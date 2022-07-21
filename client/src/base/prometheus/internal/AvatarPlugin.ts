@@ -40,14 +40,6 @@ export abstract class AvatarPlugin {
   public getAvatar(): Avatar {
     return this.getAvatarPluginData().getAvatar();
   }
-
-  /** Called on Plugin creation. */
-  protected onInit() {}
-
-  private onInitInternal(func: Function): AvatarPlugin {
-    this.onInit();
-    return this;
-  }
 }
 
 export class AvatarPluginData {

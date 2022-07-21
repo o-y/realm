@@ -26,7 +26,6 @@ export default class App extends Vue {
 <style lang="stylus">
   html, body
     margin: 0
-    overflow: hidden
 
   #app
     height: 100vh;
