@@ -1,6 +1,5 @@
 <template>
   <div class = "phaserContainer">
-<!--"></div>-->
     <div class = "phaserRoot" ref = "root"></div>
     <div class = "splashScreen" ref = "splashScreen" v-if = "shouldShowSplashScreen && IS_SPLASH_SCREEN_ENABLED">
       <div class = "realmLogoContainer">
@@ -33,7 +32,7 @@ export default class PhaserComponent extends Vue {
   @Ref('realmLogo') readonly realmLogo!: HTMLImageElement
   @Ref('realmSpinnerContainer') readonly realmSpinnerContainer!: HTMLDivElement
 
-  private IS_SPLASH_SCREEN_ENABLED: boolean = false;
+  private IS_SPLASH_SCREEN_ENABLED: boolean = true;
   private shouldShowSplashScreen: boolean = true;
 
   public mounted() {
@@ -41,7 +40,7 @@ export default class PhaserComponent extends Vue {
       type: Phaser.AUTO,
       title: "Realm",
       disableContextMenu: true,
-      backgroundColor: '#e0f1f1',
+      backgroundColor: '#ffffff',
       width: window.innerWidth,
       height: window.innerHeight,
       callbacks: {
@@ -71,7 +70,7 @@ export default class PhaserComponent extends Vue {
     setTimeout( async () => {
       await this.runSplashScreenExit()
       this.shouldShowSplashScreen = false
-    }, 1000)
+    }, 1500)
   }
 
   private runSplashScreenEntrance(): Promise<void> {
@@ -123,6 +122,12 @@ export default class PhaserComponent extends Vue {
         easing: "easeInOutCubic",
         complete: () => resolve()
       }, 250)
+      .add({
+        targets: this.phaserRoot,
+        opacity: [0, 1],
+        duration: 500,
+        easing: "easeInOutCubic"
+      }, 350)
     )
   }
 }

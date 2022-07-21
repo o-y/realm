@@ -27,25 +27,19 @@ export class LocalAvatarController extends AvatarPlugin {
       if (this.getCurrentSpriteState(avatarObject, avatarSprite) != SpriteState.UP){
         avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.UP));
       }
-    }
-
-    if (this.cursor.down.isDown) {
+    } else if (this.cursor.down.isDown) {
       avatarObject.setVelocity(0,LocalAvatarController. PLAYER_VELOCITY);
 
       if (this.getCurrentSpriteState(avatarObject, avatarSprite) != SpriteState.DOWN){
         avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN));
       }
-    }
-
-    if (this.cursor.left.isDown) {
+    } else if (this.cursor.left.isDown) {
       avatarObject.setVelocity( LocalAvatarController.PLAYER_VELOCITY * -1, 0);
 
       if (this.getCurrentSpriteState(avatarObject, avatarSprite) != SpriteState.LEFT){
         avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.LEFT));
       }
-    }
-
-    if (this.cursor.right.isDown) {
+    } else if (this.cursor.right.isDown) {
       avatarObject.setVelocity( LocalAvatarController.PLAYER_VELOCITY, 0);
 
       if (this.getCurrentSpriteState(avatarObject, avatarSprite) != SpriteState.RIGHT){
