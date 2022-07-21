@@ -12,64 +12,35 @@ import {SpriteState} from '@/base/prometheus/sprite/data/SpriteState';
 import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
+import {LocalAvatarController} from '@/base/prometheus/local/LocalAvatarController';
 
 export class AvatarRender extends AvatarPlugin {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
       .withAvatarPlugin<this, AvatarCamera>(this, AvatarCamera);
 
-  private readonly spritePlugin: SpritePlugin = SpritePlugin
-      .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
-
   private readonly playersLayer: PlayersLayer = LayerManager
       .forScene(this.getAvatarPluginData().getScene())
       .getPlayersLayer();
 
+  private readonly avatarController: LocalAvatarController = AvatarPlugin
+      .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
+
+  private readonly spritePlugin: SpritePlugin = SpritePlugin
+      .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
+
   private avatarObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null = null;
-
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-
   private avatarSprite!: AbstractSprite;
 
-  // TODO: x and y should not be hardcoded.
-  private lastPositionX = 0;
-  private lastPositionY = 0;
+  private lastPositionX = this.getAvatar().getTileCoordinate().getX();
+  private lastPositionY = this.getAvatar().getTileCoordinate().getY();
 
   public startRender(): AvatarRender {
-    this.avatarObject = this.createAvatar();
-    this.cursors = this.getScene().input.keyboard.createCursorKeys()
+    this.avatarObject = this.createAvatarObject();
     return this;
   }
 
   public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {
-    const avatarObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody = this.getAvatarObject();
-    const avatar: Avatar = this.getAvatar();
-    const scene: PhaserWorldGenScene = this.getScene();
-    const spriteAnimationPlayer: SpriteAnimationPlayer = this.spritePlugin
-        .instrumentSpriteWith(this.avatarSprite);
-
-    const speed = 80;
-
-    if (scene.input.keyboard.checkDown(this.cursors.left, 150)) {
-      avatarObject.setVelocityX(-speed);
-      avatarObject.setVelocityY(0);
-      avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.LEFT))
-    } else if (scene.input.keyboard.checkDown(this.cursors.right, 150)) {
-      avatarObject.setVelocityX(speed);
-      avatarObject.setVelocityY(0);
-      avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.RIGHT))
-    }
-
-    if (scene.input.keyboard.checkDown(this.cursors.up, 150)) {
-      avatarObject.setVelocityY(-speed);
-      avatarObject.setVelocityX(0);
-      avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.UP))
-    } else if (scene.input.keyboard.checkDown(this.cursors.down, 150)) {
-      avatarObject.setVelocityY(speed);
-      avatarObject.setVelocityX(0);
-      avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN))
-    }
-
-
+    this.avatarController.awaitInput(this.getAvatarObject(), this.chooseSprite());
     this.generateTerrainSurroundingPlayer(realmGenerator);
   }
 
@@ -82,7 +53,6 @@ export class AvatarRender extends AvatarPlugin {
     )
 
     if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX){
-
       realmGenerator.loadGenerationAt(
           /* current = */ Coordinate.of(this.lastPositionX, this.lastPositionY),
           /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
@@ -93,10 +63,12 @@ export class AvatarRender extends AvatarPlugin {
     }
   }
 
-  private createAvatar(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+  private createAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+    this.avatarSprite = this.chooseSprite();
+
     const avatar: Avatar = this.getAvatarPluginData().getAvatar();
     const scene: PhaserWorldGenScene = this.getAvatarPluginData().getScene();
-    this.avatarSprite = this.chooseSprite();
+    const spriteAnimationPlayer: SpriteAnimationPlayer = this.spritePlugin.instrumentSpriteWith(this.avatarSprite);
 
     const tileToWorldSpaceCoordinate = CoordinateUtil.convertTileToWorldSpaceCoordinate(
         avatar.getTileCoordinate().getX(),
@@ -110,6 +82,8 @@ export class AvatarRender extends AvatarPlugin {
         this.avatarSprite.provideSpriteAnimationData().staticForward
     );
 
+    playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
+
     this.playersLayer.add(playerObject);
     scene.cameras.main.startFollow(playerObject);
 
@@ -117,7 +91,7 @@ export class AvatarRender extends AvatarPlugin {
   }
 
   private getAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    Util.assert(this.avatarObject != null, "#avatarObject is null. Ensure #createAvatar has been invoked.");
+    Util.assert(this.avatarObject != null, "#avatarObject is null. Ensure #createAvatarObject has been invoked.");
     return this.avatarObject!;
   }
 

@@ -5,10 +5,13 @@ import {MathUtil} from '@/util/MathUtil';
 import {PerlinNoise} from '@/base/gen/perlin/PerlinNoise';
 import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {Util} from '@/util/Util';
+import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
+import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
+import {ProviderType} from '@/base/tile/providers/ProviderType';
 
 export class TerrainManager {
   private layer: NyxLayer;
-  private readonly tileSparseArray: Array<Phaser.GameObjects.Image | null> = new Array<Phaser.GameObjects.Image | null>();
+  private readonly tileSparseArray: Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null> = new Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>();
   private noiseMap: Map<string, number> = new Map<string, number>();
 
   private constructor(layer: NyxLayer) {
@@ -39,23 +42,25 @@ export class TerrainManager {
           coordinate.toString(),
           Math.random())
 
-      const tile = this.layer.scene.add.nyxTileObjectImage(
-          (coordinate.getX() * TileObject.TILE_SIZE),
-          (coordinate.getY() * TileObject.TILE_SIZE),
-          RealmTileGenUtil
-              .selectTileArrayWithNoise(noise, clampedRandom)
-              .selectRandomTile(clampedRandom)
-      );
+      const randomTile: TileObject<TileUnion> = RealmTileGenUtil
+          .selectTileArrayWithNoise(noise, clampedRandom)
+          .selectRandomTile(clampedRandom);
 
-      tile.alpha = 0.6
+      // const tile = this.layer.scene.add.nyxTileObjectImage(
+      //     (coordinate.getX() * TileObject.TILE_SIZE),
+      //     (coordinate.getY() * TileObject.TILE_SIZE),
+      //     randomTile
+      // );
 
-      // const image = this.layer.scene.add.rectangle(
-      //         (coordinate.getX() * TileObject.TILE_SIZE),
-      //         (coordinate.getY() * TileObject.TILE_SIZE),
-      //         TileObject.TILE_SIZE,
-      //         TileObject.TILE_SIZE,
-      //         randomColour
-      // )
+      const tile = this.layer.scene.add.rectangle(
+              (coordinate.getX() * TileObject.TILE_SIZE),
+              (coordinate.getY() * TileObject.TILE_SIZE),
+              TileObject.TILE_SIZE,
+              TileObject.TILE_SIZE,
+              MathUtil.randomHex()
+      )
+
+      tile.alpha = 0.5;
 
       this.tileSparseArray[coordinate.toCantorsPairing()] = tile;
     })

@@ -1,5 +1,6 @@
 import TileObjectStore from '@/base/tile/store/TileObjectStore';
 import {Util} from '@/util/Util';
+import {ProviderType} from '@/base/tile/providers/ProviderType';
 
 export default class TileObject<T> {
   public static TILE_SIZE: number = 48;
@@ -7,12 +8,14 @@ export default class TileObject<T> {
   private readonly enumType: T;
   private readonly baseDirectory: string
   private readonly tileObjectStore: TileObjectStore
+  private readonly tileProviderType: ProviderType
 
   private positionalOverride: number | null = null
 
-  constructor(enumType: T, baseDirectory: string) {
+  constructor(enumType: T, baseDirectory: string, tileProviderType: ProviderType) {
     this.enumType = enumType;
     this.baseDirectory = baseDirectory;
+    this.tileProviderType = tileProviderType;
     this.tileObjectStore = TileObjectStore.getInstance();
   }
 
@@ -23,6 +26,10 @@ export default class TileObject<T> {
 
   public getEnumType(): T {
     return this.enumType;
+  }
+
+  public getProviderType(): ProviderType {
+    return this.tileProviderType
   }
 
   public getAndCacheBase64EncodedFile(): string {
@@ -49,7 +56,7 @@ export default class TileObject<T> {
     return this.baseDirectory.substring(this.baseDirectory.lastIndexOf("/") + 1);
   }
 
-  private get rawFileName(): string {
+  public get rawFileName(): string {
     return this.assetsDirectoryName + "_" +
         String(this.positionalOverride != null
             ? this.positionalOverride

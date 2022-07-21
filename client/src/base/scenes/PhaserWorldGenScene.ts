@@ -27,7 +27,7 @@ export default class PhaserWorldGenScene extends NyxScene {
   private realmGenerator!: RealmGenerator;
 
   async createPhaser() {
-    const sentinelNode = Coordinate.of(0, 0);
+    const sentinelNode = Coordinate.of(0, 4);
 
     const localAvatar: Avatar = new AvatarManager()
         .fetchOrCreateLocalAvatar()
@@ -49,8 +49,6 @@ export default class PhaserWorldGenScene extends NyxScene {
         /* next = */ sentinelNode
     )
   }
-
-
 
   updateOnCreated() {
     this.avatarRenderer.awaitInputAndGenerateTerrain(this.realmGenerator);
