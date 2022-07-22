@@ -15,7 +15,7 @@ export default class NyxSceneLoader {
   public async awaitPreloadHook() {
     await this.preloadHook.bind(this.scene)();
 
-    const interval: number = setInterval(() => {
+    const interval = setInterval(() => {
       if (this.requestedPhaserCreation){
         this.requestedPhaserCreation = false;
         this.createHook.bind(this.scene)();
