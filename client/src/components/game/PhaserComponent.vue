@@ -1,11 +1,10 @@
 <template>
   <div class = "phaserContainer">
+    <div class = "gameWrapper">
+<!--      <realm-sidebar class = "realmSidebar"/>-->
 
-    <!-- canvas -->
-    <div class = "phaserRoot" ref = "root"></div>
-
-    <!-- sidebar -->
-    <realm-sidebar class = "realmSidebar"/>
+      <div class = "phaserRoot" ref = "root"></div>
+    </div>
 
     <!-- splash screen -->
     <div class = "splashScreen" ref = "splashScreen" v-if = "shouldShowSplashScreen && IS_SPLASH_SCREEN_ENABLED">
@@ -26,6 +25,7 @@ import PhaserWorldGenScene from '../../base/scenes/PhaserWorldGenScene';
 import LoadingSpinner from '../loader/LoadingSpinner.vue';
 import anime from 'animejs';
 import RealmSidebar from '../sidebar/RealmSidebar.vue';
+import {SupabaseSingleton} from '../../base/db/SupabaseSingleton';
 
 /**
  * This will eventually need to be reconfigured as the entry point for the Realm
@@ -45,7 +45,13 @@ export default class PhaserComponent extends Vue {
   private IS_SPLASH_SCREEN_ENABLED: boolean = false;
   private shouldShowSplashScreen: boolean = true;
 
+  private supabase: SupabaseSingleton = SupabaseSingleton.getInstance();
+
   public mounted() {
+    if (!this.isAuthenticated()){
+      return this.$router.push("/");
+    }
+
     new Phaser.Game({
       type: Phaser.AUTO,
       title: "Realm",
@@ -72,11 +78,15 @@ export default class PhaserComponent extends Vue {
     setTimeout(this.runSplashScreenEntrance, 500);
   }
 
+  private isAuthenticated() {
+    return this.supabase.getAuthPlugin().isAuthenticated();
+  }
+
   private async onPostBoot() {
     setTimeout( async () => {
       await this.runSplashScreenExit()
       this.shouldShowSplashScreen = false
-    }, 1500)
+    }, 900)
   }
 
   private runSplashScreenEntrance(): Promise<void> {
@@ -145,11 +155,21 @@ export default class PhaserComponent extends Vue {
   .phaserContainer
     margin: 0
     overflow: hidden
+    height: 100vh
 
-    .realmSidebar
-      position: absolute
-      top: 0
-      right: 0
+    .gameWrapper
+      height: 100%
+
+      .phaserRoot
+        width: 100%
+        height: 100%
+        z-index: 10
+        margin: 0
+
+      .realmSidebar
+        height: 100vh
+        background: black;
+        position: absolute
 
     .splashScreen
       position: absolute
@@ -174,10 +194,4 @@ export default class PhaserComponent extends Vue {
         width: 55px
         height: @width
         opacity: 0
-
-    .phaserRoot
-      width: 100%
-      height: 100%
-      z-index: 10
-      margin: 0
 </style>
