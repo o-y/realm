@@ -6,7 +6,6 @@ import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
 import {Internal} from '@/util/enums/Internal';
 import {PeerState} from '@/base/supabase/peer/PeerState';
 import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';
-import {Liber} from '@/base/prometheus/data/Liber';
 
 export class Peer {
   private readonly realmPeerId: number;

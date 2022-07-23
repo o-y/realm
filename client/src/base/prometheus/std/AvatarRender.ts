@@ -15,6 +15,8 @@ import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {LocalAvatarController} from '@/base/prometheus/local/LocalAvatarController';
 import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
 import {Peer} from '@/base/supabase/peer/Peer';
+import TileObject from '@/base/tile/TileObject';
+import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 
 export class AvatarRender extends AvatarPlugin {
   private readonly playersLayer: PlayersLayer = LayerManager
@@ -24,10 +26,10 @@ export class AvatarRender extends AvatarPlugin {
   private readonly spritePlugin: SpritePlugin = SpritePlugin
       .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
 
-  private avatarObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null = null;
+  private avatarObject: AvatarObjectRender | null = null;
   private avatarSprite!: AbstractSprite;
 
-  public getAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+  public getAvatarObjectRender(): AvatarObjectRender {
     if (this.avatarObject === null) {
       this.avatarObject = this.createAvatarObject();
     }
@@ -35,7 +37,7 @@ export class AvatarRender extends AvatarPlugin {
     return this.avatarObject;
   }
 
-  private createAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+  private createAvatarObject(): AvatarObjectRender {
     this.avatarSprite = this.provideSprite();
 
     const avatar: Avatar = this.getAvatarPluginData().getAvatar();
@@ -47,17 +49,30 @@ export class AvatarRender extends AvatarPlugin {
         avatar.getTileCoordinate().getY()
     )
 
-    const playerObject = scene.physics.add.sprite(
+    const playerObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody = scene.physics.add.sprite(
         tileToWorldSpaceCoordinate.getX(),
         tileToWorldSpaceCoordinate.getY(),
         this.avatarSprite.spriteHash,
         this.avatarSprite.provideSpriteAnimationData().staticForward
     );
 
-    playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
-    this.playersLayer.add(playerObject);
+    const playerUsername: Phaser.GameObjects.Text = scene.add.text(
+        tileToWorldSpaceCoordinate.getX(),
+        tileToWorldSpaceCoordinate.getY(),
+        (avatar.isLocalAvatar() ? "> " : "") + avatar.getUsername() + (avatar.isLocalAvatar() ? " <" : ""),
+        {
+        }
+    ).setResolution(10)
 
-    return playerObject;
+    const avatarObjectsRender: AvatarObjectRender = AvatarObjectRender
+        .with(avatar, this.playersLayer)
+        .setAvatarObject(playerObject)
+        .setUsernameObject(playerUsername)
+        .recomputePositions()
+
+    playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
+
+    return avatarObjectsRender;
   }
 
   public provideSprite(): AbstractSprite {

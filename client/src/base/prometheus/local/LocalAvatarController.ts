@@ -5,6 +5,7 @@ import {SpriteAnimationPlayer, SpritePlugin} from '@/base/prometheus/sprite/anim
 import {ACTIVE_TO_STATIC_SPRITE_STATE_CONVERSION, SpriteState, STATIC_SPRITE_STATE, STATIC_TO_ACTIVE_SPRITE_STATE_CONVERSION} from '@/base/prometheus/sprite/data/SpriteState';
 import {AbstractSprite} from '@/base/prometheus/sprite/internal/AbstractSprite';
 import {SpriteAnimationPool} from '@/base/prometheus/sprite/animation/SpriteAnimationPool';
+import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 
 export class LocalAvatarController extends AvatarPlugin {
   private static PLAYER_VELOCITY: number = 90;
@@ -14,10 +15,11 @@ export class LocalAvatarController extends AvatarPlugin {
 
   private readonly cursor = this.getScene().input.keyboard.createCursorKeys();
 
-  public awaitInput(avatarObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, avatarSprite: AbstractSprite) {
+  public awaitInput(avatarObjectRender: AvatarObjectRender, avatarSprite: AbstractSprite) {
     const avatar: Avatar = this.getAvatar();
     const scene: PhaserWorldGenScene = this.getScene();
     const spriteAnimationPlayer: SpriteAnimationPlayer = this.spritePlugin.instrumentSpriteWith(avatarSprite);
+    const avatarObject = avatarObjectRender.getAvatarObject();
 
     avatarObject.setVelocity(0, 0);
 
@@ -56,6 +58,8 @@ export class LocalAvatarController extends AvatarPlugin {
       avatarObject.play(spriteAnimationPlayer.getAnimationFor(
           ACTIVE_TO_STATIC_SPRITE_STATE_CONVERSION.get(currentState)!
       ))
+    } else {
+      avatarObjectRender.recomputePositions();
     }
   }
 

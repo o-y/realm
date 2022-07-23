@@ -27,6 +27,10 @@ export class Avatar {
     return this.peer.getUsername();
   }
 
+  public isLocalAvatar(): boolean {
+    return this.peer.isLocalClient();
+  }
+
   public getLayer(): Layer {
     return this.peer.getLayer();
   }

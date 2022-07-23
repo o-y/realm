@@ -16,6 +16,7 @@ import {LocalAvatarController} from '@/base/prometheus/local/LocalAvatarControll
 import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
 import {Peer} from '@/base/supabase/peer/Peer';
 import {AvatarRender} from '@/base/prometheus/std/AvatarRender';
+import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -24,14 +25,14 @@ export class LocalAvatarRender extends AvatarRender {
   private readonly avatarController: LocalAvatarController = AvatarPlugin
       .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
 
-  public getAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    const avatarObject = super.getAvatarObject();
-    super.getScene().cameras.main.startFollow(avatarObject);
+  public getAvatarObjectRender(): AvatarObjectRender {
+    const avatarObject = super.getAvatarObjectRender();
+    super.getScene().cameras.main.startFollow(avatarObject.getAvatarObject());
     return avatarObject;
   }
 
   public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {
-    this.avatarController.awaitInput(this.getAvatarObject(), this.provideSprite());
+    this.avatarController.awaitInput(this.getAvatarObjectRender(), this.provideSprite());
     this.generateTerrainSurroundingPlayer(realmGenerator);
   }
 
@@ -42,7 +43,7 @@ export class LocalAvatarRender extends AvatarRender {
   private lastExactPositionY = this.lastPositionY;
 
   private generateTerrainSurroundingPlayer(realmGenerator: RealmGenerator) {
-    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.getAvatarObject();
+    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.getAvatarObjectRender().getAvatarObject();
 
     const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
         avatarObject.x,
