@@ -9,7 +9,7 @@ import {RealmGenerationStrategy, RealmGeneratorProvider} from '@/base/gen/realms
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 import {Avatar} from '@/base/prometheus/data/Avatar';
 import {LayerManager} from '@/base/layer/LayerManager';
-import {AvatarRender} from '@/base/prometheus/local/AvatarRender';
+import {LocalAvatarRender} from '@/base/prometheus/local/LocalAvatarRender';
 import {AvatarPlugin} from '@/base/prometheus/internal/AvatarPlugin';
 import TileObject from '@/base/tile/TileObject';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
@@ -24,12 +24,15 @@ import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
 import {PeerState} from '@/base/supabase/peer/PeerState';
 import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';
 import {Peer} from '@/base/supabase/peer/Peer';
+import {RemoteAvatarRender} from '@/base/prometheus/remote/RemoteAvatarRender';
 
 export default class PhaserWorldGenScene extends NyxScene {
-  private avatarRenderer!: AvatarRender;
+  private avatarRenderer!: LocalAvatarRender;
   private realmGenerator!: RealmGenerator;
   private supabaseSingleton: SupabaseSingleton = SupabaseSingleton.getInstance();
   private clientPlugin: PeerState = this.supabaseSingleton.getPeerState();
+
+  private remoteAvatarsSparseArray: Array<RemoteAvatarRender> = new Array<RemoteAvatarRender>();
 
   private creatingScene: boolean = true;
 
@@ -41,9 +44,7 @@ export default class PhaserWorldGenScene extends NyxScene {
         .of(localClient)
         .updateTileCoordinate(localClient.getPosition())
 
-    this.avatarRenderer = await AvatarRender
-        .with(localAvatar, this, AvatarRender)
-        .startRender();
+    this.avatarRenderer = LocalAvatarRender.with(localAvatar, this, LocalAvatarRender)
 
     this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
@@ -57,13 +58,21 @@ export default class PhaserWorldGenScene extends NyxScene {
         /* next = */ localClient.getPosition()
     )
 
+    const remoteAvatarsSparseArray = this.remoteAvatarsSparseArray;
+    const _this = this;
     peerConnectionManager.registerPeerConnectionListener( {
       onPeerConnected(peer: Peer) {
-        console.log("Peer connected: ", peer);
+        if (peer.isLocalClient()) return;
+
+        remoteAvatarsSparseArray[peer.getRealmPeerId()] = RemoteAvatarRender
+            .with(Avatar.of(peer).updateTileCoordinate(peer.getPosition()), _this, RemoteAvatarRender)
+            .moveToCoordinate(peer.getPosition())
       },
 
       onPeerStateUpdated(previousState: Peer, newState: Peer) {
-        console.log("Peer updated: ", newState);
+        if (newState.isLocalClient() || previousState.isLocalClient()) return;
+
+        remoteAvatarsSparseArray[newState.getRealmPeerId()].moveToCoordinate(newState.getPosition())
       },
 
       onPeerDisconnected(peer: Peer) {

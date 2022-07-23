@@ -17,15 +17,9 @@ import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
 import {Peer} from '@/base/supabase/peer/Peer';
 
 export class AvatarRender extends AvatarPlugin {
-  private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
-      .withAvatarPlugin<this, AvatarCamera>(this, AvatarCamera);
-
   private readonly playersLayer: PlayersLayer = LayerManager
       .forScene(this.getAvatarPluginData().getScene())
       .getPlayersLayer();
-
-  private readonly avatarController: LocalAvatarController = AvatarPlugin
-      .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
 
   private readonly spritePlugin: SpritePlugin = SpritePlugin
       .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
@@ -33,54 +27,16 @@ export class AvatarRender extends AvatarPlugin {
   private avatarObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null = null;
   private avatarSprite!: AbstractSprite;
 
-  private lastPositionX = this.getAvatar().getTileCoordinate().getX();
-  private lastPositionY = this.getAvatar().getTileCoordinate().getY();
-
-  private lastExactPositionX = this.lastPositionX;
-  private lastExactPositionY = this.lastPositionY;
-
-  public startRender(): AvatarRender {
-    this.avatarObject = this.createAvatarObject();
-    return this;
-  }
-
-  public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {
-    this.avatarController.awaitInput(this.getAvatarObject(), this.chooseSprite());
-    this.generateTerrainSurroundingPlayer(realmGenerator);
-  }
-
-  private generateTerrainSurroundingPlayer(realmGenerator: RealmGenerator) {
-    const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.getAvatarObject();
-
-    const worldToTileConversionCoordinate = CoordinateUtil.convertWorldSpaceToTileCoordinate(
-        avatarObject.x,
-        avatarObject.y
-    )
-
-    if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX){
-      realmGenerator.loadGenerationAt(
-          /* current = */ Coordinate.of(this.lastPositionX, this.lastPositionY),
-          /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
-      )
-
-      this.getAvatar().getPeer().updatePosition(worldToTileConversionCoordinate);
-
-      this.lastPositionY = worldToTileConversionCoordinate.getY();
-      this.lastPositionX = worldToTileConversionCoordinate.getX();
+  public getAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+    if (this.avatarObject === null) {
+      this.avatarObject = this.createAvatarObject();
     }
 
-    // if (this.lastExactPositionX != avatarObject.x || this.lastExactPositionY != avatarObject.y) {
-    //
-    //   // console.log("Moved to: ", avatarObject.x, avatarObject.y)
-    //   this.getAvatar().getLiveClient().updatePosition(worldToTileConversionCoordinate);
-    //
-    //   this.lastExactPositionX = avatarObject.x;
-    //   this.lastExactPositionY = avatarObject.y;
-    // }
+    return this.avatarObject;
   }
 
   private createAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    this.avatarSprite = this.chooseSprite();
+    this.avatarSprite = this.provideSprite();
 
     const avatar: Avatar = this.getAvatarPluginData().getAvatar();
     const scene: PhaserWorldGenScene = this.getAvatarPluginData().getScene();
@@ -99,19 +55,12 @@ export class AvatarRender extends AvatarPlugin {
     );
 
     playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
-
     this.playersLayer.add(playerObject);
-    scene.cameras.main.startFollow(playerObject);
 
     return playerObject;
   }
 
-  private getAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    Util.assert(this.avatarObject != null, "#avatarObject is null. Ensure #createAvatarObject has been invoked.");
-    return this.avatarObject!;
-  }
-
-  private chooseSprite(): AbstractSprite {
+  public provideSprite(): AbstractSprite {
     // TODO: Implement. Ideally there will be 3-4 different sprites and we create
     // a one-way function to map names/ids/something -> sprites.
     return SpriteManager.provideDefaultSprite();

@@ -49,8 +49,8 @@ export class Avatar {
 
     this.tileCoordinate = coordinate;
 
-    this.tileCoordinateUpdateCallbacks.forEach((coordinateUpdateCallback: CoordinateUpdateCallback) =>
-        coordinateUpdateCallback(coordinate))
+    // this.tileCoordinateUpdateCallbacks.forEach((coordinateUpdateCallback: CoordinateUpdateCallback) =>
+    //     coordinateUpdateCallback(coordinate))
 
     return this;
   }
