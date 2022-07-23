@@ -13,6 +13,8 @@ import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {LocalAvatarController} from '@/base/prometheus/local/LocalAvatarController';
+import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
+import {Peer} from '@/base/supabase/peer/Peer';
 
 export class AvatarRender extends AvatarPlugin {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -33,6 +35,9 @@ export class AvatarRender extends AvatarPlugin {
 
   private lastPositionX = this.getAvatar().getTileCoordinate().getX();
   private lastPositionY = this.getAvatar().getTileCoordinate().getY();
+
+  private lastExactPositionX = this.lastPositionX;
+  private lastExactPositionY = this.lastPositionY;
 
   public startRender(): AvatarRender {
     this.avatarObject = this.createAvatarObject();
@@ -58,9 +63,20 @@ export class AvatarRender extends AvatarPlugin {
           /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
       )
 
+      this.getAvatar().getPeer().updatePosition(worldToTileConversionCoordinate);
+
       this.lastPositionY = worldToTileConversionCoordinate.getY();
       this.lastPositionX = worldToTileConversionCoordinate.getX();
     }
+
+    // if (this.lastExactPositionX != avatarObject.x || this.lastExactPositionY != avatarObject.y) {
+    //
+    //   // console.log("Moved to: ", avatarObject.x, avatarObject.y)
+    //   this.getAvatar().getLiveClient().updatePosition(worldToTileConversionCoordinate);
+    //
+    //   this.lastExactPositionX = avatarObject.x;
+    //   this.lastExactPositionY = avatarObject.y;
+    // }
   }
 
   private createAvatarObject(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {

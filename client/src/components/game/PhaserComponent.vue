@@ -25,7 +25,7 @@ import PhaserWorldGenScene from '../../base/scenes/PhaserWorldGenScene';
 import LoadingSpinner from '../loader/LoadingSpinner.vue';
 import anime from 'animejs';
 import RealmSidebar from '../sidebar/RealmSidebar.vue';
-import {SupabaseSingleton} from '../../base/db/SupabaseSingleton';
+import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 
 /**
  * This will eventually need to be reconfigured as the entry point for the Realm
@@ -79,7 +79,7 @@ export default class PhaserComponent extends Vue {
   }
 
   private isAuthenticated() {
-    return this.supabase.getAuthPlugin().isAuthenticated();
+    return this.supabase.getAuthState().isAuthenticated();
   }
 
   private async onPostBoot() {

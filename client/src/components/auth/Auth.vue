@@ -6,8 +6,8 @@
       </div>
 
       <div class = "authenticateButtonContainer">
-        <template v-if = "isAuthenticated">
-          <h1>Welcome back, <b>{{ authenticatedData.getDisplayName() }}</b></h1>
+        <template v-if = "isAuthenticated && authenticationData != null">
+          <h1>Welcome back, <b>{{ authenticationData.getDisplayName() }}</b></h1>
           <button v-on:click = "enterRealm">Enter Realm</button>
         </template>
         <template v-else>
@@ -20,28 +20,35 @@
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
-import {SupabaseSingleton} from '../../base/db/SupabaseSingleton';
+import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
+import {AuthenticationData} from '../../base/supabase/auth/AuthState';
 
 @Component
 export default class Auth extends Vue {
   private supabase: SupabaseSingleton = SupabaseSingleton.getInstance();
 
-  public get isAuthenticated() {
-    return this.supabase.getAuthPlugin().isAuthenticated();
+  private authenticationData: AuthenticationData | null = null;
+
+  public async mounted() {
+    this.supabase.getAuthState().registerAuthStateChangedCallback(authenticationData => {
+      this.authenticationData = authenticationData
+    })
   }
 
-  public get authenticatedData() {
-    return this.supabase.getAuthPlugin().getAuthenticationData();
+  public get isAuthenticated() {
+    return this.supabase.getAuthState().isAuthenticated();
   }
 
   public async signInWithGithub() {
-    const { user, session, error } = await this.supabase.getClient().auth.signIn({
-      provider: 'github',
+    await this.supabase.getInternalSupabaseClient().auth.signIn({
+      provider: "github",
     })
   }
 
   public enterRealm() {
-    this.$router.push("/realms/google.com")
+    let msg = new SpeechSynthesisUtterance("Way time to enter Realm: " + this.authenticationData!.getDisplayName());
+    speechSynthesis.speak(msg);
+    this.$router.push("/realms/zv.wtf");
   }
 }
 </script>
@@ -49,7 +56,6 @@ export default class Auth extends Vue {
 
 <style scoped lang="stylus">
   @import "../../style/config.styl"
-
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
   .authView

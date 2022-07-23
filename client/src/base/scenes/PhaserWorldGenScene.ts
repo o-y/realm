@@ -6,7 +6,6 @@ import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import DistinctTileProvider from '@/base/tile/providers/helpers/DistinctTileProvider';
 import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 import {RealmGenerationStrategy, RealmGeneratorProvider} from '@/base/gen/realms/RealmGeneratorProvider';
-import {AvatarManager} from '@/base/prometheus/AvatarManager';
 import {DecimalCoordinate} from '@/base/atlas/data/coordinate/DecimalCoordinate';
 import {Avatar} from '@/base/prometheus/data/Avatar';
 import {LayerManager} from '@/base/layer/LayerManager';
@@ -21,17 +20,26 @@ import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {SpriteManager} from '@/base/prometheus/sprite/manager/SpriteManager';
 import {LyraSprite} from '@/base/prometheus/sprite/data/LyraSprite';
+import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
+import {PeerState} from '@/base/supabase/peer/PeerState';
+import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';
+import {Peer} from '@/base/supabase/peer/Peer';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: AvatarRender;
   private realmGenerator!: RealmGenerator;
+  private supabaseSingleton: SupabaseSingleton = SupabaseSingleton.getInstance();
+  private clientPlugin: PeerState = this.supabaseSingleton.getPeerState();
+
+  private creatingScene: boolean = true;
 
   async createPhaser() {
-    const sentinelNode = Coordinate.of(0, 4);
+    const peerConnectionManager: PeerConnectionManager = PeerConnectionManager.getInstance();
+    const localClient = await peerConnectionManager.getLocalPeer()
 
-    const localAvatar: Avatar = new AvatarManager()
-        .fetchOrCreateLocalAvatar()
-        .updateTileCoordinate(sentinelNode)
+    const localAvatar = Avatar
+        .of(localClient)
+        .updateTileCoordinate(localClient.getPosition())
 
     this.avatarRenderer = await AvatarRender
         .with(localAvatar, this, AvatarRender)
@@ -45,12 +53,29 @@ export default class PhaserWorldGenScene extends NyxScene {
         .setLayerManager(LayerManager.forScene(this));
 
     await this.realmGenerator.loadGenerationAt(
-        /* current = */ sentinelNode,
-        /* next = */ sentinelNode
+        /* current = */ localClient.getPosition(),
+        /* next = */ localClient.getPosition()
     )
+
+    peerConnectionManager.registerPeerConnectionListener( {
+      onPeerConnected(peer: Peer) {
+        console.log("Peer connected: ", peer);
+      },
+
+      onPeerStateUpdated(previousState: Peer, newState: Peer) {
+        console.log("Peer updated: ", newState);
+      },
+
+      onPeerDisconnected(peer: Peer) {
+        console.log("Peer disconnected: ", peer);
+      }
+    })
+
+    this.creatingScene = false;
   }
 
   updateOnCreated() {
+    if (this.creatingScene) return;
     this.avatarRenderer.awaitInputAndGenerateTerrain(this.realmGenerator);
   }
 

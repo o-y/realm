@@ -1,5 +1,5 @@
 import {SupabaseClient} from '@supabase/supabase-js';
-import {SupabaseSingleton} from '@/base/db/SupabaseSingleton';
+import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
 
 export abstract class SupabasePlugin {
   private readonly supabaseSingleton: SupabaseSingleton;
@@ -15,7 +15,11 @@ export abstract class SupabasePlugin {
     this.supabaseSingleton = supabaseSingleton;
   }
 
-  public getClient(): SupabaseClient {
-    return this.supabaseSingleton.getClient();
+  public getInternalSuperbaseClient(): SupabaseClient {
+    return this.supabaseSingleton.getInternalSupabaseClient();
+  }
+
+  public getSingleton(): SupabaseSingleton {
+    return this.supabaseSingleton;
   }
 }

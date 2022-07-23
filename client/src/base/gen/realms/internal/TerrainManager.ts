@@ -46,19 +46,19 @@ export class TerrainManager {
           .selectTileArrayWithNoise(noise, clampedRandom)
           .selectRandomTile(clampedRandom);
 
-      const tile = this.layer.scene.add.nyxTileObjectImage(
-          (coordinate.getX() * TileObject.TILE_SIZE),
-          (coordinate.getY() * TileObject.TILE_SIZE),
-          randomTile
-      );
+      // const tile = this.layer.scene.add.nyxTileObjectImage(
+      //     (coordinate.getX() * TileObject.TILE_SIZE),
+      //     (coordinate.getY() * TileObject.TILE_SIZE),
+      //     randomTile
+      // );
 
-      // const tile = this.layer.scene.add.rectangle(
-      //         (coordinate.getX() * TileObject.TILE_SIZE),
-      //         (coordinate.getY() * TileObject.TILE_SIZE),
-      //         TileObject.TILE_SIZE,
-      //         TileObject.TILE_SIZE,
-      //         MathUtil.randomHex()
-      // )
+      const tile = this.layer.scene.add.rectangle(
+              (coordinate.getX() * TileObject.TILE_SIZE),
+              (coordinate.getY() * TileObject.TILE_SIZE),
+              TileObject.TILE_SIZE,
+              TileObject.TILE_SIZE,
+              MathUtil.randomHex()
+      )
 
       tile.alpha = 0.5;
 

@@ -3,11 +3,11 @@ import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
 import {CartesianBound} from '@/base/atlas/data/bound/CartesianBound';
 import {Client} from '@/base/prometheus/local/Client';
-import TileObject from '@/base/tile/TileObject';
-import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
+import {Layer} from '@/base/prometheus/data/Layer';
+import {Peer} from '@/base/supabase/peer/Peer';
 
 export class Avatar {
-  private readonly name: string;
+  private readonly peer: Peer;
 
   private tileCoordinate: DecimalCoordinate = Coordinate.SENTINEL;
   private tileCoordinateUpdateCallbacks: Set<CoordinateUpdateCallback> = new Set<CoordinateUpdateCallback>();
@@ -15,16 +15,24 @@ export class Avatar {
   private worldCoordinate: DecimalCoordinate = Coordinate.SENTINEL;
   private worldCoordinateCallbacks: Set<CoordinateUpdateCallback> = new Set<CoordinateUpdateCallback>();
 
-  private constructor(name: string) {
-    this.name = name;
+  private constructor(peer: Peer) {
+    this.peer = peer;
   }
 
-  public static of(name: string) {
-    return new Avatar(name);
+  public static of(liveClient: Peer) {
+    return new Avatar(liveClient);
   }
 
   public getName(): string {
-    return this.name;
+    return this.peer.getDisplayName();
+  }
+
+  public getLayer(): Layer {
+    return this.peer.getLayer();
+  }
+
+  public getPeer(): Peer {
+    return this.peer;
   }
 
   public getTileCoordinate(): NonDecimalCoordinate {
