@@ -55,10 +55,10 @@ export default class PhaserComponent extends Vue {
     new Phaser.Game({
       type: Phaser.AUTO,
       title: "Realm",
-      disableContextMenu: true,
       backgroundColor: '#ffffff',
       width: window.innerWidth,
       height: window.innerHeight - PhaserComponent.SCROLL_OFFSET,
+      autoFocus: true,
       callbacks: {
         postBoot: this.onPostBoot
       },
@@ -67,6 +67,9 @@ export default class PhaserComponent extends Vue {
       },
       parent: this.phaserRoot,
       pixelArt: true,
+      roundPixels: true,
+      antialias: true,
+      antialiasGL: true,
       scene: [
         PhaserWorldGenScene
       ],

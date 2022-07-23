@@ -59,9 +59,7 @@ export class AvatarRender extends AvatarPlugin {
     const playerUsername: Phaser.GameObjects.Text = scene.add.text(
         tileToWorldSpaceCoordinate.getX(),
         tileToWorldSpaceCoordinate.getY(),
-        (avatar.isLocalAvatar() ? "> " : "") + avatar.getUsername() + (avatar.isLocalAvatar() ? " <" : ""),
-        {
-        }
+        (avatar.isLocalAvatar() ? "> " : "") + avatar.getUsername() + (avatar.isLocalAvatar() ? " <" : "")
     ).setResolution(10)
 
     const avatarObjectsRender: AvatarObjectRender = AvatarObjectRender
