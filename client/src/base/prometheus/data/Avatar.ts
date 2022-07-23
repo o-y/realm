@@ -23,8 +23,8 @@ export class Avatar {
     return new Avatar(liveClient);
   }
 
-  public getName(): string {
-    return this.peer.getDisplayName();
+  public getUsername(): string {
+    return this.peer.getUsername();
   }
 
   public getLayer(): Layer {

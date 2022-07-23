@@ -71,12 +71,15 @@ export class DatabasePlugin extends SupabasePlugin {
   public async registerNewPeer(user: User): Promise<void> {
     const CLIENTS_DB = DatabaseTables.CLIENTS;
 
+    console.log("Registering new account for: ", user.email);
+
     // TODO: Some of this is hardcoded, it shouldn't, but that's fine for now.
     const { data, error } = await super.getInternalSuperbaseClient()
         .from(CLIENTS_DB.DATABASE_NAME)
         .insert([{
           [CLIENTS_DB.AUTHENTICATION_USER_ID]: user.id,
           [CLIENTS_DB.EMAIL]: user.email,
+          [CLIENTS_DB.USERNAME]: user.identities![0].identity_data.user_name,
           [CLIENTS_DB.COORDINATE_X]: Coordinate.SENTINEL.getX(),
           [CLIENTS_DB.COORDINATE_Y]: Coordinate.SENTINEL.getY(),
           [CLIENTS_DB.LAST_LOGIN]: DateUtil.getCurrentDateISOFormatted(),

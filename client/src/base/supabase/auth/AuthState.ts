@@ -2,6 +2,7 @@ import {SupabasePlugin} from '@/base/supabase/internal/SupabasePlugin';
 import {User} from '@supabase/supabase-js';
 import {DatabaseTables} from '@/base/supabase/database/DatabaseTables';
 import {AuthChangeEvent, Session} from '@supabase/gotrue-js/src/lib/types';
+import {Liber} from '@/base/prometheus/data/Liber';
 
 /** Authenticates the client and provides authentication data. */
 export class AuthState extends SupabasePlugin {
@@ -22,10 +23,13 @@ export class AuthState extends SupabasePlugin {
     // Ensure the user exists within the Realm Database.
     await this.ensureUserExistsInRealmDatabase(user);
 
+    console.log("User: ", user)
     return new AuthenticationData(
         user.id,
         user.email!,
-        user.created_at
+        user.created_at,
+        user.identities![0].identity_data.full_name,
+        user.identities![0].identity_data.user_name
     );
   }
 
@@ -52,10 +56,15 @@ export class AuthenticationData {
   private readonly email: string;
   private readonly createdAt: string;
 
-  constructor(id: string, email: string, createdAt: string) {
+  private readonly fullName: string;
+  private readonly userName: string
+
+  constructor(id: string, email: string, createdAt: string, fullName: string, userName: string) {
     this.id = id;
     this.email = email;
     this.createdAt = createdAt;
+    this.fullName = fullName;
+    this.userName = userName;
   }
 
   public getAuthenticationUserId(): string {
@@ -71,6 +80,6 @@ export class AuthenticationData {
   }
 
   public getDisplayName(): string {
-    return this.getUserEmail().split("@")[0]
+    return this.userName;
   }
 }

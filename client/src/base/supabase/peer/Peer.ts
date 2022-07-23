@@ -6,10 +6,12 @@ import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
 import {Internal} from '@/util/enums/Internal';
 import {PeerState} from '@/base/supabase/peer/PeerState';
 import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';
+import {Liber} from '@/base/prometheus/data/Liber';
 
 export class Peer {
   private readonly realmPeerId: number;
   private readonly email: string;
+  private readonly username: string;
   private readonly _isLocalClient: boolean = false;
 
   private currentPosition: Coordinate;
@@ -21,18 +23,20 @@ export class Peer {
       realmPeerId: number,
       currentPosition: Coordinate,
       email: string,
+      username: string,
       layer: number,
       isLocalClient: boolean
   ) {
     this.realmPeerId = realmPeerId;
     this.currentPosition = currentPosition;
     this.email = email;
+    this.username = username;
     this.layer = layer;
     this._isLocalClient = isLocalClient
   }
 
-  public getDisplayName(): string {
-    return this.email.split("@")[0];
+  public getUsername(): string {
+    return this.username
   }
 
   public getEmail(internal: Internal): string {

@@ -12,6 +12,7 @@ export class ClientsDatabase {
   public static readonly REALM_AVATAR_ID = "realm_avatar_id";
   public static readonly AUTHENTICATION_USER_ID = "authentication_user_id";
   public static readonly EMAIL = "email";
+  public static readonly USERNAME = "username";
   public static readonly LAYER = "layer";
   public static readonly COORDINATE_X = "tile_coordinate_x";
   public static readonly COORDINATE_Y = "tile_coordinate_y";

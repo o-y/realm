@@ -66,6 +66,7 @@ export class PeerConnectionManager {
           structuredData.realm_avatar_id,
           Coordinate.of(structuredData.tile_coordinate_x, structuredData.tile_coordinate_y),
           structuredData.email,
+          structuredData.username,
           structuredData.layer,
           structuredData.realm_avatar_id === localPeerId
       )
@@ -82,6 +83,7 @@ export class PeerConnectionManager {
           connectedPeer.getRealmPeerId(),
           connectedPeer.getPosition(),
           connectedPeer.getEmail(Internal.REALM_INTERNAL_ONLY),
+          connectedPeer.getUsername(),
           connectedPeer.getLayer(),
           connectedPeer.isLocalClient()
       )
@@ -134,6 +136,7 @@ export class PeerConnectionManager {
                 parseInt(userData[DatabaseTables.CLIENTS.COORDINATE_Y])
             ),
             userData[DatabaseTables.CLIENTS.EMAIL],
+            userData[DatabaseTables.CLIENTS.USERNAME],
             userData[DatabaseTables.CLIENTS.LAYER],
             userData[DatabaseTables.CLIENTS.REALM_AVATAR_ID] === localPeerId
         )
@@ -159,6 +162,7 @@ export class PeerConnectionManager {
       authentication_user_id: data[CLIENTS_DB.AUTHENTICATION_USER_ID],
       realm_avatar_id: data[CLIENTS_DB.REALM_AVATAR_ID],
       email: data[CLIENTS_DB.EMAIL],
+      username: data[CLIENTS_DB.USERNAME],
       last_login: data[CLIENTS_DB.LAST_LOGIN],
       layer: data[CLIENTS_DB.LAYER],
       tile_coordinate_x: data[CLIENTS_DB.COORDINATE_X],
@@ -179,6 +183,7 @@ export interface SupabasePeerStructure {
   associated_realm_id: number
   authentication_user_id: string
   email: string
+  username: string
   last_login: string
   layer: number
   realm_avatar_id: number

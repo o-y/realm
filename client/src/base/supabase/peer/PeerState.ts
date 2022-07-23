@@ -37,6 +37,7 @@ export class PeerState extends SupabasePlugin {
             userData[DatabaseTables.CLIENTS.COORDINATE_Y]
         ),
         userData[DatabaseTables.CLIENTS.EMAIL],
+        userData[DatabaseTables.CLIENTS.USERNAME],
         userData[DatabaseTables.CLIENTS.LAYER],
         false
     )
@@ -52,6 +53,7 @@ export class PeerState extends SupabasePlugin {
             userData[DatabaseTables.CLIENTS.COORDINATE_Y]
         ),
         userData[DatabaseTables.CLIENTS.EMAIL],
+        userData[DatabaseTables.CLIENTS.USERNAME],
         userData[DatabaseTables.CLIENTS.LAYER],
         true
     )
