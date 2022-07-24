@@ -25,5 +25,6 @@ export class LandStructureAnnotations {
 }
 
 export enum MinosStructureAnnotationsType {
-  DOOR = 0
+  DOOR = 0,
+  IGNORE_PHYSICS
 }

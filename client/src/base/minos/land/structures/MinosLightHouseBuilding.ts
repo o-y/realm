@@ -2,7 +2,7 @@ import {AbstractLandStructure} from '@/base/minos/land/internal/AbstractLandStru
 import {LandStructureAnnotations} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 
-export class MinosLightHouse extends AbstractLandStructure {
+export class MinosLightHouseBuilding extends AbstractLandStructure {
   provideAnnotations(): LandStructureAnnotations {
     return new LandStructureAnnotations()
   }

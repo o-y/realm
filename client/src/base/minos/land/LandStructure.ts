@@ -33,12 +33,16 @@ export class LandStructure {
     return yIntersection && xIntersection;
   }
 
-  public getIntersectingTile(tileCoordinate: NonDecimalCoordinate): TileObject<RubyTownTile> {
-    const structureMatrix: Array<Array<RubyTownTile>> = this.structure.provideStructureMatrix();
+  public getIntersectingTile(tileCoordinate: NonDecimalCoordinate): TileObject<RubyTownTile> | null {
+    const structureMatrix: Array<Array<RubyTownTile | null>> = this.structure.provideStructureMatrix();
 
     const yIndex = this.topLeftCoordinate.getY() - tileCoordinate.getY() + (this.structure.getHeight() - 1);
     const xIndex = tileCoordinate.getX() - this.topLeftCoordinate.getX();
 
-    return CommonTileProvider.getRubyTownTile(structureMatrix[yIndex][xIndex]);
+    if (!structureMatrix[yIndex][xIndex]) {
+      return null;
+    }
+
+    return CommonTileProvider.getRubyTownTile(structureMatrix[yIndex][xIndex]!);
   }
 }

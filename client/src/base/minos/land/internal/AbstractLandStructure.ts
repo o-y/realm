@@ -16,12 +16,12 @@ export abstract class AbstractLandStructure {
    * [1, 2, 3]
    *
    */
-  public abstract provideStructureMatrix(): Array<Array<RubyTownTile>>
+  public abstract provideStructureMatrix(): Array<Array<RubyTownTile | null>>
 
   public abstract provideAnnotations(): LandStructureAnnotations
 
   public getWidth(): number {
-    return this.provideStructureMatrix()[0].length;
+    return Math.max(...this.provideStructureMatrix().map(arr => arr.length));
   }
 
   public getHeight(): number {

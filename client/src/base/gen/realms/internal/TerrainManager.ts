@@ -12,6 +12,7 @@ import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 import {LayerManager} from '@/base/layer/LayerManager';
 import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
+import Tile = Phaser.Tilemaps.Tile;
 
 export class TerrainManager {
   private baseLayer: BaseLayer;
@@ -57,18 +58,21 @@ export class TerrainManager {
           randomTile
       ).setAlpha(0.5);
 
-      const intersectingStructure = LandStructureProvider.getIntersectingStructure(coordinate);
-      if (intersectingStructure) {
-        const intersectingTile: TileObject<RubyTownTile> = intersectingStructure.getIntersectingTile(coordinate);
+      this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile];
+
+      const intersectingTile: TileObject<RubyTownTile> | null = LandStructureProvider
+          .getIntersectingStructure(coordinate)
+          ?.getIntersectingTile(coordinate) || null;
+
+      if (intersectingTile) {
         const buildingTile = this.buildingLayer.scene.physics.add.image(
-                (coordinate.getX() * TileObject.TILE_SIZE),
-                (coordinate.getY() * TileObject.TILE_SIZE),
-                intersectingTile.imageHash
+            (coordinate.getX() * TileObject.TILE_SIZE),
+            (coordinate.getY() * TileObject.TILE_SIZE),
+            intersectingTile.imageHash
         ).setImmovable(true)
+
         this.buildingLayer.add(buildingTile);
         this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile, buildingTile];
-      } else {
-        this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile];
       }
     })
   }
