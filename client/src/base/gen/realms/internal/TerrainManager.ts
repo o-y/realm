@@ -64,7 +64,7 @@ export class TerrainManager {
                 (coordinate.getX() * TileObject.TILE_SIZE),
                 (coordinate.getY() * TileObject.TILE_SIZE),
                 intersectingTile.imageHash
-        )
+        ).setImmovable(true)
         this.buildingLayer.add(buildingTile);
         this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile, buildingTile];
       } else {
