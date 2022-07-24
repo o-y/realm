@@ -13,21 +13,23 @@ import {LayerManager} from '@/base/layer/LayerManager';
 import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
 import Tile = Phaser.Tilemaps.Tile;
+import {RealmGenerationData} from '@/base/gen/realms/internal/RealmGenerator';
 
 export class TerrainManager {
-  private baseLayer: BaseLayer;
-  private buildingLayer: BuildingLayer;
-
+  private readonly baseLayer: BaseLayer;
+  private readonly buildingLayer: BuildingLayer;
   private readonly tileSparseArray: Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>> = new Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>>();
-  private noiseMap: Map<string, number> = new Map<string, number>();
+  private readonly noiseMap: Map<string, number> = new Map<string, number>();
+  private readonly seed: number;
 
-  private constructor(layerManager: LayerManager) {
-    this.baseLayer = layerManager.getBaseLayer();
-    this.buildingLayer = layerManager.getBuildingLayer();
+  private constructor(realmGenerationData: RealmGenerationData) {
+    this.baseLayer = realmGenerationData.getLayerManager().getBaseLayer();
+    this.buildingLayer = realmGenerationData.getLayerManager().getBuildingLayer();
+    this.seed = realmGenerationData.getSeed();
   }
 
-  public static withLayerManager(layerManager: LayerManager) {
-    return new TerrainManager(layerManager);
+  public static withRealmGenerationData(realmGenerationData: RealmGenerationData) {
+    return new TerrainManager(realmGenerationData);
   }
 
   public loadTileSet(coordinateSet: Set<Coordinate>) {
@@ -35,7 +37,7 @@ export class TerrainManager {
 
       const perlinNoise: PerlinNoise = PerlinNoise
           .create()
-          .withSeed(1337)
+          .withSeed(this.seed)
 
       const noise: number = Math.min(
           Math.max(Math.abs(perlinNoise.generatePerlin2(coordinate.getX() / 100, coordinate.getY() / 100)) * 256,
@@ -60,7 +62,7 @@ export class TerrainManager {
 
       this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile];
 
-      const intersectingTile: TileObject<RubyTownTile> | null = LandStructureProvider
+      const intersectingTile: TileObject<TileUnion> | null = LandStructureProvider
           .getIntersectingStructure(coordinate)
           ?.getIntersectingTile(coordinate) || null;
 

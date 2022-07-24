@@ -44,13 +44,13 @@ export default class PhaserWorldGenScene extends NyxScene {
     this.avatarRenderer = LocalAvatarRender
         .with(localAvatar, this, LocalAvatarRender)
         .setCollisionLayer(layerManager.getBuildingLayer())
-        .setCollisionLayer(layerManager.getPlayersLayer())
+        .setCollisionLayer(layerManager.getPlayersLayer());
 
     this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
         .setAvatar(localAvatar)
-        .setSeed(9992131)
+        .setSeed(0.7666644406451248)
         .setLayerManager(layerManager);
 
     await this.realmGenerator.loadGenerationAt(

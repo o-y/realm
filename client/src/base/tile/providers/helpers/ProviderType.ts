@@ -1,5 +1,6 @@
 export enum ProviderType {
   NATURE,
   NATURE_SUPPORT,
-  RUBYTOWN
+  RUBYTOWN,
+  BRIDGE
 }

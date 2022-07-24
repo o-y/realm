@@ -65,7 +65,7 @@ export class RealmGenerationData {
     this.avatar = avatar;
     this.seed = seed;
     this.layerManager = layerManager;
-    this.terrainManager = TerrainManager.withLayerManager(this.getLayerManager());
+    this.terrainManager = TerrainManager.withRealmGenerationData(this);
   }
 
 

@@ -1,7 +1,6 @@
 import TileProvider from '@/base/tile/internal/TileProvider';
 import {ProviderType} from '@/base/tile/providers/helpers/ProviderType';
 
-
 export default class RubyTownProvider<T> extends TileProvider<RubyTownTile> {
   public provideBaseDirectory(): string {
     return "@/base/tile/assets/rubytown"

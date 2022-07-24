@@ -1,8 +1,10 @@
 import {AbstractLandStructure} from '@/base/minos/land/internal/AbstractLandStructure';
 import {LandStructureAnnotations} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
+import TileProvider from '@/base/tile/internal/TileProvider';
+import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 
-export class MinosRedBrickedBuildings extends AbstractLandStructure {
+export class MinosRedBrickedBuildings extends AbstractLandStructure<RubyTownTile> {
   provideAnnotations(): LandStructureAnnotations {
     return new LandStructureAnnotations()
   }
@@ -14,5 +16,9 @@ export class MinosRedBrickedBuildings extends AbstractLandStructure {
       [RubyTownTile.RUBYTOWN_247, RubyTownTile.RUBYTOWN_213, RubyTownTile.RUBYTOWN_213, RubyTownTile.RUBYTOWN_213, RubyTownTile.RUBYTOWN_215],
       [RubyTownTile.RUBYTOWN_231, RubyTownTile.RUBYTOWN_197, RubyTownTile.RUBYTOWN_197, RubyTownTile.RUBYTOWN_197, RubyTownTile.RUBYTOWN_199],
     ]
+  }
+
+  getProvider(): TileProvider<RubyTownTile> {
+    return CommonTileProvider.provideRubyTownProvider();
   }
 }

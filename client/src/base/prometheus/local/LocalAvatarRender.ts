@@ -75,6 +75,8 @@ export class LocalAvatarRender extends AvatarRender {
       const localPeer: LocalPeer = <LocalPeer> this.getAvatar().getPeer();
       localPeer.updatePosition(worldToTileConversionCoordinate);
 
+      console.log(worldToTileConversionCoordinate)
+
       this.lastPositionY = worldToTileConversionCoordinate.getY();
       this.lastPositionX = worldToTileConversionCoordinate.getX();
     }

@@ -2,6 +2,7 @@ import NatureTileProvider, {NatureTile} from '@/base/tile/providers/NatureTilePr
 import TileObject from '@/base/tile/TileObject';
 import NatureSupportTileProvider, {NatureSupportTile} from '@/base/tile/providers/NatureSupportTileProvider';
 import RubyTownProvider, {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
+import BridgeTileProvider, {BridgeTile} from '@/base/tile/providers/BridgeTileProvider';
 
 export default class CommonTileProvider {
   public static getNatureTile(tile: NatureTile): TileObject<NatureTile> {
@@ -16,6 +17,10 @@ export default class CommonTileProvider {
     return CommonTileProvider.provideRubyTownProvider().getTile(tile);
   }
 
+  public static getBridgeTile(tile: BridgeTile): TileObject<BridgeTile> {
+    return CommonTileProvider.provideBridgeProvider().getTile(tile);
+  }
+
   public static provideNatureProvider(): NatureTileProvider<NatureTile> {
     return new NatureTileProvider<NatureTile>();
   }
@@ -26,5 +31,9 @@ export default class CommonTileProvider {
 
   public static provideRubyTownProvider(): RubyTownProvider<RubyTownTile> {
     return new RubyTownProvider<RubyTownTile>();
+  }
+
+  public static provideBridgeProvider(): BridgeTileProvider<BridgeTile> {
+    return new BridgeTileProvider<BridgeTile>();
   }
 }

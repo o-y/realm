@@ -1,7 +1,8 @@
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 import {LandStructureAnnotations} from '@/base/minos/land/internal/LandStructureAnnotations';
+import TileProvider from '@/base/tile/internal/TileProvider';
 
-export abstract class AbstractLandStructure {
+export abstract class AbstractLandStructure<T> {
 
   /**
    * Note, this is inverted on the grid, so:
@@ -16,7 +17,7 @@ export abstract class AbstractLandStructure {
    * [1, 2, 3]
    *
    */
-  public abstract provideStructureMatrix(): Array<Array<RubyTownTile | null>>
+  public abstract provideStructureMatrix(): Array<Array<T | null>>
 
   public abstract provideAnnotations(): LandStructureAnnotations
 
@@ -27,4 +28,6 @@ export abstract class AbstractLandStructure {
   public getHeight(): number {
     return this.provideStructureMatrix().length;
   }
+
+  public abstract getProvider(): TileProvider<T>
 }

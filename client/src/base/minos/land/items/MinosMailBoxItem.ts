@@ -1,8 +1,10 @@
 import {AbstractLandStructure} from '@/base/minos/land/internal/AbstractLandStructure';
 import {LandStructureAnnotations} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
+import TileProvider from '@/base/tile/internal/TileProvider';
+import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 
-export class MinosMailBoxItem extends AbstractLandStructure {
+export class MinosMailBoxItem extends AbstractLandStructure<RubyTownTile> {
   provideAnnotations(): LandStructureAnnotations {
     return new LandStructureAnnotations();
   }
@@ -12,5 +14,9 @@ export class MinosMailBoxItem extends AbstractLandStructure {
       [RubyTownTile.RUBYTOWN_88],
       [RubyTownTile.RUBYTOWN_72]
     ];
+  }
+
+  getProvider(): TileProvider<RubyTownTile> {
+    return CommonTileProvider.provideRubyTownProvider();
   }
 }

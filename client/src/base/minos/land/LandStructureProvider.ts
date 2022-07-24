@@ -18,10 +18,10 @@ import {MinosThreeTiledVerticalTreeItem} from '@/base/minos/land/items/MinosThre
 export class LandStructureProvider {
   public static provideStructureList(): Array<LandStructure> {
     return [
-      LandStructure.create(
-          Coordinate.of(14, 14),
-          new MinosThreeTiledVerticalTreeItem()
-      )
+      // LandStructure.create(
+      //     Coordinate.of(4, 0),
+      //     new MinosRedRoofBuilding()
+      // )
     ]
   }
 

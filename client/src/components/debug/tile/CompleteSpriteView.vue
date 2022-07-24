@@ -25,6 +25,7 @@ import {TileUnion} from '../../../base/tile/providers/helpers/TileEnumUnion';
 import CommonTileProvider from '../../../base/tile/providers/helpers/CommonTileProvider';
 import DistinctTileProvider from '../../../base/tile/providers/helpers/DistinctTileProvider';
 import {RubyTownTile} from '../../../base/tile/providers/RubyTownProvider';
+import {BridgeTile} from '../../../base/tile/providers/BridgeTileProvider';
 
 @Component
 export default class CompleteSpriteView extends Vue {
@@ -40,6 +41,10 @@ export default class CompleteSpriteView extends Vue {
     TileUtil.provideEnumList<RubyTownTile>(
         Object.entries(RubyTownTile),
         DistinctTileProvider.with(CommonTileProvider.provideRubyTownProvider())
+    ),
+    TileUtil.provideEnumList<BridgeTile>(
+        Object.entries(BridgeTile),
+        DistinctTileProvider.with(CommonTileProvider.provideBridgeProvider())
     )
   ]
 }

@@ -7,14 +7,14 @@ import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider
 
 export class LandStructure {
   private readonly topLeftCoordinate: NonDecimalCoordinate;
-  private readonly structure: AbstractLandStructure;
+  private readonly structure: AbstractLandStructure<TileUnion>;
 
-  private constructor(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure) {
+  private constructor(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure<TileUnion>) {
     this.topLeftCoordinate = bottomLeftCoordinate;
     this.structure = structure;
   }
 
-  public static create(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure): LandStructure {
+  public static create(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure<TileUnion>): LandStructure {
     return new LandStructure(bottomLeftCoordinate, structure);
   }
 
@@ -22,7 +22,7 @@ export class LandStructure {
     return this.topLeftCoordinate;
   }
 
-  public getStructure(): AbstractLandStructure {
+  public getStructure(): AbstractLandStructure<TileUnion> {
     return this.structure;
   }
 
@@ -33,8 +33,8 @@ export class LandStructure {
     return yIntersection && xIntersection;
   }
 
-  public getIntersectingTile(tileCoordinate: NonDecimalCoordinate): TileObject<RubyTownTile> | null {
-    const structureMatrix: Array<Array<RubyTownTile | null>> = this.structure.provideStructureMatrix();
+  public getIntersectingTile(tileCoordinate: NonDecimalCoordinate): TileObject<TileUnion> | null {
+    const structureMatrix: Array<Array<TileUnion | null>> = this.structure.provideStructureMatrix();
 
     const yIndex = this.topLeftCoordinate.getY() - tileCoordinate.getY() + (this.structure.getHeight() - 1);
     const xIndex = tileCoordinate.getX() - this.topLeftCoordinate.getX();
@@ -43,6 +43,6 @@ export class LandStructure {
       return null;
     }
 
-    return CommonTileProvider.getRubyTownTile(structureMatrix[yIndex][xIndex]!);
+    return this.structure.getProvider().getTile(structureMatrix[yIndex][xIndex]!)
   }
 }
