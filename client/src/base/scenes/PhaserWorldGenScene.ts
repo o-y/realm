@@ -25,24 +25,27 @@ import {PeerState} from '@/base/supabase/peer/PeerState';
 import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';
 import {Peer} from '@/base/supabase/peer/Peer';
 import {RemoteAvatarRender} from '@/base/prometheus/remote/RemoteAvatarRender';
+import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: LocalAvatarRender;
   private realmGenerator!: RealmGenerator;
+  private layerManager!: LayerManager;
   private supabaseSingleton: SupabaseSingleton = SupabaseSingleton.getInstance();
   private clientPlugin: PeerState = this.supabaseSingleton.getPeerState();
-
   private remoteAvatarsSparseArray: Array<RemoteAvatarRender> = new Array<RemoteAvatarRender>();
 
   private creatingScene: boolean = true;
 
   async createPhaser() {
     const peerConnectionManager: PeerConnectionManager = PeerConnectionManager.getInstance();
-    const localClient = await peerConnectionManager.getLocalPeer()
+    const localClient = await peerConnectionManager.getLocalPeer();
 
     const localAvatar = Avatar
         .of(localClient)
         .updateTileCoordinate(localClient.getPosition())
+
+    this.layerManager = LayerManager.forScene(this);
 
     this.avatarRenderer = LocalAvatarRender.with(localAvatar, this, LocalAvatarRender)
 
@@ -51,13 +54,19 @@ export default class PhaserWorldGenScene extends NyxScene {
         .getGenerator(this)
         .setAvatar(localAvatar)
         .setSeed(9992131)
-        .setLayerManager(LayerManager.forScene(this));
+        .setLayerManager(this.layerManager);
 
     await this.realmGenerator.loadGenerationAt(
         /* current = */ localClient.getPosition(),
         /* next = */ localClient.getPosition()
     )
 
+    this.physics.add.collider(
+        this.avatarRenderer.getAvatarObjectRender().getAvatarObject(),
+        this.layerManager.getBuildingLayer().getChildren()
+    );
+
+    // TODO: Refactor this into a separate class.
     const remoteAvatarsSparseArray = this.remoteAvatarsSparseArray;
     const _this = this;
     peerConnectionManager.registerPeerConnectionListener( {
@@ -97,6 +106,10 @@ export default class PhaserWorldGenScene extends NyxScene {
       ...TileUtil.provideEnumList<NatureSupportTile>(
           Object.entries(NatureSupportTile),
           DistinctTileProvider.with(CommonTileProvider.provideNatureSupportProvider())
+      ),
+      ...TileUtil.provideEnumList<RubyTownTile>(
+          Object.entries(RubyTownTile),
+          DistinctTileProvider.with(CommonTileProvider.provideRubyTownProvider())
       )
     ]
 

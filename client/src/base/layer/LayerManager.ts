@@ -1,11 +1,11 @@
 import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {PlayersLayer} from '@/base/layer/layers/PlayersLayer';
-import {PrefabLayer} from '@/base/layer/layers/PrefabLayer';
+import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
 
 export class LayerManager {
   private readonly baseLayer: BaseLayer;
   private readonly playersLayer: PlayersLayer;
-  private readonly prefabLayer: PrefabLayer;
+  private readonly buildingLayer: BuildingLayer;
   private readonly scene: Phaser.Scene;
 
   public static forScene(scene: Phaser.Scene): LayerManager {
@@ -16,7 +16,7 @@ export class LayerManager {
     this.scene = scene;
 
     this.playersLayer = PlayersLayer.forScene(scene).setDepth(3);
-    this.prefabLayer = PrefabLayer.forScene(scene).setDepth(2);
+    this.buildingLayer = BuildingLayer.forScene(scene).setDepth(2);
     this.baseLayer = BaseLayer.forScene(scene).setDepth(1);
   }
 
@@ -28,7 +28,7 @@ export class LayerManager {
     return this.playersLayer
   }
 
-  public getPrefabLayer() {
-    return this.prefabLayer
+  public getBuildingLayer() {
+    return this.buildingLayer
   }
 }

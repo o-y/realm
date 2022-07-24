@@ -71,8 +71,6 @@ export class DatabasePlugin extends SupabasePlugin {
   public async registerNewPeer(user: User): Promise<void> {
     const CLIENTS_DB = DatabaseTables.CLIENTS;
 
-    console.log("Registering new account for: ", user.email);
-
     // TODO: Some of this is hardcoded, it shouldn't, but that's fine for now.
     const { data, error } = await super.getInternalSuperbaseClient()
         .from(CLIENTS_DB.DATABASE_NAME)

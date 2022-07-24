@@ -1,6 +1,6 @@
 import TileObjectStore from '@/base/tile/store/TileObjectStore';
 import {Util} from '@/util/Util';
-import {ProviderType} from '@/base/tile/providers/ProviderType';
+import {ProviderType} from '@/base/tile/providers/helpers/ProviderType';
 
 export default class TileObject<T> {
   public static TILE_SIZE: number = 48;

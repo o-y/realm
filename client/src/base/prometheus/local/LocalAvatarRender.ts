@@ -17,6 +17,7 @@ import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
 import {Peer} from '@/base/supabase/peer/Peer';
 import {AvatarRender} from '@/base/prometheus/std/AvatarRender';
 import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
+import {MinosStructureProvider} from '@/base/minos/MinosStructureProvider';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -32,7 +33,10 @@ export class LocalAvatarRender extends AvatarRender {
   }
 
   public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {
+    // Input
     this.avatarController.awaitInput(this.getAvatarObjectRender(), this.provideSprite());
+
+    // Generate Terrain
     this.generateTerrainSurroundingPlayer(realmGenerator);
   }
 

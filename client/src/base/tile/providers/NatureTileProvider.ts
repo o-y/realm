@@ -1,5 +1,5 @@
 import TileProvider from '@/base/tile/internal/TileProvider';
-import {ProviderType} from '@/base/tile/providers/ProviderType';
+import {ProviderType} from '@/base/tile/providers/helpers/ProviderType';
 
 export default class NatureTileProvider<T> extends TileProvider<NatureTile> {
   public provideBaseDirectory(): string {

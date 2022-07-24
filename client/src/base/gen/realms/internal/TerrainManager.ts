@@ -7,24 +7,29 @@ import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {Util} from '@/util/Util';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
-import {ProviderType} from '@/base/tile/providers/ProviderType';
+import {MinosStructureProvider} from '@/base/minos/MinosStructureProvider';
+import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
+import {LayerManager} from '@/base/layer/LayerManager';
+import {BaseLayer} from '@/base/layer/layers/BaseLayer';
+import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
 
 export class TerrainManager {
-  private layer: NyxLayer;
-  private readonly tileSparseArray: Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null> = new Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>();
+  private baseLayer: BaseLayer;
+  private buildingLayer: BuildingLayer;
+
+  private readonly tileSparseArray: Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>> = new Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>>();
   private noiseMap: Map<string, number> = new Map<string, number>();
 
-  private constructor(layer: NyxLayer) {
-    this.layer = layer;
+  private constructor(layerManager: LayerManager) {
+    this.baseLayer = layerManager.getBaseLayer();
+    this.buildingLayer = layerManager.getBuildingLayer();
   }
 
-  public static withLayer(layer: NyxLayer) {
-    return new TerrainManager(layer);
+  public static withLayerManager(layerManager: LayerManager) {
+    return new TerrainManager(layerManager);
   }
 
   public loadTileSet(coordinateSet: Set<Coordinate>) {
-    const randomColour = MathUtil.randomHex();
-
     coordinateSet.forEach(coordinate => {
 
       const perlinNoise: PerlinNoise = PerlinNoise
@@ -46,23 +51,25 @@ export class TerrainManager {
           .selectTileArrayWithNoise(noise, clampedRandom)
           .selectRandomTile(clampedRandom);
 
-      const tile = this.layer.scene.add.nyxTileObjectImage(
+      const terrainTile = this.baseLayer.scene.add.nyxTileObjectImage(
           (coordinate.getX() * TileObject.TILE_SIZE),
           (coordinate.getY() * TileObject.TILE_SIZE),
           randomTile
-      );
-      //
-      // const tile = this.layer.scene.add.rectangle(
-      //         (coordinate.getX() * TileObject.TILE_SIZE),
-      //         (coordinate.getY() * TileObject.TILE_SIZE),
-      //         TileObject.TILE_SIZE,
-      //         TileObject.TILE_SIZE,
-      //         MathUtil.randomHex()
-      // )
+      ).setAlpha(0.5);
 
-      tile.alpha = 0.5;
-
-      this.tileSparseArray[coordinate.toCantorsPairing()] = tile;
+      const intersectingStructure = MinosStructureProvider.getIntersectingStructure(coordinate);
+      if (intersectingStructure) {
+        const intersectingTile: TileObject<RubyTownTile> = intersectingStructure.getIntersectingTile(coordinate);
+        const buildingTile = this.buildingLayer.scene.physics.add.image(
+                (coordinate.getX() * TileObject.TILE_SIZE),
+                (coordinate.getY() * TileObject.TILE_SIZE),
+                intersectingTile.imageHash
+        )
+        this.buildingLayer.add(buildingTile);
+        this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile, buildingTile];
+      } else {
+        this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile];
+      }
     })
   }
 
@@ -71,8 +78,8 @@ export class TerrainManager {
       const ref = this.tileSparseArray[coordinate.toCantorsPairing()];
 
       if (ref != null){
-        ref.destroy(true);
-        this.tileSparseArray[coordinate.toCantorsPairing()] = null;
+        ref.forEach(tile => tile?.destroy(true))
+        this.tileSparseArray[coordinate.toCantorsPairing()] = [null];
       }
     });
   }

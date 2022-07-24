@@ -1,5 +1,5 @@
 import TileObject from '@/base/tile/TileObject';
-import {ProviderType} from '@/base/tile/providers/ProviderType';
+import {ProviderType} from '@/base/tile/providers/helpers/ProviderType';
 
 export default abstract class TileProvider<T> {
   public getTile(tile: T): TileObject<T> {

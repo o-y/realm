@@ -75,6 +75,9 @@ export default class PhaserComponent extends Vue {
       ],
       physics: {
         default: 'arcade',
+        arcade: {
+          debug: true
+        }
       },
     });
 
