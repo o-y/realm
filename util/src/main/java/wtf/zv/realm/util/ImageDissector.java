@@ -1,4 +1,4 @@
-package wtf.zv.realm;
+package wtf.zv.realm.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,10 +12,10 @@ public class ImageDissector {
   private final File file;
 
   public static void main(String[] args) {
-    Set<String> tilesets = Set.of("nature/nature.png", "interior/interior.png", "rubytown/rubytown.png");
+    Set<String> tilesets = Set.of("maps/bridge/bridge.png");
 
     tilesets.stream()
-        .map(relativeDir -> new File(String.format("util/src/main/java/wtf/zv/realm/%s", relativeDir)))
+        .map(relativeDir -> new File(String.format("util/src/main/java/wtf/zv/realm/util/%s", relativeDir)))
         .map(ImageDissector::new)
         .forEach(ImageDissector::dissectImage);
   }
