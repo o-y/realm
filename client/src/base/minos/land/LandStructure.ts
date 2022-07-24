@@ -1,28 +1,28 @@
-import {MinosAbstractStructure} from '@/base/minos/internal/MinosAbstractStructure';
+import {AbstractLandStructure} from '@/base/minos/land/internal/AbstractLandStructure';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import TileObject from '@/base/tile/TileObject';
 import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 
-export class MinosStructureItem {
+export class LandStructure {
   private readonly topLeftCoordinate: NonDecimalCoordinate;
-  private readonly structure: MinosAbstractStructure;
+  private readonly structure: AbstractLandStructure;
 
-  private constructor(bottomLeftCoordinate: NonDecimalCoordinate, structure: MinosAbstractStructure) {
+  private constructor(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure) {
     this.topLeftCoordinate = bottomLeftCoordinate;
     this.structure = structure;
   }
 
-  public static create(bottomLeftCoordinate: NonDecimalCoordinate, structure: MinosAbstractStructure): MinosStructureItem {
-    return new MinosStructureItem(bottomLeftCoordinate, structure);
+  public static create(bottomLeftCoordinate: NonDecimalCoordinate, structure: AbstractLandStructure): LandStructure {
+    return new LandStructure(bottomLeftCoordinate, structure);
   }
 
   public getBottomLeftCoordinate(): NonDecimalCoordinate {
     return this.topLeftCoordinate;
   }
 
-  public getStructure(): MinosAbstractStructure {
+  public getStructure(): AbstractLandStructure {
     return this.structure;
   }
 

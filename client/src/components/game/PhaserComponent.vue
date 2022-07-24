@@ -63,7 +63,7 @@ export default class PhaserComponent extends Vue {
         postBoot: this.onPostBoot
       },
       scale: {
-        mode: Phaser.Scale.ENVELOP
+        mode: Phaser.Scale.RESIZE
       },
       parent: this.phaserRoot,
       pixelArt: true,

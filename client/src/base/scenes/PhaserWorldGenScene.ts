@@ -26,7 +26,7 @@ import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager'
 import {Peer} from '@/base/supabase/peer/Peer';
 import {RemoteAvatarRender} from '@/base/prometheus/remote/RemoteAvatarRender';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
-import {MercuryClientPlugin} from '@/base/scenes/MercuryClientPlugin';
+import {MercuryClientPlugin} from '@/base/mercury/MercuryClientPlugin';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: LocalAvatarRender;
@@ -41,7 +41,11 @@ export default class PhaserWorldGenScene extends NyxScene {
         .of(localClient)
         .updateTileCoordinate(localClient.getPosition());
 
-    this.avatarRenderer = LocalAvatarRender.with(localAvatar, this, LocalAvatarRender)
+    this.avatarRenderer = LocalAvatarRender
+        .with(localAvatar, this, LocalAvatarRender)
+        .setCollisionLayer(layerManager.getBuildingLayer())
+        .setCollisionLayer(layerManager.getPlayersLayer())
+
     this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)

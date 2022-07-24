@@ -42,6 +42,13 @@ export class AvatarObjectRender {
     return this.usernameObject;
   }
 
+  public getAllPhysicalObjects(): Array<Phaser.GameObjects.GameObject> {
+    return [
+        this.getAvatarObject(),
+        this.getUsernameObject()
+    ]
+  }
+
   public recomputePositions(): AvatarObjectRender {
     if (this.avatarObject === null) throw new Error("#avatarObject is null. Ensure #setAvatarObject has been invoked!");
     if (this.usernameObject === null) throw new Error("#usernameObject is null. Ensure #setUsernameObject has been invoked!");

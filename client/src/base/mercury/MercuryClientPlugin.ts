@@ -37,7 +37,10 @@ export class MercuryClientPlugin extends NyxScenePlugin<PhaserWorldGenScene> {
       },
 
       onPeerDisconnected(peer: Peer) {
-        console.log("Peer disconnected: ", peer);
+        remoteAvatarsSparseArray[peer.getRealmPeerId()].getAvatarObjectRender().getAllPhysicalObjects().forEach(
+            object => object.destroy(true)
+        )
+        delete remoteAvatarsSparseArray[peer.getRealmPeerId()]
       }
     })
   }

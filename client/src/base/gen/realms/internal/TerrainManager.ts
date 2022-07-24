@@ -7,7 +7,7 @@ import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {Util} from '@/util/Util';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
-import {MinosStructureProvider} from '@/base/minos/MinosStructureProvider';
+import {LandStructureProvider} from '@/base/minos/land/LandStructureProvider';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 import {LayerManager} from '@/base/layer/LayerManager';
 import {BaseLayer} from '@/base/layer/layers/BaseLayer';
@@ -57,7 +57,7 @@ export class TerrainManager {
           randomTile
       ).setAlpha(0.5);
 
-      const intersectingStructure = MinosStructureProvider.getIntersectingStructure(coordinate);
+      const intersectingStructure = LandStructureProvider.getIntersectingStructure(coordinate);
       if (intersectingStructure) {
         const intersectingTile: TileObject<RubyTownTile> = intersectingStructure.getIntersectingTile(coordinate);
         const buildingTile = this.buildingLayer.scene.physics.add.image(

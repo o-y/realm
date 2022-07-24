@@ -17,7 +17,7 @@ import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
 import {Peer} from '@/base/supabase/peer/Peer';
 import {AvatarRender} from '@/base/prometheus/std/AvatarRender';
 import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
-import {MinosStructureProvider} from '@/base/minos/MinosStructureProvider';
+import {NyxLayer} from '@/framework/nyx/NyxLayer';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -26,16 +26,20 @@ export class LocalAvatarRender extends AvatarRender {
   private readonly avatarController: LocalAvatarController = AvatarPlugin
       .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
 
+  public setCollisionLayer(layer: NyxLayer): LocalAvatarRender {
+    this.getScene().physics.add.collider(
+        this.getAvatarObjectRender().getAvatarObject(),
+        layer.getChildren()
+    );
+
+    return this;
+  }
+
   public getAvatarObjectRender(): AvatarObjectRender {
     const avatarObjectRender = super.getAvatarObjectRender();
-    const scene = super.getScene();
+    const scene = this.getScene();
 
     scene.cameras.main.startFollow(avatarObjectRender.getAvatarObject());
-
-    scene.physics.add.collider(
-        avatarObjectRender.getAvatarObject(),
-        LayerManager.forScene(super.getScene()).getBuildingLayer().getChildren()
-    );
 
     return avatarObjectRender;
   }

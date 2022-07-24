@@ -1,10 +1,10 @@
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 
-export class MinosStructureAnnotations {
+export class LandStructureAnnotations {
   private annotationMap: Map<MinosStructureAnnotationsType, Array<TileUnion>> = new Map<MinosStructureAnnotationsType, Array<TileUnion>>();
 
   // TODO: Add a map for O(1) Coordinate -> Tile Annotation look ups and a global class which delegates to n MSAnnotations.
-  public setForAnnotation(annotation: MinosStructureAnnotationsType, tiles: Array<TileUnion>): MinosStructureAnnotations {
+  public setForAnnotation(annotation: MinosStructureAnnotationsType, tiles: Array<TileUnion>): LandStructureAnnotations {
     if (!this.annotationMap.has(annotation)) {
       this.annotationMap.set(annotation, new Array<TileUnion>());
     }

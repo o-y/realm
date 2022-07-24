@@ -1,10 +1,10 @@
-import {MinosAbstractStructure} from '@/base/minos/internal/MinosAbstractStructure';
-import {MinosStructureAnnotations, MinosStructureAnnotationsType} from '@/base/minos/internal/MinosStructureAnnotations';
+import {AbstractLandStructure} from '@/base/minos/land/internal/AbstractLandStructure';
+import {LandStructureAnnotations, MinosStructureAnnotationsType} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 
-export class MinosYellowBrickBuilding extends MinosAbstractStructure {
-  provideAnnotations(): MinosStructureAnnotations {
-    return new MinosStructureAnnotations()
+export class MinosYellowBrickBuilding extends AbstractLandStructure {
+  provideAnnotations(): LandStructureAnnotations {
+    return new LandStructureAnnotations()
         .setForAnnotation(
             MinosStructureAnnotationsType.DOOR, [RubyTownTile.RUBYTOWN_67]
         );
