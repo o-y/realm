@@ -13,14 +13,20 @@ provides the frontend interface and public entrypoint to Realm.
 
 terminology
   - realms:
-    - Gaia:  land, sea and structures, default Realm entrypoint
-    - Minos: the interior plane of above-world structures
+    - Gaia:  land, sea and structures, default Realm entrypoint.
+    - Minos: the interior plane of above-world structures.
   - services:
-    - Atlas: oversees realm generation
+    - Atlas: oversees realm generation.
     - Prometheus: creates avatars
       - data/Avatar               /---> stores the positions of local and remote
       - data/AvatarController  --/      avatars, determines which bounds to
                                         generate.
-      - render/AvatarRender    -------> renders the local avatar, listens to
+      - render/LocalAvatarRender    -------> renders the local avatar, listens to
                                         keyboard input events, etc.
-  - Nyx: framework for Phaser
+    - Mercury: handles real-time avatar movement and orchestration across peers.
+    - Supabase
+      - auth:     handles authentication.
+      - peer:     maintains state of Realm users (decoupled from auth).
+      - database: provides utilities to query and mutate the Postgres DB.
+
+  - Nyx: support framework for Phaser
