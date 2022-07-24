@@ -11,9 +11,9 @@ export default abstract class NyxScene extends Phaser.Scene {
     super(config);
   }
 
-  abstract preloadPhaser(): void;
+  abstract preloadPhaser(): Promise<void>;
 
-  abstract createPhaser(): void;
+  abstract createPhaser(): Promise<void>;
 
   sceneInit(): void {}
 
@@ -29,8 +29,8 @@ export default abstract class NyxScene extends Phaser.Scene {
     await this.sceneInit()
   }
 
-  private createPhaserInternal(): void {
-    this.createPhaser();
+  private async createPhaserInternal(): Promise<void> {
+    await this.createPhaser();
     this.isSceneCreated = true;
   }
 

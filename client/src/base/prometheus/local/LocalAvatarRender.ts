@@ -27,9 +27,17 @@ export class LocalAvatarRender extends AvatarRender {
       .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
 
   public getAvatarObjectRender(): AvatarObjectRender {
-    const avatarObject = super.getAvatarObjectRender();
-    super.getScene().cameras.main.startFollow(avatarObject.getAvatarObject());
-    return avatarObject;
+    const avatarObjectRender = super.getAvatarObjectRender();
+    const scene = super.getScene();
+
+    scene.cameras.main.startFollow(avatarObjectRender.getAvatarObject());
+
+    scene.physics.add.collider(
+        avatarObjectRender.getAvatarObject(),
+        LayerManager.forScene(super.getScene()).getBuildingLayer().getChildren()
+    );
+
+    return avatarObjectRender;
   }
 
   public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {

@@ -26,74 +26,39 @@ import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager'
 import {Peer} from '@/base/supabase/peer/Peer';
 import {RemoteAvatarRender} from '@/base/prometheus/remote/RemoteAvatarRender';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
+import {MercuryClientPlugin} from '@/base/scenes/MercuryClientPlugin';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: LocalAvatarRender;
   private realmGenerator!: RealmGenerator;
-  private layerManager!: LayerManager;
-  private supabaseSingleton: SupabaseSingleton = SupabaseSingleton.getInstance();
-  private clientPlugin: PeerState = this.supabaseSingleton.getPeerState();
-  private remoteAvatarsSparseArray: Array<RemoteAvatarRender> = new Array<RemoteAvatarRender>();
-
-  private creatingScene: boolean = true;
 
   async createPhaser() {
     const peerConnectionManager: PeerConnectionManager = PeerConnectionManager.getInstance();
-    const localClient = await peerConnectionManager.getLocalPeer();
+    const layerManager: LayerManager = LayerManager.forScene(this);
 
+    const localClient = await peerConnectionManager.getLocalPeer();
     const localAvatar = Avatar
         .of(localClient)
-        .updateTileCoordinate(localClient.getPosition())
-
-    this.layerManager = LayerManager.forScene(this);
+        .updateTileCoordinate(localClient.getPosition());
 
     this.avatarRenderer = LocalAvatarRender.with(localAvatar, this, LocalAvatarRender)
-
     this.realmGenerator = RealmGeneratorProvider
         .withGenerationStrategy(RealmGenerationStrategy.GAIA)
         .getGenerator(this)
         .setAvatar(localAvatar)
         .setSeed(9992131)
-        .setLayerManager(this.layerManager);
+        .setLayerManager(layerManager);
 
     await this.realmGenerator.loadGenerationAt(
         /* current = */ localClient.getPosition(),
         /* next = */ localClient.getPosition()
     )
 
-    this.physics.add.collider(
-        this.avatarRenderer.getAvatarObjectRender().getAvatarObject(),
-        this.layerManager.getBuildingLayer().getChildren()
-    );
-
-    // TODO: Refactor this into a separate class.
-    const remoteAvatarsSparseArray = this.remoteAvatarsSparseArray;
-    const _this = this;
-    peerConnectionManager.registerPeerConnectionListener( {
-      onPeerConnected(peer: Peer) {
-        if (peer.isLocalClient()) return;
-
-        remoteAvatarsSparseArray[peer.getRealmPeerId()] = RemoteAvatarRender
-            .with(Avatar.of(peer).updateTileCoordinate(peer.getPosition()), _this, RemoteAvatarRender)
-            .moveToCoordinate(peer.getPosition())
-      },
-
-      onPeerStateUpdated(previousState: Peer, newState: Peer) {
-        if (newState.isLocalClient() || previousState.isLocalClient()) return;
-
-        remoteAvatarsSparseArray[newState.getRealmPeerId()].moveToCoordinate(newState.getPosition())
-      },
-
-      onPeerDisconnected(peer: Peer) {
-        console.log("Peer disconnected: ", peer);
-      }
-    })
-
-    this.creatingScene = false;
+    MercuryClientPlugin.withScene<this, MercuryClientPlugin>(this, MercuryClientPlugin)
+        .initiatePeerConnectionManager();
   }
 
   updateOnCreated() {
-    if (this.creatingScene) return;
     this.avatarRenderer.awaitInputAndGenerateTerrain(this.realmGenerator);
   }
 
