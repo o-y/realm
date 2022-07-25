@@ -1,6 +1,7 @@
 <template>
   <div class = "authView">
     <div class = "authViewContainer">
+      <div class = "background"></div>
       <div class = "realmLogo">
         <img :src="require('@/assets/realm-logo.png')" alt="Realm Logo" ref = "realmLogo"/>
       </div>
@@ -8,10 +9,10 @@
       <div class = "authenticateButtonContainer">
         <template v-if = "isAuthenticated && authenticationData != null">
           <h1>Welcome back, <b>{{ authenticationData.getDisplayName() }}</b></h1>
-          <button v-on:click = "enterRealm">Enter Realm</button>
+          <button v-on:click = "enterRealm">Enter</button>
         </template>
         <template v-else>
-          <button v-on:click = "signInWithGithub">Authenticate</button>
+          <button v-on:click = "signInWithGithub">Login</button>
         </template>
       </div>
     </div>
@@ -55,7 +56,7 @@ export default class Auth extends Vue {
 
 
 <style scoped lang="stylus">
-  @import "../../style/config.styl"
+  @import "~@/style/config.styl"
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
   .authView
@@ -64,6 +65,9 @@ export default class Auth extends Vue {
     display: flex
     justify-content: center
     align-items: center
+    background:
+        linear-gradient(rgba(255,255,255,1), rgba(255,255,255,.8)),
+        url("~@/assets/realm-background.png")
 
     .authViewContainer
       margin-left: 100px
@@ -88,6 +92,7 @@ export default class Auth extends Vue {
           padding: 30px
           padding-bottom: 60px
           margin: 0
+          color: $realmPalette.BlackChocolate
 
           b
             background-image: linear-gradient(45deg, $realmPalette.RebeccaPurple, lighten($realmPalette.OceanBlue, 35%));
@@ -103,15 +108,16 @@ export default class Auth extends Vue {
           font-family: 'Poppins', sans-serif
           padding-left: 60px
           padding-right: @padding-left
-          padding-top: 30px;
+          padding-top: 25px;
           padding-bottom: @padding-top
           border: 0
           background: $realmPalette.LavenderWeb
           color: $realmPalette.RebeccaPurple
           border-radius: 30px
+          width: 300px
           font-weight: 600
           transition: color 0.25s linear, background 0.25s linear, box-shadow 0.25s linear
-          box-shadow: 0 14px 28px rgba($realmPalette.RebeccaPurple,0.15), 0 10px 10px rgba($realmPalette.LavenderWeb,0.14);
+          box-shadow: 0 14px 28px rgba($realmPalette.RebeccaPurple, 0.09), 0 10px 10px rgba($realmPalette.LavenderWeb, 0.08);
 
           &:hover
             background: lighten($realmPalette.LavenderWeb, 15%)
@@ -125,5 +131,6 @@ export default class Auth extends Vue {
         align-items: center
 
         img
-          width: 50%
+          width: 550px
+          align-self: flex-start
 </style>
