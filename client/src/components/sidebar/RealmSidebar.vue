@@ -18,7 +18,7 @@
     <div class = "nearbyPeople">
       <div class = "nearbyPeopleWrapper">
         <div class = "nearbyPeopleTitleContainer">
-          <h1>Nearby People</h1>
+          <h1>Nearby People (SDK)</h1>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@ export default class RealmSidebar extends Vue {
   public mounted() {
     // VideoSDK.config("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4NjgxZWJhNS04OGNiLTQxNWEtOTg5MC00YjRlYjIzN2M5MjkiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY1ODc3NjA2OCwiZXhwIjoxNjU5MzgwODY4fQ.TSih8ngnvcXIbuPlFqK8gvv5jOW4KLIJc45cnQciGzU");
 
-    console.log("VideoSDK");
+    console.log("Starting VideoSDK");
     const meeting = new VideoSDKMeeting().init({
       name: "Realm",
       meetingId: "hello",
