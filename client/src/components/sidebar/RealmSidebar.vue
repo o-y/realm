@@ -35,10 +35,71 @@
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
+// import { VideoSDK } from "@videosdk.live/js-sdk";
+import { VideoSDKMeeting } from "@videosdk.live/rtc-js-prebuilt";
 
 @Component
 export default class RealmSidebar extends Vue {
+  public mounted() {
+    // VideoSDK.config("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4NjgxZWJhNS04OGNiLTQxNWEtOTg5MC00YjRlYjIzN2M5MjkiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY1ODc3NjA2OCwiZXhwIjoxNjU5MzgwODY4fQ.TSih8ngnvcXIbuPlFqK8gvv5jOW4KLIJc45cnQciGzU");
 
+    console.log("VideoSDK");
+    const meeting = new VideoSDKMeeting().init({
+      name: "Realm",
+      meetingId: "hello",
+      apiKey: "8681eba5-88cb-415a-9890-4b4eb237c929",
+      region: "sg001",
+      containerId: null,
+      redirectOnLeave: "https://www.videosdk.live/",
+      micEnabled: true,
+      webcamEnabled: true,
+      participantCanToggleSelfWebcam: true,
+      participantCanToggleSelfMic: true,
+      participantCanLeave: true,
+      chatEnabled: true,
+      screenShareEnabled: true,
+      pollEnabled: true,
+      whiteboardEnabled: true,
+      raiseHandEnabled: true,
+      layout: {
+        type: "SPOTLIGHT",
+        priority: "PIN",
+      },
+      branding: {
+        enabled: true,
+        logoURL: "https://static.zujonow.com/videosdk.live/videosdk_logo_circle_big.png",
+        name: "Prebuilt",
+        poweredBy: false,
+      },
+      permissions: {
+        pin: true,
+        askToJoin: false, // Ask joined participants for entry in meeting
+        toggleParticipantMic: true, // Can toggle other participant's mic
+        toggleParticipantWebcam: true, // Can toggle other participant's webcam
+        drawOnWhiteboard: true, // Can draw on whiteboard
+        toggleWhiteboard: true, // Can toggle whiteboard
+        toggleRecording: true, // Can toggle meeting recording
+        toggleLivestream: true, //can toggle live stream
+        removeParticipant: true, // Can remove participant
+        endMeeting: true, // Can end meeting
+        changeLayout: true, //can change layout
+      },
+      joinScreen: {
+        visible: true,
+        title: "Daily scrum",
+        meetingUrl: window.location.href,
+      },
+      leftScreen: {
+        actionButton: {
+          label: "Video SDK Live",
+          href: "https://videosdk.live/",
+        },
+      },
+      notificationSoundEnabled: true,
+      debug: true,
+      maxResolution: "sd",
+    })
+  }
 }
 
 </script>

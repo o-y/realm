@@ -29,8 +29,6 @@ export class PathMap {
             .map(coordinate => coordinate.toCantorsPairing())
         );
 
-    console.log("bound.getCoordinateSet(): ", PathMap.allocateFromArray()[0].getCoordinateSet())
-
     let cantorPairingSubset: Array<number> = new Array<number>();
 
     pathCantorPairings.forEach(value => {
