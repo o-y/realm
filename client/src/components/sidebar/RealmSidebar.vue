@@ -47,7 +47,7 @@ export default class RealmSidebar extends Vue {
   @import "../../style/config.styl"
 
   $defaultSidebarPadding = 30px
-  $sidebarWidth = 350px
+  $sidebarWidth = 400px
   $videoCallButtonSize = 56px
 
   .realmSidebar
@@ -60,7 +60,7 @@ export default class RealmSidebar extends Vue {
     backdrop-filter: blur(15px) grayscale(30%);
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 300px auto 100px 78px
+    grid-template-rows: 350px auto 100px 78px
 
     .nearbyPeople
       display: flex
@@ -87,7 +87,6 @@ export default class RealmSidebar extends Vue {
           justify-content center
           align-items center
 
-
           h1
             font-family: 'Poppins', sans-serif;
             color: $realmPalette.Cloud
@@ -106,7 +105,7 @@ export default class RealmSidebar extends Vue {
         margin: $defaultSidebarPadding
         display: grid
         grid-template-columns 1fr
-        grid-template-rows 193px 1fr
+        grid-template-rows 230px 1fr
         grid-gap: 0
 
         .videoCallRoot
