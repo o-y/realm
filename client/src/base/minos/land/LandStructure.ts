@@ -33,7 +33,7 @@ export class LandStructure {
     return yIntersection && xIntersection;
   }
 
-  public getIntersectingTile(tileCoordinate: NonDecimalCoordinate): TileObject<TileUnion> | null {
+  public getIntersectingTileObject(tileCoordinate: NonDecimalCoordinate): TileObject<TileUnion> | null {
     const structureMatrix: Array<Array<TileUnion | null>> = this.structure.provideStructureMatrix();
 
     const yIndex = this.topLeftCoordinate.getY() - tileCoordinate.getY() + (this.structure.getHeight() - 1);

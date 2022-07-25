@@ -28,27 +28,30 @@ export default class RealmTileGenUtil {
     } else if (noise < 37){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.BUSH_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, RealmTileGenConstants.JUST_GRASS_ARRAY.length - 3, random)
       ])
     } else if (noise < 52){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.SHRUB_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, RealmTileGenConstants.JUST_GRASS_ARRAY.length - 3, random)
       ])
     } else if (noise < 78){
       return new RealmTileGenUtil([
           ...RealmTileGenConstants.VINE_ARRAY,
-          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, RealmTileGenConstants.JUST_GRASS_ARRAY.length - 3, random)
       ])
     } else if (noise < 104){
       return new RealmTileGenUtil([
-          ...RealmTileGenConstants.FORREST_ARRAY,
-        ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, 4, random)
+          ...Util.selectFromArray(RealmTileGenConstants.FORREST_ARRAY, 2),
+          ...Util.selectFromArray(RealmTileGenConstants.JUST_GRASS_ARRAY, RealmTileGenConstants.JUST_GRASS_ARRAY.length - 3, random)
       ])
     } else if (noise < 156){
       return new RealmTileGenUtil(RealmTileGenConstants.SNOWY_ARRAY)
     } else {
-      return new RealmTileGenUtil(RealmTileGenConstants.SNOWY_ROCK_ARRAY)
+      return new RealmTileGenUtil([
+          ...Util.selectFromArray(RealmTileGenConstants.SNOWY_ROCK_ARRAY, 3),
+          ...RealmTileGenConstants.SNOWY_ARRAY
+      ])
     }
   }
 

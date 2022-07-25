@@ -30,4 +30,8 @@ export abstract class AbstractLandStructure<T> {
   }
 
   public abstract getProvider(): TileProvider<T>
+
+  constructor() {
+    this.provideAnnotations();
+  }
 }

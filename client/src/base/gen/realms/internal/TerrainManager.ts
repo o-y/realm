@@ -14,18 +14,24 @@ import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
 import Tile = Phaser.Tilemaps.Tile;
 import {RealmGenerationData} from '@/base/gen/realms/internal/RealmGenerator';
+import {MinosStructureAnnotationsType} from '@/base/minos/land/internal/LandStructureAnnotations';
+import {PathMap} from '@/base/gen/realms/pipelines/gaia/PathMap';
+import CommonTileProvider from '@/base/tile/providers/helpers/CommonTileProvider';
 
 export class TerrainManager {
   private readonly baseLayer: BaseLayer;
   private readonly buildingLayer: BuildingLayer;
   private readonly tileSparseArray: Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>> = new Array<Array<Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle | null>>();
   private readonly noiseMap: Map<string, number> = new Map<string, number>();
-  private readonly seed: number;
+  private readonly pathMapCantorPairings: Set<number> = PathMap.getInstance().getPathSetCantorPairings();
+  private readonly perlinNoise: PerlinNoise;
 
   private constructor(realmGenerationData: RealmGenerationData) {
     this.baseLayer = realmGenerationData.getLayerManager().getBaseLayer();
     this.buildingLayer = realmGenerationData.getLayerManager().getBuildingLayer();
-    this.seed = realmGenerationData.getSeed();
+    this.perlinNoise = PerlinNoise
+        .create()
+        .withSeed(realmGenerationData.getSeed())
   }
 
   public static withRealmGenerationData(realmGenerationData: RealmGenerationData) {
@@ -34,13 +40,8 @@ export class TerrainManager {
 
   public loadTileSet(coordinateSet: Set<Coordinate>) {
     coordinateSet.forEach(coordinate => {
-
-      const perlinNoise: PerlinNoise = PerlinNoise
-          .create()
-          .withSeed(this.seed)
-
       const noise: number = Math.min(
-          Math.max(Math.abs(perlinNoise.generatePerlin2(coordinate.getX() / 100, coordinate.getY() / 100)) * 256,
+          Math.max(Math.abs(this.perlinNoise.generatePerlin2(coordinate.getX() / 100, coordinate.getY() / 100)) * 256,
             RealmTileGenUtil.MIN_PERLIN_NOISE),
           RealmTileGenUtil.MAX_PERLIN_NOISE
       );
@@ -54,24 +55,43 @@ export class TerrainManager {
           .selectTileArrayWithNoise(noise, clampedRandom)
           .selectRandomTile(clampedRandom);
 
-      const terrainTile = this.baseLayer.scene.add.nyxTileObjectImage(
-          (coordinate.getX() * TileObject.TILE_SIZE),
-          (coordinate.getY() * TileObject.TILE_SIZE),
-          randomTile
-      ).setAlpha(0.5);
+      let terrainTile: Phaser.GameObjects.Image | null = null;
+
+      if (this.pathMapCantorPairings.has(coordinate.toCantorsPairing())) {
+        terrainTile = this.baseLayer.scene.add.nyxTileObjectImage(
+            (coordinate.getX() * TileObject.TILE_SIZE),
+            (coordinate.getY() * TileObject.TILE_SIZE),
+            CommonTileProvider.provideNatureProvider().getTile(NatureTile.GRASS_VARIANT_2)
+        )//.setAlpha(0.6);
+      } else {
+        terrainTile = this.baseLayer.scene.add.nyxTileObjectImage(
+            (coordinate.getX() * TileObject.TILE_SIZE),
+            (coordinate.getY() * TileObject.TILE_SIZE),
+            randomTile
+        )//.setAlpha(0.5);
+      }
 
       this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile];
 
-      const intersectingTile: TileObject<TileUnion> | null = LandStructureProvider
-          .getIntersectingStructure(coordinate)
-          ?.getIntersectingTile(coordinate) || null;
+      const intersectingStructure = LandStructureProvider.getIntersectingStructure(coordinate);
 
-      if (intersectingTile) {
-        const buildingTile = this.buildingLayer.scene.physics.add.image(
-            (coordinate.getX() * TileObject.TILE_SIZE),
-            (coordinate.getY() * TileObject.TILE_SIZE),
-            intersectingTile.imageHash
-        ).setImmovable(true)
+      if (intersectingStructure) {
+        const intersectingTile: TileObject<TileUnion> | null = intersectingStructure.getIntersectingTileObject(coordinate) || null;
+        if (!intersectingTile) return;
+
+        const enumNumber: TileUnion = intersectingTile.getEnumType();
+        const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
+
+        const buildingTile = tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS
+            ? this.buildingLayer.scene.add.nyxTileObjectImage(
+                (coordinate.getX() * TileObject.TILE_SIZE),
+                (coordinate.getY() * TileObject.TILE_SIZE),
+                intersectingTile)
+            : this.buildingLayer.scene.physics.add.image(
+                (coordinate.getX() * TileObject.TILE_SIZE),
+                (coordinate.getY() * TileObject.TILE_SIZE),
+                intersectingTile.imageHash
+            ).setImmovable(true)
 
         this.buildingLayer.add(buildingTile);
         this.tileSparseArray[coordinate.toCantorsPairing()] = [terrainTile, buildingTile];

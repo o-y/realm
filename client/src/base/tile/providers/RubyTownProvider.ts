@@ -12,7 +12,7 @@ export default class RubyTownProvider<T> extends TileProvider<RubyTownTile> {
 }
 
 export enum RubyTownTile {
-  RUBYTOWN_0 = 0,
+  RUBYTOWN_0 = 256,
   RUBYTOWN_1 = 1,
   RUBYTOWN_2 = 2,
   RUBYTOWN_3 = 3,

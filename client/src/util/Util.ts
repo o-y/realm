@@ -28,13 +28,35 @@ export class Util {
       throw new Error(`#selectFromArray value: ${count} greater than array length (${array.length})`);
     }
 
-    return Util.shuffleArray(array, seed).slice(0, count);
+    const length = array.length, start = Util.getRandom(length, seed);
+
+    for (let i = count; i--;) {
+      let index = (start + i) % length, rindex = Util.getRandom(length, seed);
+      let temp = array[rindex];
+      array[rindex] = array[index];
+      array[index] = temp;
+    }
+
+    let end = start + count, sample = array.slice(start, end);
+
+    if (end > length) {
+      sample = sample.concat(array.slice(0, end - length));
+    }
+
+    return sample;
+
   }
 
+  // https://stackoverflow.com/a/11935263
   public static shuffleArray<T> (array: Array<T>, seed: number = Math.random()): Array<T> {
-    return array.map(value => ({ value, sort: seed }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value)
+    let shuffled = array.slice(0), i = array.length, temp, index;
+    while (i--) {
+      index = Math.floor((i + 1) *seed);
+      temp = shuffled[index];
+      shuffled[index] = shuffled[i];
+      shuffled[i] = temp;
+    }
+    return shuffled;
   }
 
   public static clamp(value: number, min: number, max: number): number {
@@ -67,5 +89,9 @@ export class Util {
 
   public static setToString(set: Set<unknown>) {
     return `Set(${[...set].toString()})`
+  }
+
+  private static getRandom(length: number, seed = Math.random()): number {
+    return Math.floor(seed * length);
   }
 }

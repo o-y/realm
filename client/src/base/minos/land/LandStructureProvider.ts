@@ -14,15 +14,92 @@ import {MinosBikeItem} from '@/base/minos/land/items/MinosBikeItem';
 import {MinosLampPostItem} from '@/base/minos/land/items/MinosLampPostItem';
 import {MinosMailBoxItem} from '@/base/minos/land/items/MinosMailBoxItem';
 import {MinosThreeTiledVerticalTreeItem} from '@/base/minos/land/items/MinosThreeTiledVerticalTreeItem';
+import {MinosBridgeBuilding} from '@/base/minos/land/structures/MinosBridgeBuilding';
 
 export class LandStructureProvider {
+  private static structureList: Array<LandStructure> = [
+    //=== Bridges
+    LandStructure.create(
+        Coordinate.of(-7, -2),
+        new MinosBridgeBuilding()
+    ),
+    LandStructure.create(
+        Coordinate.of(41, -4),
+        new MinosBridgeBuilding()
+    ),
+
+    // Left Island
+    LandStructure.create(
+        Coordinate.of(-15, -5),
+        new MinosBlueRoofBuilding()
+    ),
+    LandStructure.create(
+        Coordinate.of(-27, -6),
+        new MinosRedBrickedBuildings()
+    ),
+    LandStructure.create(
+        Coordinate.of(-20, -12),
+        new MinosMarketHouseBuilding()
+    ),
+
+    // Mid Island
+    LandStructure.create(
+        Coordinate.of(11, -11),
+        new MinosYellowBrickBuilding()
+    ),
+    LandStructure.create(
+        Coordinate.of(27, -10),
+        new MinosPurpleRoofBuilding()
+    ),
+    LandStructure.create(
+        Coordinate.of(24, -17),
+        new MinosGreenRoofBuilding()
+    ),
+    LandStructure.create(
+        Coordinate.of(17, -18),
+        new MinosRedRoofBuilding()
+    ),
+
+    // Accessories
+    LandStructure.create(
+        Coordinate.of(21, -5),
+        new MinosThreeTiledVerticalTreeItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(24, -9),
+        new MinosThreeTiledVerticalTreeItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(10, -10),
+        new MinosThreeTiledVerticalTreeItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(32, -11),
+        new MinosThreeTiledVerticalTreeItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(17, -6),
+        new MinosBikeItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(20, -9),
+        new MinosMailBoxItem()
+    ),
+    LandStructure.create(
+        Coordinate.of(25, -8),
+        new MinosLampPostItem()
+    ),
+
+
+    // Right Island
+    LandStructure.create(
+        Coordinate.of(73, 1),
+        new MinosLightHouseBuilding()
+    )
+  ]
+
   public static provideStructureList(): Array<LandStructure> {
-    return [
-      // LandStructure.create(
-      //     Coordinate.of(4, 0),
-      //     new MinosRedRoofBuilding()
-      // )
-    ]
+    return this.structureList;
   }
 
   public static getIntersectingStructure(coordinate: NonDecimalCoordinate): LandStructure | null {

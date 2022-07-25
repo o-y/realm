@@ -55,6 +55,7 @@ export default class PhaserComponent extends Vue {
     new Phaser.Game({
       type: Phaser.AUTO,
       title: "Realm",
+      url: "https://realm.zv.wtf",
       backgroundColor: '#ffffff',
       width: window.innerWidth,
       height: window.innerHeight - PhaserComponent.SCROLL_OFFSET,
@@ -74,9 +75,9 @@ export default class PhaserComponent extends Vue {
         PhaserWorldGenScene
       ],
       physics: {
-        default: 'arcade',
+        default: "arcade",
         arcade: {
-          debug: true
+          debug: false
         }
       },
     });

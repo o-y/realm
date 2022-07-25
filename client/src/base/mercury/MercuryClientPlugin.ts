@@ -27,7 +27,6 @@ export class MercuryClientPlugin extends NyxScenePlugin<PhaserWorldGenScene> {
       onPeerStateUpdated(previousState: Peer, newState: Peer) {
         if (newState.isLocalClient() || previousState.isLocalClient()) return;
 
-        console.log("AvatarUpdated: ", newState.getRealmPeerId())
         remoteAvatarsSparseArray[newState.getRealmPeerId()].moveToCoordinate(newState.getPosition())
       },
 

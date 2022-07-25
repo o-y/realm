@@ -11,7 +11,7 @@ export default class BridgeTileProvider<T> extends TileProvider<BridgeTile> {
   }
 }
 export enum BridgeTile {
-  BRIDGE_TILE_0 = 0,
+  BRIDGE_TILE_0 = 80,
   BRIDGE_TILE_1 = 1,
   BRIDGE_TILE_2 = 2,
   BRIDGE_TILE_3 = 3,
