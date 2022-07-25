@@ -1,8 +1,7 @@
 <template>
   <div class = "phaserContainer">
     <div class = "gameWrapper">
-<!--      <realm-sidebar class = "realmSidebar"/>-->
-
+      <realm-sidebar/>
       <div class = "phaserRoot" ref = "root"></div>
     </div>
 
@@ -157,6 +156,8 @@ export default class PhaserComponent extends Vue {
 </script>
 
 <style scoped lang="stylus">
+  @import "~@/style/config.styl"
+
   $realmLogoWidth = 850px;
 
   .phaserContainer
@@ -172,11 +173,6 @@ export default class PhaserComponent extends Vue {
         height: 100%
         z-index: 10
         margin: 0
-
-      .realmSidebar
-        height: 100vh
-        background: black;
-        position: absolute
 
     .splashScreen
       position: absolute
