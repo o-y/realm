@@ -24,7 +24,7 @@
     </div>
 
     <div class = "debugPanel">
-
+      <h1>Hello!</h1>
     </div>
 
     <div class = "footer">
