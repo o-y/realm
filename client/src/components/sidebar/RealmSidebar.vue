@@ -50,7 +50,6 @@ export default class RealmSidebar extends Vue {
       apiKey: "8681eba5-88cb-415a-9890-4b4eb237c929",
       region: "sg001",
       containerId: null,
-      redirectOnLeave: "https://www.videosdk.live/",
       micEnabled: true,
       webcamEnabled: true,
       participantCanToggleSelfWebcam: true,
@@ -68,7 +67,7 @@ export default class RealmSidebar extends Vue {
       branding: {
         enabled: true,
         logoURL: "https://static.zujonow.com/videosdk.live/videosdk_logo_circle_big.png",
-        name: "Prebuilt",
+        name: "Realm",
         poweredBy: false,
       },
       permissions: {
