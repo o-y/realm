@@ -2,13 +2,12 @@ package wtf.zv.realm.util;
 
 class BuildingGenerator {
 
-  private static final int TILEMAP_HEIGHT = 5;
   private static final int TILEMAP_WIDTH = 16;
   private static final String PREFIX = "BridgeTile.BRIDGE_TILE_";
 
   public static void main(String[] args) {
     generateTileMap(
-        new Coordinate(0, 0), 15, 5
+        new Coordinate(0, 0), 15, 4
     );
   }
 
@@ -20,7 +19,7 @@ class BuildingGenerator {
    * the difference from TM_4 to TILEMAP_WIDTH.
    */
   public static void generateTileMap(Coordinate topLeft, int width, int height) {
-    int yOffset = (TILEMAP_HEIGHT * topLeft.y) - topLeft.y;
+    int yOffset = (TILEMAP_WIDTH * topLeft.y) - topLeft.y;
 
     StringBuilder sb = new StringBuilder();
 
@@ -38,7 +37,7 @@ class BuildingGenerator {
         }
       }
 
-      yOffset += (TILEMAP_HEIGHT - 1);
+      yOffset += (TILEMAP_WIDTH - 1);
       sb.append("]");
 
       if (y < topLeft.y + height) {
