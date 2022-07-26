@@ -1,13 +1,8 @@
 <template>
-<<<<<<< HEAD
   <div>
     <video ref = "videoCallRoot" v-if = "hasGrantedCameraAccess"></video>
     <h1 v-else>No Camera/Mic access! Please grant and then reload the page</h1>
   </div>
-
-=======
-  <video ref = "videoCallRoot"></video>
->>>>>>> main
 </template>
 
 <script lang="ts">
@@ -26,7 +21,7 @@ export default class RealmLocalVideoCall extends Vue {
 
     const meteredInstance = MeteredSingleton.getInstance();
 
-    let fluxState = false;
+    let fluxState = true;
 
     meteredInstance
         .getCallbackCoordinator()
@@ -49,6 +44,7 @@ export default class RealmLocalVideoCall extends Vue {
             await viableMeeting.startAudio();
           } catch (error) {
             console.error("Video/Audio related error: ", error);
+            await viableMeeting.leaveMeeting();
             this.hasGrantedCameraAccess = false;
           }
           fluxState = false;
@@ -68,13 +64,10 @@ export default class RealmLocalVideoCall extends Vue {
     height: 100%
     border-radius: 30px
     transform: scale(1.05)
-<<<<<<< HEAD
 
   h1
     color: #D95040
     font-family: "Poppins"
     text-align: center
     font-size: 25px
-=======
->>>>>>> main
 </style>
