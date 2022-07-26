@@ -2,7 +2,9 @@
   <div class = "realmSidebar">
     <div class = "videoCallScreen">
       <div class = "videoCallWrapper">
-        <div class = "videoCallRoot" ref = "videoCallRoot"></div>
+        <div class = "videoCallContainer">
+          <realm-local-video-call/>
+        </div>
         <div class = "videoCallButtonsContainer">
           <div class = "videoCallButton" ref = "videoButton">
             <span class="material-symbols-outlined">videocam</span>
@@ -35,10 +37,15 @@
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
+import RealmLocalVideoCall from './RealmLocalVideoCall.vue';
 
-@Component
+@Component({
+  components: {RealmLocalVideoCall}
+})
 export default class RealmSidebar extends Vue {
+  public async mounted() {
 
+  }
 }
 
 </script>
@@ -46,8 +53,9 @@ export default class RealmSidebar extends Vue {
 <style scoped lang="stylus">
   @import "../../style/config.styl"
 
+  // If these are changed, don't forget to update RealmRemoteVideoCallScreen!
   $defaultSidebarPadding = 30px
-  $sidebarWidth = 350px
+  $sidebarWidth = 400px
   $videoCallButtonSize = 56px
 
   .realmSidebar
@@ -60,7 +68,7 @@ export default class RealmSidebar extends Vue {
     backdrop-filter: blur(15px) grayscale(30%);
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 300px auto 100px 78px
+    grid-template-rows: 350px auto 100px 78px
 
     .nearbyPeople
       display: flex
@@ -87,7 +95,6 @@ export default class RealmSidebar extends Vue {
           justify-content center
           align-items center
 
-
           h1
             font-family: 'Poppins', sans-serif;
             color: $realmPalette.Cloud
@@ -106,13 +113,14 @@ export default class RealmSidebar extends Vue {
         margin: $defaultSidebarPadding
         display: grid
         grid-template-columns 1fr
-        grid-template-rows 193px 1fr
+        grid-template-rows 230px 1fr
         grid-gap: 0
 
-        .videoCallRoot
+        .videoCallContainer
           margin-top: $defaultSidebarPadding
           background: $realmPalette.Cloud
           border-radius: 30px
+          overflow: hidden
 
         .videoCallButtonsContainer
           display: flex
@@ -132,6 +140,12 @@ export default class RealmSidebar extends Vue {
               color: white
               font-size: 25px
 
+    .debugPanel
+      display: flex
+      justify-content center
+      align-items center
+      background: white
+      margin-top: 16px
 
     .footer
       display: flex

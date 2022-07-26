@@ -9,6 +9,8 @@
   "types": "./src/types/phaser/Phaser.d.ts",
   "dependencies": {
     "@supabase/supabase-js": "^1.35.4",
+    "@videosdk.live/js-sdk": "^0.0.41",
+    "@videosdk.live/rtc-js-prebuilt": "^0.3.10",
     "animejs": "^3.2.1",
     "core-js": "^3.6.5",
     "desmos": "^1.5.4",

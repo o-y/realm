@@ -1,6 +1,7 @@
 <template>
   <div class = "phaserContainer">
     <div class = "gameWrapper">
+      <realm-remote-video-call-screen/>
       <realm-sidebar/>
       <div class = "phaserRoot" ref = "root"></div>
     </div>
@@ -25,13 +26,14 @@ import LoadingSpinner from '../loader/LoadingSpinner.vue';
 import anime from 'animejs';
 import RealmSidebar from '../sidebar/RealmSidebar.vue';
 import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
+import RealmRemoteVideoCallScreen from '../sidebar/RealmRemoteVideoCallScreen.vue';
 
 /**
  * This will eventually need to be reconfigured as the entry point for the Realm
  * renderer, but existing within a container, holding other native components.
  */
 @Component({
-  components: { LoadingSpinner, RealmSidebar }
+  components: {RealmRemoteVideoCallScreen, LoadingSpinner, RealmSidebar }
 })
 export default class PhaserComponent extends Vue {
   @Ref('root') readonly phaserRoot!: HTMLDivElement
