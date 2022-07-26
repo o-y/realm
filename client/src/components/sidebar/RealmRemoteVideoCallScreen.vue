@@ -1,13 +1,15 @@
 <template>
   <div class = "realmRemoteParticipantsRoot">
     <div class = "realmRemoteContainer">
-
-      <template v-for = "(value, key) in remoteParticipantsMap" v-if = "value !== null">
+      <template v-for = "(value, key) in videoFeedsMap" v-if = "value !== null">
         <div class = "videoContainer">
           <video :srcObject.prop="value" :id="key" autoplay/>
         </div>
       </template>
 
+      <template v-for = "(value, key) in audioFeedsMap" v-if = "value !== null">
+        <video :srcObject.prop="value" :id="key" autoplay style = "display: none"/>
+      </template>
     </div>
   </div>
 </template>
@@ -19,28 +21,34 @@ import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
 
 @Component
 export default class RealmRemoteVideoCallScreen extends Vue {
-  private remoteParticipantsMap: { [displayName: string] : MediaStream } = {}
+  private videoFeedsMap: { [displayName: string] : MediaStream } = {}
+  private audioFeedsMap: { [displayName: string] : MediaStream } = {}
+
   public mounted() {
     const meteredInstance = MeteredSingleton.getInstance();
-    let hadRemoteTrackContextFire: boolean = false;
 
     meteredInstance
         .getCallbackCoordinator()
-        .registerOnLocalTrackUpdatedCallback( () => {
-          if (hadRemoteTrackContextFire){
-            // this.remoteParticipantsMap = {}
-          }
+        .registerMeetingHopCallback( () => {
+          console.log("[RealmRemoteVideoCallScreen]: Clearing participants")
+          this.videoFeedsMap = {};
+          this.audioFeedsMap = {};
         })
         .registerOnRemoteTrackUpdatedCallback((callback: MeteredRemoteTrackInterface) => {
-          hadRemoteTrackContextFire = true;
-          console.log("Remote user joined: ", callback.username, callback.track);
+          console.log("[RealmRemoteVideoCallScreen]: Remote user joined: ", callback.username, callback.track);
 
-          Vue.set(this.remoteParticipantsMap, callback.participantSessionId, callback.track);
+          Vue.set(this.videoFeedsMap, callback.participantSessionId, callback.track);
+        })
+        .registerOnRemoteAudioTrackUpdatedCallback((callback: MeteredRemoteTrackInterface) => {
+          console.log("[RealmRemoteVideoCallScreen]: Remote audio user joined: ", callback.username, callback.track);
+
+          Vue.set(this.audioFeedsMap, callback.participantSessionId, callback.track);
         })
         .registerOnRemoteTrackEndCallback((callback: MeteredRemoteTrackEndInterface) => {
-          console.log("Remote user left: ", callback.participantSessionId);
+          console.log("[RealmRemoteVideoCallScreen]: Remote video user left: ", callback.participantSessionId);
 
-          Vue.set(this.remoteParticipantsMap, callback.participantSessionId, null);
+          Vue.set(this.videoFeedsMap, callback.participantSessionId, null);
+          Vue.set(this.audioFeedsMap, callback.participantSessionId, null);
         })
   }
 }

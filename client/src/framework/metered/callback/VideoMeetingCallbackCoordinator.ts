@@ -13,6 +13,7 @@ export class VideoMeetingCallbackCoordinator {
 
   private constructor() {}
 
+  private remoteAudioTrackCallbacks: Set<(callback: MeteredRemoteTrackInterface) => void> = new Set<(callback: MeteredRemoteTrackInterface) => void>();
   private remoteTrackCallbacks: Set<(callback: MeteredRemoteTrackInterface) => void> = new Set<(callback: MeteredRemoteTrackInterface) => void>();
   private localTrackCallbacks: Set<(callback: MeteredLocalTrackInterface) => void> = new Set<(callback: MeteredLocalTrackInterface) => void>();
   private meetingHopEvent: Set<(callback: MeteredMeetingHopEvent) => void> = new Set<(callback: MeteredMeetingHopEvent) => void>();
@@ -22,6 +23,13 @@ export class VideoMeetingCallbackCoordinator {
       callback: (callback: MeteredRemoteTrackInterface) => void
   ): VideoMeetingCallbackCoordinator {
     this.remoteTrackCallbacks.add(callback);
+    return this;
+  }
+
+  public registerOnRemoteAudioTrackUpdatedCallback(
+      callback: (callback: MeteredRemoteTrackInterface) => void
+  ): VideoMeetingCallbackCoordinator {
+    this.remoteAudioTrackCallbacks.add(callback);
     return this;
   }
 
@@ -48,6 +56,10 @@ export class VideoMeetingCallbackCoordinator {
 
   public onRemoteTrackUpdated(context: MeteredRemoteTrackInterface): void {
     [...this.remoteTrackCallbacks].forEach(callback => callback(context))
+  }
+
+  public onRemoteAudioTrackUpdated(context: MeteredRemoteTrackInterface): void {
+    [...this.remoteAudioTrackCallbacks].forEach(callback => callback(context))
   }
 
   public onLocalTrackUpdated(context: MeteredLocalTrackInterface): void {

@@ -8,7 +8,7 @@ export class MeetingSpatialCoordinator {
   public onMeetingLocationUpdate(meetingLocation: MeetingLocation) {
     if (meetingLocation === this.currentMeetingLocation) return;
     this.currentMeetingLocation = meetingLocation;
-
+    
     const meetingUrl = MeetingLocationUtil.transformMeetingLocationEnumToMeteredRoomName(meetingLocation);
     MeteredSingleton
         .getInstance()

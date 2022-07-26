@@ -121,6 +121,9 @@ export default class RealmSidebar extends Vue {
           background: $realmPalette.Cloud
           border-radius: 30px
           overflow: hidden
+          display: flex
+          justify-content center
+          align-items center
 
         .videoCallButtonsContainer
           display: flex
@@ -144,7 +147,7 @@ export default class RealmSidebar extends Vue {
       display: flex
       justify-content center
       align-items center
-      background: white
+      background: none
       margin-top: 16px
 
     .footer
