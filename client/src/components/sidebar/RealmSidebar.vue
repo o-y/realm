@@ -2,7 +2,9 @@
   <div class = "realmSidebar">
     <div class = "videoCallScreen">
       <div class = "videoCallWrapper">
-        <div class = "videoCallRoot" ref = "videoCallRoot"></div>
+        <div class = "videoCallContainer">
+          <realm-local-video-call/>
+        </div>
         <div class = "videoCallButtonsContainer">
           <div class = "videoCallButton" ref = "videoButton">
             <span class="material-symbols-outlined">videocam</span>
@@ -18,13 +20,13 @@
     <div class = "nearbyPeople">
       <div class = "nearbyPeopleWrapper">
         <div class = "nearbyPeopleTitleContainer">
-          <h1>Nearby People (SDK)</h1>
+          <h1>Nearby People</h1>
         </div>
       </div>
     </div>
 
     <div class = "debugPanel">
-      <h1>Hello!</h1>
+
     </div>
 
     <div class = "footer">
@@ -35,69 +37,14 @@
 
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
-// import { VideoSDK } from "@videosdk.live/js-sdk";
-import { VideoSDKMeeting } from "@videosdk.live/rtc-js-prebuilt";
+import RealmLocalVideoCall from './RealmLocalVideoCall.vue';
 
-@Component
+@Component({
+  components: {RealmLocalVideoCall}
+})
 export default class RealmSidebar extends Vue {
-  public mounted() {
-    // VideoSDK.config("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4NjgxZWJhNS04OGNiLTQxNWEtOTg5MC00YjRlYjIzN2M5MjkiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY1ODc3NjA2OCwiZXhwIjoxNjU5MzgwODY4fQ.TSih8ngnvcXIbuPlFqK8gvv5jOW4KLIJc45cnQciGzU");
+  public async mounted() {
 
-    console.log("Starting VideoSDK");
-    const meeting = new VideoSDKMeeting().init({
-      name: "Realm",
-      meetingId: "hello",
-      apiKey: "8681eba5-88cb-415a-9890-4b4eb237c929",
-      region: "sg001",
-      containerId: null,
-      micEnabled: true,
-      webcamEnabled: true,
-      participantCanToggleSelfWebcam: true,
-      participantCanToggleSelfMic: true,
-      participantCanLeave: true,
-      chatEnabled: true,
-      screenShareEnabled: true,
-      pollEnabled: true,
-      whiteboardEnabled: true,
-      raiseHandEnabled: true,
-      layout: {
-        type: "SPOTLIGHT",
-        priority: "PIN",
-      },
-      branding: {
-        enabled: true,
-        logoURL: "https://static.zujonow.com/videosdk.live/videosdk_logo_circle_big.png",
-        name: "Realm",
-        poweredBy: false,
-      },
-      permissions: {
-        pin: true,
-        askToJoin: false, // Ask joined participants for entry in meeting
-        toggleParticipantMic: true, // Can toggle other participant's mic
-        toggleParticipantWebcam: true, // Can toggle other participant's webcam
-        drawOnWhiteboard: true, // Can draw on whiteboard
-        toggleWhiteboard: true, // Can toggle whiteboard
-        toggleRecording: true, // Can toggle meeting recording
-        toggleLivestream: true, //can toggle live stream
-        removeParticipant: true, // Can remove participant
-        endMeeting: true, // Can end meeting
-        changeLayout: true, //can change layout
-      },
-      joinScreen: {
-        visible: true,
-        title: "Daily scrum",
-        meetingUrl: window.location.href,
-      },
-      leftScreen: {
-        actionButton: {
-          label: "Video SDK Live",
-          href: "https://videosdk.live/",
-        },
-      },
-      notificationSoundEnabled: true,
-      debug: true,
-      maxResolution: "sd",
-    })
   }
 }
 
@@ -106,6 +53,7 @@ export default class RealmSidebar extends Vue {
 <style scoped lang="stylus">
   @import "../../style/config.styl"
 
+  // If these are changed, don't forget to update RealmRemoteVideoCallScreen!
   $defaultSidebarPadding = 30px
   $sidebarWidth = 400px
   $videoCallButtonSize = 56px
@@ -168,10 +116,11 @@ export default class RealmSidebar extends Vue {
         grid-template-rows 230px 1fr
         grid-gap: 0
 
-        .videoCallRoot
+        .videoCallContainer
           margin-top: $defaultSidebarPadding
           background: $realmPalette.Cloud
           border-radius: 30px
+          overflow: hidden
 
         .videoCallButtonsContainer
           display: flex
@@ -191,6 +140,12 @@ export default class RealmSidebar extends Vue {
               color: white
               font-size: 25px
 
+    .debugPanel
+      display: flex
+      justify-content center
+      align-items center
+      background: white
+      margin-top: 16px
 
     .footer
       display: flex

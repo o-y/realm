@@ -18,6 +18,8 @@ import {Peer} from '@/base/supabase/peer/Peer';
 import {AvatarRender} from '@/base/prometheus/std/AvatarRender';
 import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 import {NyxLayer} from '@/framework/nyx/NyxLayer';
+import {MeetingLocationBoundsMap} from '@/framework/metered/data/MeetingLocationBoundsMap';
+import {MeteredSingleton} from '@/framework/metered/MeteredSingleton';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -55,8 +57,7 @@ export class LocalAvatarRender extends AvatarRender {
   private lastPositionX = this.getAvatar().getTileCoordinate().getX();
   private lastPositionY = this.getAvatar().getTileCoordinate().getY();
 
-  private lastExactPositionX = this.lastPositionX;
-  private lastExactPositionY = this.lastPositionY;
+  private hasRanFirstRender = false;
 
   private generateTerrainSurroundingPlayer(realmGenerator: RealmGenerator) {
     const avatarObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody = this.getAvatarObjectRender().getAvatarObject();
@@ -66,21 +67,29 @@ export class LocalAvatarRender extends AvatarRender {
         avatarObject.y
     )
 
-    if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX){
+    if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX || !this.hasRanFirstRender) {
+      this.hasRanFirstRender = true;
+
+      const currentMeetingLocation = MeetingLocationBoundsMap.calculateCurrentMeetingBoundLocation(worldToTileConversionCoordinate);
+      if (currentMeetingLocation !== null){
+        MeteredSingleton
+            .getInstance()
+            .getMeetingSpatialCoordinator()
+            .onMeetingLocationUpdate(currentMeetingLocation)
+      }
+    }
+
+    if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX) {
       realmGenerator.loadGenerationAt(
           /* current = */ Coordinate.of(this.lastPositionX, this.lastPositionY),
           /* next = */ Coordinate.of(worldToTileConversionCoordinate.getX(), worldToTileConversionCoordinate.getY())
       )
 
-      const localPeer: LocalPeer = <LocalPeer> this.getAvatar().getPeer();
+      const localPeer: LocalPeer = <LocalPeer>this.getAvatar().getPeer();
       localPeer.updatePosition(worldToTileConversionCoordinate);
-
-      console.log(worldToTileConversionCoordinate)
 
       this.lastPositionY = worldToTileConversionCoordinate.getY();
       this.lastPositionX = worldToTileConversionCoordinate.getX();
     }
-
-
   }
 }

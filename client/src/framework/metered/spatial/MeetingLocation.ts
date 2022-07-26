@@ -1,0 +1,6 @@
+export enum MeetingLocation {
+  LEFT_ISLAND,
+  MIDDLE_ISLAND,
+  RIGHT_ISLAND,
+  YELLOW_BRICK_HOUSE
+}
