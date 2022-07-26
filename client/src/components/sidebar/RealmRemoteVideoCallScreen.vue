@@ -6,7 +6,6 @@
           <video :srcObject.prop="value" :id="key" autoplay/>
         </div>
       </template>
-
       <template v-for = "(value, key) in audioFeedsMap" v-if = "value !== null">
         <video :srcObject.prop="value" :id="key" autoplay style = "display: none"/>
       </template>
