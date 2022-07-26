@@ -37,7 +37,10 @@ export class MeteredSingleton {
 
   private initiateCallbacksWithMeeting(meeting: Metered.Meeting) {
     meeting.on("localTrackStarted", (item: InternalMeteredLocalTrackItem) => {
+<<<<<<< HEAD
+=======
       console.log("Joined local meeting: ", item);
+>>>>>>> main
       if (item.type === "video") {
         this.getCallbackCoordinator().onLocalTrackUpdated({
           track: new MediaStream([item.track]),
@@ -54,6 +57,16 @@ export class MeteredSingleton {
           username: item.participant.name,
           participantSessionId: item.participantSessionId
         })
+<<<<<<< HEAD
+      } else if (item.type === "audio") {
+        this.getCallbackCoordinator().onRemoteAudioTrackUpdated({
+          track: new MediaStream([item.track]),
+          streamId: item.streamId,
+          username: item.participant.name,
+          participantSessionId: item.participantSessionId
+        })
+=======
+>>>>>>> main
       }
     });
 

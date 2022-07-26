@@ -1,5 +1,13 @@
 <template>
+<<<<<<< HEAD
+  <div>
+    <video ref = "videoCallRoot" v-if = "hasGrantedCameraAccess"></video>
+    <h1 v-else>No Camera/Mic access! Please grant and then reload the page</h1>
+  </div>
+
+=======
   <video ref = "videoCallRoot"></video>
+>>>>>>> main
 </template>
 
 <script lang="ts">
@@ -12,7 +20,10 @@ import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 export default class RealmLocalVideoCall extends Vue {
   @Ref("videoCallRoot") readonly videoCallRoot!: HTMLVideoElement
 
+  private hasGrantedCameraAccess = true;
+
   public mounted() {
+
     const meteredInstance = MeteredSingleton.getInstance();
 
     let fluxState = false;
@@ -23,23 +34,22 @@ export default class RealmLocalVideoCall extends Vue {
           if (fluxState) return;
           fluxState = true;
 
-          console.log("Joining room: ", meetingHopRequest.roomURL)
-
           if (meteredInstance.getMeteredMeeting().meetingState === "joined") {
             await meteredInstance.getMeteredMeeting().leaveMeeting();
           }
 
           const viableMeeting = meteredInstance.getMeteredMeeting();
-
           await viableMeeting.join({
             roomURL: meetingHopRequest.roomURL,
             name: (await SupabaseSingleton.getInstance().getAuthState().getAuthenticationData(true))?.getDisplayName()
           });
 
           try {
-            viableMeeting.startVideo();
-          } catch (error){
-            console.log("Error: ", error);
+            await viableMeeting.startVideo();
+            await viableMeeting.startAudio();
+          } catch (error) {
+            console.error("Video/Audio related error: ", error);
+            this.hasGrantedCameraAccess = false;
           }
           fluxState = false;
         })
@@ -58,4 +68,13 @@ export default class RealmLocalVideoCall extends Vue {
     height: 100%
     border-radius: 30px
     transform: scale(1.05)
+<<<<<<< HEAD
+
+  h1
+    color: #D95040
+    font-family: "Poppins"
+    text-align: center
+    font-size: 25px
+=======
+>>>>>>> main
 </style>
