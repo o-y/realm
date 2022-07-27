@@ -23,7 +23,7 @@ export class AvatarRender extends AvatarPlugin {
       .forScene(this.getAvatarPluginData().getScene())
       .getPlayersLayer();
 
-  private readonly spritePlugin: SpritePlugin = SpritePlugin
+  protected readonly spritePlugin: SpritePlugin = SpritePlugin
       .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
 
   private avatarObject: AvatarObjectRender | null = null;

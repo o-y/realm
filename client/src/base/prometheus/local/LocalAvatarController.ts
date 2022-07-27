@@ -8,7 +8,7 @@ import {SpriteAnimationPool} from '@/base/prometheus/sprite/animation/SpriteAnim
 import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 
 export class LocalAvatarController extends AvatarPlugin {
-  private static PLAYER_VELOCITY: number = 90;
+  public static PLAYER_VELOCITY: number = 90;
 
   private readonly spritePlugin: SpritePlugin = SpritePlugin
       .withAvatarPlugin<this, SpritePlugin>(this, SpritePlugin);
@@ -30,7 +30,7 @@ export class LocalAvatarController extends AvatarPlugin {
         avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.UP));
       }
     } else if (this.cursor.down.isDown) {
-      avatarObject.setVelocity(0,LocalAvatarController. PLAYER_VELOCITY);
+      avatarObject.setVelocity(0,LocalAvatarController.PLAYER_VELOCITY);
 
       if (this.getCurrentSpriteState(avatarObject, avatarSprite) != SpriteState.DOWN){
         avatarObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN));
