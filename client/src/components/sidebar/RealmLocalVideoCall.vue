@@ -1,7 +1,12 @@
 <template>
   <div>
-    <video ref = "videoCallRoot" v-if = "hasGrantedCameraAccess"></video>
-    <h1 v-else>No Camera/Mic access! Please grant and then reload the page</h1>
+    <template v-if = "joinedFirstMeetingRoom">
+      <video ref = "videoCallRoot" v-if = "hasGrantedCameraAccess"></video>
+      <h1 v-else>No Camera/Mic access! Please grant and then reload the page</h1>
+    </template>
+    <template v-else>
+      <h1 style = "color: #0F1108">Welcome to Realm! To speak to others move onto one of the islands with your arrow keys!</h1>
+    </template>
   </div>
 </template>
 
@@ -16,6 +21,7 @@ export default class RealmLocalVideoCall extends Vue {
   @Ref("videoCallRoot") readonly videoCallRoot!: HTMLVideoElement
 
   private hasGrantedCameraAccess = true;
+  private joinedFirstMeetingRoom = false;
 
   public mounted() {
 
@@ -26,6 +32,7 @@ export default class RealmLocalVideoCall extends Vue {
     meteredInstance
         .getCallbackCoordinator()
         .registerMeetingHopCallback(async meetingHopRequest => {
+          this.joinedFirstMeetingRoom = true;
           if (fluxState) return;
           fluxState = true;
 
@@ -70,4 +77,6 @@ export default class RealmLocalVideoCall extends Vue {
     font-family: "Poppins"
     text-align: center
     font-size: 25px
+    padding-left: 15px
+    padding-right: 15px
 </style>

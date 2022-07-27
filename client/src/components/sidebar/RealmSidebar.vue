@@ -10,6 +10,10 @@
             <span class="material-symbols-outlined">videocam</span>
           </div>
 
+          <div class = "videoCallButton" ref = "leaveButton">
+            <span class="material-symbols-outlined" @click = "endCall">call_end</span>
+          </div>
+
           <div class = "videoCallButton" ref = "muteButton">
             <span class="material-symbols-outlined">mic</span>
           </div>
@@ -44,6 +48,10 @@ import RealmLocalVideoCall from './RealmLocalVideoCall.vue';
 })
 export default class RealmSidebar extends Vue {
   public async mounted() {
+
+  }
+
+  public async endCall() {
 
   }
 }
@@ -138,10 +146,19 @@ export default class RealmSidebar extends Vue {
             display: flex
             justify-content center
             align-items center
+            transition: background 0.25s linear
+
+            &:hover
+              cursor: pointer
+              background: white
+
+              span
+                color: lighten(#D95040, 40%)
 
             span
               color: white
               font-size: 25px
+              transition: color 0.25s linear
 
     .debugPanel
       display: flex
