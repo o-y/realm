@@ -6,7 +6,7 @@ import {SpriteAnimationDataBuilder} from '@/base/prometheus/sprite/internal/anim
 /**
  * NOTE: Sprites exist at base/client/public/static/spritesheet/*
  */
-export class LyraSprite extends AbstractSprite {
+export class GenesisSprite extends AbstractSprite {
   provideAssetPath(): string {
     return "/static/spritesheet/lyra-sprite-sheet.png";
   }

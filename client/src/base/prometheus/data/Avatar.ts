@@ -27,6 +27,10 @@ export class Avatar {
     return this.peer.getUsername();
   }
 
+  public getAvatarId(): number {
+    return this.peer.getRealmPeerId();
+  }
+
   public isLocalAvatar(): boolean {
     return this.peer.isLocalClient();
   }

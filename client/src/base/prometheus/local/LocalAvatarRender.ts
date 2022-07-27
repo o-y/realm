@@ -28,6 +28,8 @@ export class LocalAvatarRender extends AvatarRender {
   private readonly avatarController: LocalAvatarController = AvatarPlugin
       .withAvatarPlugin<this, LocalAvatarController>(this, LocalAvatarController);
 
+  private playerSprite: AbstractSprite | null = null;
+
   public setCollisionLayer(layer: NyxLayer): LocalAvatarRender {
     this.getScene().physics.add.collider(
         this.getAvatarObjectRender().getAvatarObject(),
@@ -47,8 +49,12 @@ export class LocalAvatarRender extends AvatarRender {
   }
 
   public awaitInputAndGenerateTerrain(realmGenerator: RealmGenerator) {
+    if (this.playerSprite === null) {
+      this.playerSprite = this.provideSprite();
+    }
+
     // Input
-    this.avatarController.awaitInput(this.getAvatarObjectRender(), this.provideSprite());
+    this.avatarController.awaitInput(this.getAvatarObjectRender(), this.playerSprite);
 
     // Generate Terrain
     this.generateTerrainSurroundingPlayer(realmGenerator);

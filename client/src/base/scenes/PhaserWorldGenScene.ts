@@ -19,7 +19,6 @@ import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
 import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import {SpriteManager} from '@/base/prometheus/sprite/manager/SpriteManager';
-import {LyraSprite} from '@/base/prometheus/sprite/data/LyraSprite';
 import {SupabaseSingleton} from '@/base/supabase/SupabaseSingleton';
 import {PeerState} from '@/base/supabase/peer/PeerState';
 import {PeerConnectionManager} from '@/base/supabase/peer/PeerConnectionManager';

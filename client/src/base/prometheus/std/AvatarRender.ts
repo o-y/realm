@@ -80,8 +80,18 @@ export class AvatarRender extends AvatarPlugin {
   }
 
   public provideSprite(): AbstractSprite {
-    // TODO: Implement. Ideally there will be 3-4 different sprites and we create
-    // a one-way function to map names/ids/something -> sprites.
-    return SpriteManager.provideDefaultSprite();
+    const avatarUsername = this.getAvatarPluginData().getAvatar().getUsername();
+    const avatarId = this.getAvatarPluginData().getAvatar().getAvatarId();
+    const spriteArray = SpriteManager.provideSpriteArray();
+
+    // The hashCode function returns a 64-bit hash, however JavaScript is limited
+    // to 53 bit integers, thus that is the upper bound of the hashcode output.
+    // This output is an unsigned integer, meaning the value will always be
+    // positive. Any minor change in the inputs value will result in a substantially
+    // different output (avalanche effect), however empirically the return values
+    // are weighted towards the lower bound.
+    // const usernameHash = Util.hashCode(username);
+
+    return spriteArray[avatarId % spriteArray.length]
   }
 }
