@@ -1,8 +1,15 @@
 <template>
   <div>
     <template v-if = "joinedFirstMeetingRoom">
-      <video ref = "videoCallRoot" v-if = "hasGrantedCameraAccess"></video>
-      <h1 v-else>No Camera/Mic access! Please grant and then reload the page</h1>
+      <template v-if = "exitedMeeting">
+        <h1>You're not in a meeting, click the button below to rejoin!</h1>
+      </template>
+      <template v-else-if = "hasGrantedCameraAccess">
+        <video ref = "videoCallRoot"></video>
+      </template>
+      <template v-else>
+        <h1>No Camera/Mic access! Please grant and then reload the page</h1>
+      </template>
     </template>
     <template v-else>
       <h1 style = "color: #0F1108">Welcome to Realm! To speak to others move onto one of the islands with your arrow keys!</h1>
@@ -12,7 +19,7 @@
 
 <script lang="ts">
 
-import {Component, Ref, Vue} from 'vue-property-decorator';
+import {Component, Prop, Ref, Vue} from 'vue-property-decorator';
 import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
 import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 
@@ -20,14 +27,14 @@ import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 export default class RealmLocalVideoCall extends Vue {
   @Ref("videoCallRoot") readonly videoCallRoot!: HTMLVideoElement
 
+  @Prop({type: Boolean, default: false, required: true}) readonly exitedMeeting: Boolean = false;
+
   private hasGrantedCameraAccess = true;
   private joinedFirstMeetingRoom = false;
 
   public mounted() {
-
     const meteredInstance = MeteredSingleton.getInstance();
-
-    let fluxState = true;
+    let fluxState = false;
 
     meteredInstance
         .getCallbackCoordinator()

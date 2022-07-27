@@ -1,5 +1,6 @@
 import {MeteredLocalTrackInterface, MeteredMeetingHopEvent, MeteredRemoteTrackEndInterface, MeteredRemoteTrackInterface} from '@/types/metered/MeteredTypes';
 
+// TODO: This would be an ideal place to use something similar to Kotlins StateFlow interface :)
 export class VideoMeetingCallbackCoordinator {
   private static instance: VideoMeetingCallbackCoordinator | null = null;
 
@@ -12,6 +13,8 @@ export class VideoMeetingCallbackCoordinator {
   }
 
   private constructor() {}
+
+  private meetingHopRequestInstance: MeteredMeetingHopEvent | null = null;
 
   private remoteAudioTrackCallbacks: Set<(callback: MeteredRemoteTrackInterface) => void> = new Set<(callback: MeteredRemoteTrackInterface) => void>();
   private remoteTrackCallbacks: Set<(callback: MeteredRemoteTrackInterface) => void> = new Set<(callback: MeteredRemoteTrackInterface) => void>();
@@ -67,10 +70,15 @@ export class VideoMeetingCallbackCoordinator {
   }
 
   public onMeetingHopEvent(meetingHopEvent: MeteredMeetingHopEvent): void {
+    this.meetingHopRequestInstance = meetingHopEvent;
     [...this.meetingHopEvent].forEach(callback => callback(meetingHopEvent))
   }
 
   public onRemoteTrackEnd(meetingHopEvent: MeteredRemoteTrackEndInterface): void {
     [...this.remoteTrackEndCallback].forEach(callback => callback(meetingHopEvent))
+  }
+
+  public getMeetingHopInstance(): MeteredMeetingHopEvent | null {
+    return this.meetingHopRequestInstance;
   }
 }

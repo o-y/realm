@@ -7,13 +7,9 @@ export declare namespace Metered {
 
     public leaveMeeting(): Promise<void>
 
-<<<<<<< HEAD
     public startVideo(): Promise<void>
 
     public startAudio(): Promise<void>
-=======
-    public startVideo(): void
->>>>>>> main
 
     public on(event: "localTrackStarted", callback: (
         item: InternalMeteredLocalTrackItem) => void
@@ -30,21 +26,13 @@ export declare namespace Metered {
 export interface InternalMeteredLocalTrackItem {
   streamId: string,
   track: MediaStreamTrack,
-<<<<<<< HEAD
   type: "video" | "audio"
-=======
-  type: "video" | "voice"
->>>>>>> main
 }
 
 export interface InternalMeteredRemoteTrackItem {
   streamId: string,
   track: MediaStreamTrack,
-<<<<<<< HEAD
   type: "video" | "audio",
-=======
-  type: "video" | "voice",
->>>>>>> main
   participant: {
     name: string
   },

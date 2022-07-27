@@ -3,7 +3,7 @@
     <div class = "videoCallScreen">
       <div class = "videoCallWrapper">
         <div class = "videoCallContainer">
-          <realm-local-video-call/>
+          <realm-local-video-call :exited-meeting = "exitedMeeting"/>
         </div>
         <div class = "videoCallButtonsContainer">
           <div class = "videoCallButton" ref = "videoButton">
@@ -42,17 +42,34 @@
 <script lang="ts">
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import RealmLocalVideoCall from './RealmLocalVideoCall.vue';
+import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
+import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 
 @Component({
   components: {RealmLocalVideoCall}
 })
 export default class RealmSidebar extends Vue {
+  private exitedMeeting: boolean = false;
+
   public async mounted() {
 
   }
 
   public async endCall() {
+    if (MeteredSingleton.getInstance().getMeteredMeeting().meetingState === "joined") {
+      await MeteredSingleton.getInstance().getMeteredMeeting().leaveMeeting();
+      this.exitedMeeting = true;
+    } else {
+      const roomURL: string = MeteredSingleton.getInstance().getCallbackCoordinator().getMeetingHopInstance()?.roomURL!;
 
+      if (roomURL.length === 0) return;
+
+      await MeteredSingleton.getInstance().getCallbackCoordinator().onMeetingHopEvent({
+        roomURL: roomURL
+      })
+
+      this.exitedMeeting = false;
+    }
   }
 }
 
