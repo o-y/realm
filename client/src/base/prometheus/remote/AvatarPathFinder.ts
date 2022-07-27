@@ -41,7 +41,8 @@ export class AvatarPathFinder {
     }
 
     // If the difference is > 1 it means either the client's network connection
-    //
+    // is flaky, and thus animating a player across n tiles would look odd
+    // or the player has been teleported by an internal Realm service.
     if (movementDifferential > 1) {
       this.avatarObjectRender.getAvatarObject().setPosition(
           tileToWorldSpaceCoordinate.getX(),
@@ -69,6 +70,9 @@ export class AvatarPathFinder {
           } else {
             this.avatarObjectRender.getAvatarObject().play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC));
           }
+        },
+        onUpdate: () => {
+          this.avatarObjectRender.recomputePositions();
         }
       })
     } else {
@@ -89,6 +93,9 @@ export class AvatarPathFinder {
           } else {
             this.avatarObjectRender.getAvatarObject().play(spriteAnimationPlayer.getAnimationFor(SpriteState.RIGHT_STATIC));
           }
+        },
+        onUpdate: () => {
+          this.avatarObjectRender.recomputePositions();
         }
       })
     }

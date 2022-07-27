@@ -60,7 +60,13 @@ export class AvatarRender extends AvatarPlugin {
         tileToWorldSpaceCoordinate.getX(),
         tileToWorldSpaceCoordinate.getY(),
         (avatar.isLocalAvatar() ? "> " : "") + avatar.getUsername() + (avatar.isLocalAvatar() ? " <" : "")
-    ).setResolution(10)
+    ).setBackgroundColor("#0F1108");
+
+    if (avatar.isLocalAvatar()) {
+      playerObject.setDepth(Number.MAX_VALUE);
+      playerUsername.setDepth(Number.MAX_VALUE);
+      playerUsername.setBackgroundColor("#733DB5")
+    }
 
     const avatarObjectsRender: AvatarObjectRender = AvatarObjectRender
         .with(avatar, this.playersLayer)

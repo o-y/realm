@@ -70,8 +70,8 @@ export default class PhaserComponent extends Vue {
       parent: this.phaserRoot,
       pixelArt: true,
       roundPixels: true,
-      antialias: true,
-      antialiasGL: true,
+      antialias: false,
+      antialiasGL: false,
       scene: [
         PhaserWorldGenScene
       ],
