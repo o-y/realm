@@ -56,20 +56,21 @@ export default class RealmSidebar extends Vue {
   }
 
   public async endCall() {
-    if (MeteredSingleton.getInstance().getMeteredMeeting().meetingState === "joined") {
-      await MeteredSingleton.getInstance().getMeteredMeeting().leaveMeeting();
-      this.exitedMeeting = true;
-    } else {
-      const roomURL: string = MeteredSingleton.getInstance().getCallbackCoordinator().getMeetingHopInstance()?.roomURL!;
-
-      if (roomURL.length === 0) return;
-
-      await MeteredSingleton.getInstance().getCallbackCoordinator().onMeetingHopEvent({
-        roomURL: roomURL
-      })
-
-      this.exitedMeeting = false;
-    }
+    alert("Not implemented! (sorry)");
+    // if (MeteredSingleton.getInstance().getMeteredMeeting().meetingState === "joined") {
+    //   await MeteredSingleton.getInstance().getMeteredMeeting().leaveMeeting();
+    //   this.exitedMeeting = true;
+    // } else {
+    //   const roomURL: string = MeteredSingleton.getInstance().getCallbackCoordinator().getMeetingHopInstance()?.roomURL!;
+    //
+    //   if (roomURL.length === 0) return;
+    //
+    //   await MeteredSingleton.getInstance().getCallbackCoordinator().onMeetingHopEvent({
+    //     roomURL: roomURL
+    //   })
+    //
+    //   this.exitedMeeting = false;
+    // }
   }
 }
 
