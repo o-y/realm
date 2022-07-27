@@ -47,8 +47,6 @@ export default class Auth extends Vue {
   }
 
   public enterRealm() {
-    let msg = new SpeechSynthesisUtterance("Way time to enter Realm: " + this.authenticationData!.getDisplayName());
-    speechSynthesis.speak(msg);
     this.$router.push("/realms/zv.wtf");
   }
 }

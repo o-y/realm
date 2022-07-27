@@ -3,19 +3,12 @@ import {LayerManager} from '@/base/layer/LayerManager';
 import PhaserWorldGenScene from '@/base/scenes/PhaserWorldGenScene';
 import {PlayersLayer} from '@/base/layer/layers/PlayersLayer';
 import {AvatarPlugin} from '@/base/prometheus/internal/AvatarPlugin';
-import {AvatarCamera} from '@/base/prometheus/theia/AvatarCamera';
 import {Util} from '@/util/Util';
 import {SpriteManager} from '@/base/prometheus/sprite/manager/SpriteManager';
 import {AbstractSprite} from '@/base/prometheus/sprite/internal/AbstractSprite';
 import {SpriteAnimationPlayer, SpritePlugin} from '@/base/prometheus/sprite/animation/SpriteAnimationPlayer';
-import {SpriteState} from '@/base/prometheus/sprite/data/SpriteState';
+import {SpriteState, STATIC_SPRITE_STATE} from '@/base/prometheus/sprite/data/SpriteState';
 import {CoordinateUtil} from '@/base/atlas/data/coordinate/util/CoordinateUtil';
-import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
-import {RealmGenerator} from '@/base/gen/realms/internal/RealmGenerator';
-import {LocalAvatarController} from '@/base/prometheus/local/LocalAvatarController';
-import {LocalPeer} from '@/base/supabase/peer/LocalPeer';
-import {Peer} from '@/base/supabase/peer/Peer';
-import TileObject from '@/base/tile/TileObject';
 import {AvatarObjectRender} from '@/base/prometheus/std/AvatarObjectRender';
 
 export class AvatarRender extends AvatarPlugin {
@@ -60,12 +53,12 @@ export class AvatarRender extends AvatarPlugin {
         tileToWorldSpaceCoordinate.getX(),
         tileToWorldSpaceCoordinate.getY(),
         (avatar.isLocalAvatar() ? "> " : "") + avatar.getUsername() + (avatar.isLocalAvatar() ? " <" : "")
-    ).setBackgroundColor("#0F1108");
+    ).setBackgroundColor("#757575");
 
     if (avatar.isLocalAvatar()) {
       playerObject.setDepth(Number.MAX_VALUE);
       playerUsername.setDepth(Number.MAX_VALUE);
-      playerUsername.setBackgroundColor("#733DB5")
+      playerUsername.setBackgroundColor("#cbabf0")
     }
 
     const avatarObjectsRender: AvatarObjectRender = AvatarObjectRender
@@ -74,7 +67,12 @@ export class AvatarRender extends AvatarPlugin {
         .setUsernameObject(playerUsername)
         .recomputePositions()
 
-    playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
+    // This way remote players spawn in a random orientation.
+    if (avatar.isLocalAvatar()) {
+      playerObject.play(spriteAnimationPlayer.getAnimationFor(SpriteState.DOWN_STATIC))
+    } else {
+      playerObject.play(spriteAnimationPlayer.getAnimationFor(Util.randomFromArray([...STATIC_SPRITE_STATE])))
+    }
 
     return avatarObjectsRender;
   }
