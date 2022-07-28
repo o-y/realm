@@ -45,7 +45,6 @@
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import RealmLocalVideoCall from './RealmLocalVideoCall.vue';
 import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
-import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 
 @Component({
   components: {RealmLocalVideoCall}
