@@ -34,7 +34,7 @@ export default class RealmLocalVideoCall extends Vue {
 
   public mounted() {
     const meteredInstance = MeteredSingleton.getInstance();
-    let fluxState = false;
+    let fluxState = true;
 
     meteredInstance
         .getCallbackCoordinator()

@@ -43,6 +43,6 @@ export class LandStructure {
       return null;
     }
 
-    return this.structure.getProvider().getTile(structureMatrix[yIndex][xIndex]!)
+    return this.structure.getProvider().getTile(structureMatrix[yIndex][xIndex]!) || null
   }
 }

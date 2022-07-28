@@ -1,18 +1,13 @@
-import {NyxLayer} from '@/framework/nyx/NyxLayer';
 import {Coordinate} from '@/base/atlas/data/coordinate/Coordinate';
 import TileObject from '@/base/tile/TileObject';
-import {MathUtil} from '@/util/MathUtil';
 import {PerlinNoise} from '@/base/gen/perlin/PerlinNoise';
 import RealmTileGenUtil from '@/base/gen/tilegen/RealmTileGenUtil';
 import {Util} from '@/util/Util';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import {NatureTile} from '@/base/tile/providers/NatureTileProvider';
 import {LandStructureProvider} from '@/base/minos/land/LandStructureProvider';
-import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
-import {LayerManager} from '@/base/layer/LayerManager';
 import {BaseLayer} from '@/base/layer/layers/BaseLayer';
 import {BuildingLayer} from '@/base/layer/layers/BuildingLayer';
-import Tile = Phaser.Tilemaps.Tile;
 import {RealmGenerationData} from '@/base/gen/realms/internal/RealmGenerator';
 import {MinosStructureAnnotationsType} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {PathMap} from '@/base/gen/realms/pipelines/gaia/PathMap';
@@ -82,7 +77,16 @@ export class TerrainManager {
         const enumNumber: TileUnion = intersectingTile.getEnumType();
         const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
 
-        const buildingTile = tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS
+        // console.log("Searching for enum paired with: ", enumNumber, " = ", tileAnnotation)
+        if (tileAnnotation === MinosStructureAnnotationsType.DOOR) {
+          console.log("Detected door: ", tileAnnotation)
+        } else {
+          // console.log("Detected annotation: ", tileAnnotation)
+        }
+
+        console.log( intersectingStructure.getStructure().provideAnnotations().getForAnnotation(MinosStructureAnnotationsType.DOOR))
+
+        const buildingTile = (tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS || tileAnnotation === MinosStructureAnnotationsType.DOOR)
             ? this.buildingLayer.scene.add.nyxTileObjectImage(
                 (coordinate.getX() * TileObject.TILE_SIZE),
                 (coordinate.getY() * TileObject.TILE_SIZE),
