@@ -77,15 +77,6 @@ export class TerrainManager {
         const enumNumber: TileUnion = intersectingTile.getEnumType();
         const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
 
-        // console.log("Searching for enum paired with: ", enumNumber, " = ", tileAnnotation)
-        if (tileAnnotation === MinosStructureAnnotationsType.DOOR) {
-          console.log("Detected door: ", tileAnnotation)
-        } else {
-          // console.log("Detected annotation: ", tileAnnotation)
-        }
-
-        console.log( intersectingStructure.getStructure().provideAnnotations().getForAnnotation(MinosStructureAnnotationsType.DOOR))
-
         const buildingTile = (tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS || tileAnnotation === MinosStructureAnnotationsType.DOOR)
             ? this.buildingLayer.scene.add.nyxTileObjectImage(
                 (coordinate.getX() * TileObject.TILE_SIZE),

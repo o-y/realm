@@ -15,6 +15,7 @@ import {LandStructureProvider} from '@/base/minos/land/LandStructureProvider';
 import TileObject from '@/base/tile/TileObject';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import {MinosStructureAnnotationsType} from '@/base/minos/land/internal/LandStructureAnnotations';
+import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -78,7 +79,7 @@ export class LocalAvatarRender extends AvatarRender {
       const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
 
       if (tileAnnotation === MinosStructureAnnotationsType.DOOR) {
-        console.log("LocalPlayer has touched a door!");
+        return this.updatePlayerPosition(NonDecimalCoordinate.of(5, 0));
       }
     }
 
@@ -106,5 +107,26 @@ export class LocalAvatarRender extends AvatarRender {
       this.lastPositionY = worldToTileConversionCoordinate.getY();
       this.lastPositionX = worldToTileConversionCoordinate.getX();
     }
+  }
+
+  private async updatePlayerPosition(tileCoordinate: NonDecimalCoordinate): Promise<void> {
+    const tileToWorldCoordinate = CoordinateUtil.convertTileToWorldSpaceCoordinate(
+        tileCoordinate.getX(),
+        tileCoordinate.getY()
+    )
+
+    console.log("Teleporting to: ", tileToWorldCoordinate.getX(), tileToWorldCoordinate.getY());
+
+    await super.getAvatarObjectRender().getAvatarObject().setPosition(
+        tileToWorldCoordinate.getX(), tileToWorldCoordinate.getY()
+    );
+
+    const localPeer: LocalPeer = <LocalPeer>this.getAvatar().getPeer();
+    await localPeer.updatePosition(Coordinate.of(
+        tileCoordinate.getX(),
+        tileCoordinate.getY())
+    );
+    this.lastPositionY = tileCoordinate.getY();
+    this.lastPositionX = tileCoordinate.getY();
   }
 }

@@ -1,8 +1,10 @@
 <template>
   <div class = "phaserContainer">
     <div class = "gameWrapper">
-      <realm-remote-video-call-screen/>
-      <realm-sidebar/>
+      <div>
+        <realm-remote-video-call-screen ref = "remoteParticipants"/>
+        <realm-sidebar ref = "sidebar"/>
+      </div>
       <div class = "phaserRoot" ref = "root"></div>
     </div>
 
@@ -41,14 +43,22 @@ export default class PhaserComponent extends Vue {
   @Ref('realmLogo') readonly realmLogo!: HTMLImageElement
   @Ref('realmSpinnerContainer') readonly realmSpinnerContainer!: HTMLDivElement
 
+  @Ref('remoteParticipants') readonly remoteParticipantsView!: RealmRemoteVideoCallScreen
+  @Ref('sidebar') readonly realmSidebar!: RealmSidebar
+
   private static readonly SCROLL_OFFSET: number = 13;
 
-  private IS_SPLASH_SCREEN_ENABLED: boolean = false;
+  private IS_SPLASH_SCREEN_ENABLED: boolean = true;
   private shouldShowSplashScreen: boolean = true;
 
   private supabase: SupabaseSingleton = SupabaseSingleton.getInstance();
 
   public mounted() {
+    console.log(
+        this.remoteParticipantsView,
+        this.realmSidebar
+    );
+
     if (!this.isAuthenticated()){
       return this.$router.push("/");
     }
@@ -152,6 +162,12 @@ export default class PhaserComponent extends Vue {
         duration: 500,
         easing: "easeInOutCubic"
       }, 350)
+      .add({
+        targets: [this.realmSidebar.$el, this.remoteParticipantsView.$el],
+        opacity: [0, 1],
+        duration: 500,
+        easing: "easeInOutCubic"
+      }, 600)
     )
   }
 }
@@ -169,6 +185,7 @@ export default class PhaserComponent extends Vue {
 
     .gameWrapper
       height: 100%
+      overflow: hidden
 
       .phaserRoot
         width: 100%
@@ -190,6 +207,8 @@ export default class PhaserComponent extends Vue {
       overflow: hidden
 
       .realmLogoContainer
+        margin: 0
+
         img
           opacity: 0
           width: $realmLogoWidth

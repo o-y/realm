@@ -6,15 +6,15 @@
           <realm-local-video-call :exited-meeting = "exitedMeeting"/>
         </div>
         <div class = "videoCallButtonsContainer">
-          <div class = "videoCallButton" ref = "videoButton">
+          <div class = "videoCallButton" ref = "videoButton" @click = "mute">
             <span class="material-symbols-outlined">videocam</span>
           </div>
 
-          <div class = "videoCallButton" ref = "leaveButton">
-            <span class="material-symbols-outlined" @click = "endCall">call_end</span>
+          <div class = "videoCallButton" ref = "leaveButton" @click = "endCall">
+            <span class="material-symbols-outlined">call_end</span>
           </div>
 
-          <div class = "videoCallButton" ref = "muteButton">
+          <div class = "videoCallButton" ref = "muteButton" @click = "mute">
             <span class="material-symbols-outlined">mic</span>
           </div>
         </div>
@@ -30,7 +30,9 @@
     </div>
 
     <div class = "debugPanel">
-
+      <div class = "debugPanelContainer">
+        <p><b>NOTE: </b>Leaving the call is buggy so reload the page if something doesn't look right</p>
+      </div>
     </div>
 
     <div class = "footer">
@@ -51,26 +53,25 @@ import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 export default class RealmSidebar extends Vue {
   private exitedMeeting: boolean = false;
 
-  public async mounted() {
-
+  public async mute() {
+    alert("Not implemented, sorry :c")
   }
 
   public async endCall() {
-    alert("Not implemented! (sorry)");
-    // if (MeteredSingleton.getInstance().getMeteredMeeting().meetingState === "joined") {
-    //   await MeteredSingleton.getInstance().getMeteredMeeting().leaveMeeting();
-    //   this.exitedMeeting = true;
-    // } else {
-    //   const roomURL: string = MeteredSingleton.getInstance().getCallbackCoordinator().getMeetingHopInstance()?.roomURL!;
-    //
-    //   if (roomURL.length === 0) return;
-    //
-    //   await MeteredSingleton.getInstance().getCallbackCoordinator().onMeetingHopEvent({
-    //     roomURL: roomURL
-    //   })
-    //
-    //   this.exitedMeeting = false;
-    // }
+    if (MeteredSingleton.getInstance().getMeteredMeeting().meetingState === "joined") {
+      await MeteredSingleton.getInstance().getMeteredMeeting().leaveMeeting();
+      this.exitedMeeting = true;
+    } else {
+      const roomURL: string = MeteredSingleton.getInstance().getCallbackCoordinator().getMeetingHopInstance()?.roomURL!;
+
+      if (roomURL.length === 0) return;
+
+      await MeteredSingleton.getInstance().getCallbackCoordinator().onMeetingHopEvent({
+        roomURL: roomURL
+      })
+
+      this.exitedMeeting = false;
+    }
   }
 }
 
@@ -89,12 +90,14 @@ export default class RealmSidebar extends Vue {
     top: 0;
     right: 0;
     width: $sidebarWidth
+    margin: 0;
     height: 100%;
     background: rgba($realmPalette.PureBlack, 0.65);
     backdrop-filter: blur(15px) grayscale(30%);
     display: grid
     grid-template-columns: 1fr
     grid-template-rows: 350px auto 100px 78px
+    opacity: 0
 
     .nearbyPeople
       display: flex
@@ -183,7 +186,27 @@ export default class RealmSidebar extends Vue {
       justify-content center
       align-items center
       background: none
-      margin-top: 16px
+      margin-top: $defaultSidebarPadding
+
+      .debugPanelContainer
+        width: 100%
+        height: 100%
+        margin: $defaultSidebarPadding
+        background: linear-gradient(180deg, rgba($realmPalette.RebeccaPurple, 0.2) 0%, rgba(115, 61, 181, 0) 100%)
+        border-radius: 15px
+        overflow: hidden
+        display: flex
+        justify-content center
+        align-items center
+
+        p
+          color: white
+          text-align center
+          margin-left: 10px
+          margin-right: @margin-left
+          font-size: 14px
+          font-family: 'Poppins', sans-serif;
+          opacity: 0.4
 
     .footer
       display: flex

@@ -18,7 +18,6 @@ import {Component, Ref, Vue} from 'vue-property-decorator';
 import {MeteredRemoteTrackEndInterface, MeteredRemoteTrackInterface} from '../../types/metered/MeteredTypes';
 import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
 
-@Component
 export default class RealmRemoteVideoCallScreen extends Vue {
   private videoFeedsMap: { [displayName: string] : MediaStream } = {}
   private audioFeedsMap: { [displayName: string] : MediaStream } = {}
@@ -60,12 +59,12 @@ export default class RealmRemoteVideoCallScreen extends Vue {
 // global somewhere.
 $defaultSidebarPadding = 30px
 $sidebarWidth = 400px
-$topbarHeight = 180px
 
-$videoWidth = 240px
+$videoHeight = 120px
+$videoWidth = 190px
 
 .realmRemoteParticipantsRoot
-  height: $topbarHeight;
+  height: 80vh
   position: absolute
   width: "calc(100% - %s)" % $sidebarWidth;
   display: flex
@@ -76,6 +75,7 @@ $videoWidth = 240px
     height: "calc(%s - %s)" % ($topbarHeight $defaultSidebarPadding);
     margin: $defaultSidebarPadding
     display: grid
+    grid-template-rows: repeat(auto-fill, $videoHeight)
     grid-template-columns: repeat(auto-fill, $videoWidth)
     grid-auto-rows: 1fr
     grid-gap: $defaultSidebarPadding

@@ -27,14 +27,14 @@ import {SupabaseSingleton} from '../../base/supabase/SupabaseSingleton';
 export default class RealmLocalVideoCall extends Vue {
   @Ref("videoCallRoot") readonly videoCallRoot!: HTMLVideoElement
 
-  @Prop({type: Boolean, default: false, required: true}) readonly exitedMeeting: Boolean = false;
+  @Prop({type: Boolean, default: false, required: true}) exitedMeeting: Boolean = false;
 
   private hasGrantedCameraAccess = true;
   private joinedFirstMeetingRoom = false;
 
   public mounted() {
     const meteredInstance = MeteredSingleton.getInstance();
-    let fluxState = true;
+    let fluxState = false;
 
     meteredInstance
         .getCallbackCoordinator()
@@ -42,6 +42,7 @@ export default class RealmLocalVideoCall extends Vue {
           this.joinedFirstMeetingRoom = true;
           if (fluxState) return;
           fluxState = true;
+          this.exitedMeeting = false;
 
           if (meteredInstance.getMeteredMeeting().meetingState === "joined") {
             await meteredInstance.getMeteredMeeting().leaveMeeting();
@@ -61,6 +62,7 @@ export default class RealmLocalVideoCall extends Vue {
             await viableMeeting.leaveMeeting();
             this.hasGrantedCameraAccess = false;
           }
+
           fluxState = false;
         })
         .registerOnLocalTrackUpdatedCallback(context => {
@@ -77,7 +79,7 @@ export default class RealmLocalVideoCall extends Vue {
     width: 100%
     height: 100%
     border-radius: 30px
-    transform: scale(1.05)
+    transform: scale(1.1) rotateY(180deg)
 
   h1
     color: #D95040
