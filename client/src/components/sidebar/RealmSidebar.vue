@@ -31,7 +31,7 @@
 
     <div class = "debugPanel">
       <div class = "debugPanelContainer">
-        <p><b>NOTE: </b>Leaving the call is buggy so reload the page if something doesn't look right</p>
+        <p><b>NOTE: </b>Disconnecting from the call is buggy so reload the page if something doesn't look right</p>
       </div>
     </div>
 

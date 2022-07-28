@@ -72,7 +72,7 @@ $videoWidth = 190px
 
   .realmRemoteContainer
     width: 100%
-    height: "calc(%s - %s)" % ($topbarHeight $defaultSidebarPadding);
+    height: 100%
     margin: $defaultSidebarPadding
     display: grid
     grid-template-rows: repeat(auto-fill, $videoHeight)
