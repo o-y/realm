@@ -18,6 +18,7 @@ import {Component, Ref, Vue} from 'vue-property-decorator';
 import {MeteredRemoteTrackEndInterface, MeteredRemoteTrackInterface} from '../../types/metered/MeteredTypes';
 import {MeteredSingleton} from '../../framework/metered/MeteredSingleton';
 
+@Component
 export default class RealmRemoteVideoCallScreen extends Vue {
   private videoFeedsMap: { [displayName: string] : MediaStream } = {}
   private audioFeedsMap: { [displayName: string] : MediaStream } = {}
@@ -25,6 +26,7 @@ export default class RealmRemoteVideoCallScreen extends Vue {
   public mounted() {
     const meteredInstance = MeteredSingleton.getInstance();
 
+    console.log("Registering thing")
     meteredInstance
         .getCallbackCoordinator()
         .registerMeetingHopCallback( () => {
