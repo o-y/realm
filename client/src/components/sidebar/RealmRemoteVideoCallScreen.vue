@@ -26,7 +26,6 @@ export default class RealmRemoteVideoCallScreen extends Vue {
   public mounted() {
     const meteredInstance = MeteredSingleton.getInstance();
 
-    console.log("Registering thing")
     meteredInstance
         .getCallbackCoordinator()
         .registerMeetingHopCallback( () => {
