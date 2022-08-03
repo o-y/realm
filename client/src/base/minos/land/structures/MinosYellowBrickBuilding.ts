@@ -8,7 +8,7 @@ export class MinosYellowBrickBuilding extends AbstractLandStructure<RubyTownTile
   provideAnnotations(): LandStructureAnnotations {
     return new LandStructureAnnotations()
         .populateAnnotationMap(
-            MinosStructureAnnotationsType.DOOR, [RubyTownTile.RUBYTOWN_67],
+            MinosStructureAnnotationsType.MINOS_GATEWAY, [RubyTownTile.RUBYTOWN_67],
         ).populateAnnotationMap(
             MinosStructureAnnotationsType.IGNORE_PHYSICS, [
               RubyTownTile.RUBYTOWN_64, RubyTownTile.RUBYTOWN_65,

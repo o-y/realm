@@ -77,7 +77,7 @@ export class TerrainManager {
         const enumNumber: TileUnion = intersectingTile.getEnumType();
         const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
 
-        const buildingTile = (tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS || tileAnnotation === MinosStructureAnnotationsType.DOOR)
+        const buildingTile = (tileAnnotation === MinosStructureAnnotationsType.IGNORE_PHYSICS || tileAnnotation === MinosStructureAnnotationsType.MINOS_GATEWAY)
             ? this.buildingLayer.scene.add.nyxTileObjectImage(
                 (coordinate.getX() * TileObject.TILE_SIZE),
                 (coordinate.getY() * TileObject.TILE_SIZE),

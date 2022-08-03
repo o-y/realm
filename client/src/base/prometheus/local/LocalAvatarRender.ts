@@ -16,6 +16,7 @@ import TileObject from '@/base/tile/TileObject';
 import {TileUnion} from '@/base/tile/providers/helpers/TileEnumUnion';
 import {MinosStructureAnnotationsType} from '@/base/minos/land/internal/LandStructureAnnotations';
 import {NonDecimalCoordinate} from '@/base/atlas/data/coordinate/NonDecimalCoordinate';
+import {MinosOfficeRoomMap} from '@/base/minos/land/map/MinosOfficeRoomMap';
 
 export class LocalAvatarRender extends AvatarRender {
   private readonly avatarCameraPlugin: AvatarCamera = AvatarPlugin
@@ -69,8 +70,8 @@ export class LocalAvatarRender extends AvatarRender {
         avatarObject.y
     )
 
+    // Handle warping to Minos Structs
     const intersectingStructure = LandStructureProvider.getIntersectingStructure(worldToTileConversionCoordinate);
-
     if (intersectingStructure) {
       const intersectingTile: TileObject<TileUnion> | null = intersectingStructure.getIntersectingTileObject(worldToTileConversionCoordinate);
       if (!intersectingTile) return;
@@ -78,9 +79,19 @@ export class LocalAvatarRender extends AvatarRender {
       const enumNumber: TileUnion = intersectingTile.getEnumType();
       const tileAnnotation: MinosStructureAnnotationsType | null = intersectingStructure.getStructure().provideAnnotations().getAnnotationFromTile(enumNumber);
 
-      if (tileAnnotation === MinosStructureAnnotationsType.DOOR) {
-        return this.updatePlayerPosition(NonDecimalCoordinate.of(5, 0));
+      // TODO: Remove hard-code
+      if (tileAnnotation === MinosStructureAnnotationsType.MINOS_GATEWAY) {
+        return this.updatePlayerPosition(Coordinate.of(
+            MinosOfficeRoomMap.provideDoorPosition().getX(),
+            MinosOfficeRoomMap.provideDoorPosition().getY() + 1)
+        );
       }
+    }
+
+    // Handle warping away from Minos structs
+    // TODO: Remove hard-code
+    if (worldToTileConversionCoordinate.equals(MinosOfficeRoomMap.provideDoorPosition())) {
+      return this.updatePlayerPosition(NonDecimalCoordinate.of(14, -6));
     }
 
     if (worldToTileConversionCoordinate.getY() != this.lastPositionY || worldToTileConversionCoordinate.getX() != this.lastPositionX || !this.hasRanFirstRender) {
@@ -114,8 +125,6 @@ export class LocalAvatarRender extends AvatarRender {
         tileCoordinate.getX(),
         tileCoordinate.getY()
     )
-
-    console.log("Teleporting to: ", tileToWorldCoordinate.getX(), tileToWorldCoordinate.getY());
 
     await super.getAvatarObjectRender().getAvatarObject().setPosition(
         tileToWorldCoordinate.getX(), tileToWorldCoordinate.getY()

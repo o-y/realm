@@ -27,6 +27,8 @@ import {RemoteAvatarRender} from '@/base/prometheus/remote/RemoteAvatarRender';
 import {RubyTownTile} from '@/base/tile/providers/RubyTownProvider';
 import {MercuryClientPlugin} from '@/base/mercury/MercuryClientPlugin';
 import {BridgeTile} from '@/base/tile/providers/BridgeTileProvider';
+import {MinosMapCreatorPlugin} from '@/base/minos/land/map/MinosMapCreatorPlugin';
+import {MinosOfficeRoomMap} from '@/base/minos/land/map/MinosOfficeRoomMap';
 
 export default class PhaserWorldGenScene extends NyxScene {
   private avatarRenderer!: LocalAvatarRender;
@@ -60,6 +62,9 @@ export default class PhaserWorldGenScene extends NyxScene {
 
     MercuryClientPlugin.withScene<this, MercuryClientPlugin>(this, MercuryClientPlugin)
         .initiatePeerConnectionManager();
+
+    MinosMapCreatorPlugin.withScene<this, MinosMapCreatorPlugin>(this, MinosMapCreatorPlugin)
+        .createMapStructures();
   }
 
   updateOnCreated() {
@@ -101,6 +106,8 @@ export default class PhaserWorldGenScene extends NyxScene {
           }
       )
     })
+
+    this.load.image(MinosOfficeRoomMap.getKey(), MinosOfficeRoomMap.getAsset());
 
     await Promise.all(requests);
   }
